@@ -6,6 +6,7 @@ export default {
   hal: 'hald reference',
   'hal-contract': 'HAL contract v1',
   hardware: 'Gardyn hardware map',
+  'sim-bringup': 'Simulated bring-up',
   '-- project': { type: 'separator', title: 'Project' },
   adr: 'Decision records',
   deployment: 'Deployment',
