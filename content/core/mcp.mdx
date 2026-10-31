@@ -17,25 +17,31 @@ Every tool calls the same procedures the web UI uses, never the hardware directl
 
 ## Tools
 
-| Tool                | Kind  | What it does                                                                  |
-| ------------------- | ----- | ----------------------------------------------------------------------------- |
-| `status`            | read  | Sensors, light and pump state, active alerts, grow cycle and hardware limits. |
-| `history`           | read  | Downsampled history for a sensor.                                             |
-| `list_schedules`    | read  | Light curves and pump cycles with their day masks.                            |
-| `pods`              | read  | The 30 pods: plant, planted date, status and notes.                           |
-| `captures`          | read  | Recent camera stills.                                                         |
-| `pod_health`        | read  | Per-pod green-area trend from the cameras.                                    |
-| `set_light`         | write | Turn the light on or off and set brightness.                                  |
-| `run_pump`          | write | Run the pump for a bounded time.                                              |
-| `stop_pump`         | write | Stop the pump immediately.                                                    |
-| `acknowledge_alert` | write | Acknowledge an alert, which also clears a latched fault.                      |
-| `upsert_schedule`   | write | Create or replace a light curve or pump cycle.                                |
-| `delete_schedule`   | write | Delete a schedule.                                                            |
-| `update_pod`        | write | Set a pod's plant, status and notes.                                          |
-| `grow_cycle`        | write | Start, change the stage of, or end the grow cycle.                            |
-| `capture_still`     | write | Take a camera still now.                                                      |
+| Tool                  | Kind  | What it does                                                                  |
+| --------------------- | ----- | ----------------------------------------------------------------------------- |
+| `status`              | read  | Sensors, light and pump state, active alerts, grow cycle and hardware limits. |
+| `history`             | read  | Downsampled history for a sensor.                                             |
+| `list_schedules`      | read  | Light curves and pump cycles with their day masks.                            |
+| `pods`                | read  | The 30 pods: plant, planted date, status and notes.                           |
+| `captures`            | read  | Recent camera stills.                                                         |
+| `list_devices`        | read  | Sensor devices with their status, and the probe kinds that can be added.      |
+| `list_analyses`       | read  | Camera analysers, their results, and optionally one pod compared across them. |
+| `pod_health`          | read  | Per-pod green-area trend from the primary analyser.                           |
+| `list_automations`    | read  | Autopilot rules, their state, who owns the light, and the latest run log.     |
+| `backtest_automation` | read  | Replay a saved or draft Autopilot rule over recorded history.                 |
+| `set_light`           | write | Turn the light on or off and set brightness.                                  |
+| `run_pump`            | write | Run the pump for a bounded time.                                              |
+| `stop_pump`           | write | Stop the pump immediately.                                                    |
+| `acknowledge_alert`   | write | Acknowledge an alert, which also clears a latched fault.                      |
+| `upsert_schedule`     | write | Create or replace a light curve or pump cycle.                                |
+| `delete_schedule`     | write | Delete a schedule.                                                            |
+| `update_pod`          | write | Set a pod's plant, status and notes.                                          |
+| `grow_cycle`          | write | Start, change the stage of, or end the grow cycle.                            |
+| `capture_still`       | write | Take a camera still now.                                                      |
 
-Two resources are also available: `seedypod://sensors` (latest readings) and `seedypod://limits` (the hardware limits).
+Three resources are also available: `seedypod://sensors` (latest readings), `seedypod://devices` (sensor devices and addable kinds) and `seedypod://limits` (the hardware limits).
+
+Adding probes, calibrating them, and creating or arming Autopilot rules change what the unit does unattended, so they are left to a person in the app.
 
 ## Security
 

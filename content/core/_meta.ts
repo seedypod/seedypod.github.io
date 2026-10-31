@@ -5,6 +5,7 @@ export default {
   '-- use': { type: 'separator', title: 'Use the web UI' },
   'web-ui': 'Web UI tour',
   schedules: 'Schedules',
+  autopilot: 'Autopilot',
   'grow-cycle': 'Grow cycle and pods',
   sensors: 'Adding a probe',
   analysis: 'Capture analysis',

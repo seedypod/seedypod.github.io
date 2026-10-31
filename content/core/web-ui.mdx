@@ -25,7 +25,7 @@ The grow light with a brightness slider and on/off button, the water card with t
 
 ## Light
 
-Turn the light on or off and set brightness. A manual change holds until the next scheduled setpoint. The page also shows the cumulative LED hours and how much of the rated life they represent. Below, you create and edit [light curves](/core/schedules/#light-curves).
+Turn the light on or off and set brightness. A change you make here holds for 30 minutes, then the light goes back to [Autopilot](/core/autopilot/#who-controls-the-light) or the schedule; **Resume** hands it back early. The page also shows the cumulative LED hours and how much of the rated life they represent. Below, you create and edit [light curves](/core/schedules/#light-curves).
 
 <BrowserFrame
   src="/media/core-light.png"
@@ -47,6 +47,10 @@ If the pump is latched off after a fault, the card turns red and **Run pump** is
 
 All pump cycles and light curves in one place, each with an enable toggle. See [Schedules](/core/schedules/).
 
+## Autopilot
+
+Rules that act on readings rather than the clock: notify you, set the light, run the pump or a doser, or flag a pod when a condition holds. Each rule reads back as a sentence, starts in dry run, and can be backtested over recorded history before you arm it. A run log says why each rule did or didn't act. See [Autopilot](/core/autopilot/).
+
 ## Grow
 
 The current grow cycle and its stage, and a grid of all 30 pods. See [Grow cycle and pods](/core/grow-cycle/).
@@ -60,18 +64,24 @@ The latest still from the upper and lower cameras, a **Capture now** button, and
   alt="Cameras screen with the upper and lower camera stills and timelapse sliders"
 />
 
+## Analysis
+
+How the camera analysers score each pod: which one drives the growth trends (**Make primary**), a pod's green area over time from every analyser side by side, the latest photo with every analyser's number per pod, and a dataset export. See [Capture analysis](/core/analysis/).
+
 ## Alerts
 
 Active alerts, or the full history. Each alert has **Acknowledge** (or **Done** for a reminder) and **Dismiss**.
 
-| Alert                                                      | Raised when                                                     |
-| ---------------------------------------------------------- | --------------------------------------------------------------- |
-| Water low                                                  | The tank reading crosses the low-water threshold.               |
-| Pump fault                                                 | The pump stopped because the tank ran dry or the board got hot. |
-| Board over temperature                                     | The board temperature reached the cutoff (36 °C by default).    |
-| Camera missing                                             | A camera failed to capture.                                     |
-| Hardware daemon offline                                    | Core lost contact with `hald`.                                  |
-| Thin seedlings, Check roots, Harvest window, Add nutrients | A grow reminder is due.                                         |
+| Alert                                                      | Raised when                                                                        |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Water low                                                  | The tank reading crosses the low-water threshold.                                  |
+| Pump fault                                                 | The pump stopped because the tank ran dry or the board got hot.                    |
+| Board over temperature                                     | The board temperature reached the cutoff (36 °C by default).                       |
+| Camera missing                                             | A camera failed to capture.                                                        |
+| Hardware daemon offline                                    | Core lost contact with `hald`.                                                     |
+| Thin seedlings, Check roots, Harvest window, Add nutrients | A grow reminder is due.                                                            |
+| Off-device copy failed                                     | Photos couldn't be copied to your mirror bucket.                                   |
+| _Rule name_: _message_                                     | An Autopilot rule's notify action; clears when the rule's condition stops holding. |
 
 <Callout type="warning">
   Acknowledging a pump fault re-enables the pump. Fix the cause first: refill the tank, or let the
@@ -80,9 +90,13 @@ Active alerts, or the full history. Each alert has **Acknowledge** (or **Done** 
 
 <BrowserFrame src="/media/core-alerts.png" alt="Alerts screen listing an active reminder" />
 
+## Sensors
+
+Every sensor the unit has, whether it answered at boot, and its latest reading. Add a pH, EC or water-temperature probe, calibrate it with a guided wizard, or remove it. See [Adding a probe](/core/sensors/).
+
 ## Settings
 
-Unit name, timezone and temperature unit; tank calibration (distance when full and when empty, and the tank capacity); grow reminder days; the camera capture interval; the [Home Assistant bridge](/core/home-assistant/#core-bridge); an optional [API key](/core/privacy/#who-can-reach-it); and an About section with the core and daemon versions and the unit id.
+Unit name, timezone and temperature unit; tank calibration (distance when full and when empty, and the tank capacity); grow reminder days; the camera capture interval; the [Home Assistant bridge](/core/home-assistant/#core-bridge); an optional [API key](/core/privacy/#who-can-reach-it); [off-device storage and analysis](/core/analysis/#mirror-photos-off-the-unit-opt-in) (opt-in); a link to **Wi-Fi**, where you change networks or open the setup hotspot ([Change Wi-Fi](/core/installation/#change-wi-fi)); and an About section with the core and daemon versions and the unit id.
 
 <BrowserFrame
   src="/media/core-settings.png"
