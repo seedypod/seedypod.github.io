@@ -24,6 +24,7 @@ const pages = {
   'DEPLOYMENT.md': 'developers/deployment',
   'hardware/hal.md': 'developers/hal',
   'hardware/pin-map.md': 'developers/hardware',
+  'hardware/sim-bringup.md': 'developers/sim-bringup',
   'testing/index.md': 'developers/testing',
   ...Object.fromEntries(adrs.map((f) => [`adr/${f}`, `developers/adr/${f.replace(/\.md$/, '')}`])),
 }
