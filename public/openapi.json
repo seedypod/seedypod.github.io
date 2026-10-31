@@ -5,15 +5,25 @@
     "description": "Local, cloud-free control of a Gardyn hydroponic tower. LAN-only; no authentication.",
     "version": "1.0.0"
   },
-  "servers": [{ "url": "http://localhost:3000/api" }],
-  "externalDocs": { "url": "https://seedypod.github.io/developers/api" },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api"
+    }
+  ],
+  "externalDocs": {
+    "url": "https://seedypod.github.io/developers/api"
+  },
   "paths": {
     "/system": {
       "get": {
         "operationId": "system-info",
         "summary": "Identity, HAL model, limits and core version",
         "tags": ["system"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -22,17 +32,30 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "coreVersion": { "type": "string" },
-                    "halOnline": { "type": "boolean" },
+                    "coreVersion": {
+                      "type": "string"
+                    },
+                    "halOnline": {
+                      "type": "boolean"
+                    },
                     "system": {
                       "anyOf": [
                         {
                           "type": "object",
                           "properties": {
-                            "contract": { "type": "number", "const": 1 },
-                            "unitId": { "type": "string" },
-                            "model": { "type": "string" },
-                            "halVersion": { "type": "string" },
+                            "contract": {
+                              "type": "number",
+                              "const": 1
+                            },
+                            "unitId": {
+                              "type": "string"
+                            },
+                            "model": {
+                              "type": "string"
+                            },
+                            "halVersion": {
+                              "type": "string"
+                            },
                             "caps": {
                               "type": "object",
                               "properties": {
@@ -64,7 +87,10 @@
                                 },
                                 "cameras": {
                                   "type": "array",
-                                  "items": { "type": "string", "enum": ["upper", "lower"] }
+                                  "items": {
+                                    "type": "string",
+                                    "enum": ["upper", "lower"]
+                                  }
                                 }
                               },
                               "required": ["sensors", "actuators", "cameras"],
@@ -78,8 +104,14 @@
                                   "exclusiveMinimum": 0,
                                   "maximum": 9007199254740991
                                 },
-                                "pumpMaxDuty": { "type": "number", "minimum": 0, "maximum": 100 },
-                                "waterLowCm": { "type": ["number", "null"] }
+                                "pumpMaxDuty": {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 100
+                                },
+                                "waterLowCm": {
+                                  "type": ["number", "null"]
+                                }
                               },
                               "required": ["pumpMaxRunS", "pumpMaxDuty", "waterLowCm"],
                               "additionalProperties": false
@@ -95,7 +127,9 @@
                           ],
                           "additionalProperties": false
                         },
-                        { "type": "null" }
+                        {
+                          "type": "null"
+                        }
                       ]
                     }
                   },
@@ -108,34 +142,50 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -146,7 +196,11 @@
       "get": {
         "operationId": "system-healthcheck",
         "tags": ["system"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -155,8 +209,13 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "ok": { "type": "boolean", "const": true },
-                    "ts": { "type": "string" }
+                    "ok": {
+                      "type": "boolean",
+                      "const": true
+                    },
+                    "ts": {
+                      "type": "string"
+                    }
                   },
                   "required": ["ok", "ts"],
                   "additionalProperties": false
@@ -167,34 +226,50 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -205,7 +280,11 @@
       "get": {
         "operationId": "settings-get",
         "tags": ["settings"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -214,12 +293,33 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "unitName": { "type": "string", "minLength": 1, "maxLength": 40 },
-                    "timezone": { "type": "string", "minLength": 1 },
-                    "temperatureUnit": { "type": "string", "enum": ["C", "F"] },
-                    "waterFullCm": { "type": "number", "minimum": 0, "maximum": 100 },
-                    "waterEmptyCm": { "type": "number", "minimum": 0, "maximum": 100 },
-                    "tankCapacityL": { "type": "number", "exclusiveMinimum": 0 },
+                    "unitName": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 40
+                    },
+                    "timezone": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "temperatureUnit": {
+                      "type": "string",
+                      "enum": ["C", "F"]
+                    },
+                    "waterFullCm": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    "waterEmptyCm": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    "tankCapacityL": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
                     "thinningReminderDays": {
                       "type": "integer",
                       "minimum": 0,
@@ -240,18 +340,32 @@
                       "minimum": 0,
                       "maximum": 9007199254740991
                     },
-                    "mqttUrl": { "type": ["string", "null"] },
-                    "mqttUsername": { "type": ["string", "null"] },
-                    "mqttTlsEnabled": { "type": "boolean" },
-                    "mqttTlsInsecure": { "type": "boolean" },
+                    "mqttUrl": {
+                      "type": ["string", "null"]
+                    },
+                    "mqttUsername": {
+                      "type": ["string", "null"]
+                    },
+                    "mqttTlsEnabled": {
+                      "type": "boolean"
+                    },
+                    "mqttTlsInsecure": {
+                      "type": "boolean"
+                    },
                     "captureIntervalMin": {
                       "type": "integer",
                       "minimum": 0,
                       "maximum": 9007199254740991
                     },
-                    "updatedAt": { "type": "string" },
-                    "hasApiKey": { "type": "boolean" },
-                    "hasMqttPassword": { "type": "boolean" }
+                    "updatedAt": {
+                      "type": "string"
+                    },
+                    "hasApiKey": {
+                      "type": "boolean"
+                    },
+                    "hasMqttPassword": {
+                      "type": "boolean"
+                    }
                   },
                   "required": [
                     "unitName",
@@ -281,34 +395,50 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -317,7 +447,11 @@
       "patch": {
         "operationId": "settings-update",
         "tags": ["settings"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -326,12 +460,33 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "unitName": { "type": "string", "minLength": 1, "maxLength": 40 },
-                  "timezone": { "type": "string", "minLength": 1 },
-                  "temperatureUnit": { "type": "string", "enum": ["C", "F"] },
-                  "waterFullCm": { "type": "number", "minimum": 0, "maximum": 100 },
-                  "waterEmptyCm": { "type": "number", "minimum": 0, "maximum": 100 },
-                  "tankCapacityL": { "type": "number", "exclusiveMinimum": 0 },
+                  "unitName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  },
+                  "timezone": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "temperatureUnit": {
+                    "type": "string",
+                    "enum": ["C", "F"]
+                  },
+                  "waterFullCm": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "waterEmptyCm": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "tankCapacityL": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
                   "thinningReminderDays": {
                     "type": "integer",
                     "minimum": 0,
@@ -352,12 +507,24 @@
                     "minimum": 0,
                     "maximum": 9007199254740991
                   },
-                  "apiKey": { "type": "string" },
-                  "mqttUrl": { "type": ["string", "null"] },
-                  "mqttUsername": { "type": ["string", "null"] },
-                  "mqttPassword": { "type": ["string", "null"] },
-                  "mqttTlsEnabled": { "type": "boolean" },
-                  "mqttTlsInsecure": { "type": "boolean" },
+                  "apiKey": {
+                    "type": "string"
+                  },
+                  "mqttUrl": {
+                    "type": ["string", "null"]
+                  },
+                  "mqttUsername": {
+                    "type": ["string", "null"]
+                  },
+                  "mqttPassword": {
+                    "type": ["string", "null"]
+                  },
+                  "mqttTlsEnabled": {
+                    "type": "boolean"
+                  },
+                  "mqttTlsInsecure": {
+                    "type": "boolean"
+                  },
                   "captureIntervalMin": {
                     "type": "integer",
                     "minimum": 0,
@@ -376,12 +543,33 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "unitName": { "type": "string", "minLength": 1, "maxLength": 40 },
-                    "timezone": { "type": "string", "minLength": 1 },
-                    "temperatureUnit": { "type": "string", "enum": ["C", "F"] },
-                    "waterFullCm": { "type": "number", "minimum": 0, "maximum": 100 },
-                    "waterEmptyCm": { "type": "number", "minimum": 0, "maximum": 100 },
-                    "tankCapacityL": { "type": "number", "exclusiveMinimum": 0 },
+                    "unitName": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 40
+                    },
+                    "timezone": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "temperatureUnit": {
+                      "type": "string",
+                      "enum": ["C", "F"]
+                    },
+                    "waterFullCm": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    "waterEmptyCm": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
+                    "tankCapacityL": {
+                      "type": "number",
+                      "exclusiveMinimum": 0
+                    },
                     "thinningReminderDays": {
                       "type": "integer",
                       "minimum": 0,
@@ -402,18 +590,32 @@
                       "minimum": 0,
                       "maximum": 9007199254740991
                     },
-                    "mqttUrl": { "type": ["string", "null"] },
-                    "mqttUsername": { "type": ["string", "null"] },
-                    "mqttTlsEnabled": { "type": "boolean" },
-                    "mqttTlsInsecure": { "type": "boolean" },
+                    "mqttUrl": {
+                      "type": ["string", "null"]
+                    },
+                    "mqttUsername": {
+                      "type": ["string", "null"]
+                    },
+                    "mqttTlsEnabled": {
+                      "type": "boolean"
+                    },
+                    "mqttTlsInsecure": {
+                      "type": "boolean"
+                    },
                     "captureIntervalMin": {
                       "type": "integer",
                       "minimum": 0,
                       "maximum": 9007199254740991
                     },
-                    "updatedAt": { "type": "string" },
-                    "hasApiKey": { "type": "boolean" },
-                    "hasMqttPassword": { "type": "boolean" }
+                    "updatedAt": {
+                      "type": "string"
+                    },
+                    "hasApiKey": {
+                      "type": "boolean"
+                    },
+                    "hasMqttPassword": {
+                      "type": "boolean"
+                    }
                   },
                   "required": [
                     "unitName",
@@ -443,34 +645,50 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -482,7 +700,11 @@
         "operationId": "sensors-latest",
         "summary": "Latest reading for every sensor",
         "tags": ["sensors"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -514,8 +736,12 @@
                         "format": "date-time",
                         "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
                       },
-                      "value": { "type": "number" },
-                      "unit": { "type": "string" },
+                      "value": {
+                        "type": "number"
+                      },
+                      "unit": {
+                        "type": "string"
+                      },
                       "quality": {
                         "default": "good",
                         "type": "string",
@@ -532,34 +758,50 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -570,7 +812,11 @@
       "get": {
         "operationId": "sensors-read",
         "tags": ["sensors"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -607,8 +853,12 @@
                       "format": "date-time",
                       "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
                     },
-                    "value": { "type": "number" },
-                    "unit": { "type": "string" },
+                    "value": {
+                      "type": "number"
+                    },
+                    "unit": {
+                      "type": "string"
+                    },
                     "quality": {
                       "default": "good",
                       "type": "string",
@@ -624,34 +874,190 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sensors/{id}/calibrate": {
+      "post": {
+        "operationId": "sensors-calibrate",
+        "summary": "Store a calibration point on a pH, EC or RTD probe (EZO)",
+        "description": "pH: `mid` first, then optional `low`/`high`. EC: `dry`, then `single` or `low`+`high`. RTD: `single`. `clear` wipes stored points. `value` is the reference solution in the reported unit (pH, mS/cm, °C).",
+        "tags": ["sensors"],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "air_temp",
+                "humidity",
+                "pcb_temp",
+                "water_distance",
+                "water_level_pct",
+                "pump_v",
+                "pump_a",
+                "pump_w",
+                "ph",
+                "ec",
+                "water_temp"
+              ]
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "point": {
+                    "type": "string",
+                    "enum": ["mid", "low", "high", "dry", "single", "clear"]
+                  },
+                  "value": {
+                    "type": "number"
+                  }
+                },
+                "required": ["point"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ts": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                    },
+                    "point": {
+                      "type": "string",
+                      "enum": ["mid", "low", "high", "dry", "single", "clear"]
+                    },
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "points": {
+                      "anyOf": [
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "detail": {
+                      "default": "",
+                      "type": "string"
+                    }
+                  },
+                  "required": ["ts", "point", "ok", "points", "detail"],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authorization not provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Insufficient access",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -663,7 +1069,11 @@
         "operationId": "telemetry-history",
         "summary": "Downsampled history for a sensor",
         "tags": ["sensors"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -689,12 +1099,22 @@
           {
             "in": "query",
             "name": "hours",
-            "schema": { "default": 24, "type": "number", "minimum": 1, "maximum": 2160 }
+            "schema": {
+              "default": 24,
+              "type": "number",
+              "minimum": 1,
+              "maximum": 2160
+            }
           },
           {
             "in": "query",
             "name": "maxPoints",
-            "schema": { "default": 300, "type": "integer", "minimum": 10, "maximum": 2000 }
+            "schema": {
+              "default": 300,
+              "type": "integer",
+              "minimum": 10,
+              "maximum": 2000
+            }
           }
         ],
         "responses": {
@@ -706,7 +1126,14 @@
                   "type": "array",
                   "items": {
                     "type": "object",
-                    "properties": { "ts": { "type": "string" }, "value": { "type": "number" } },
+                    "properties": {
+                      "ts": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "number"
+                      }
+                    },
                     "required": ["ts", "value"],
                     "additionalProperties": false
                   }
@@ -717,34 +1144,50 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -756,7 +1199,11 @@
         "operationId": "telemetry-lightHours",
         "summary": "Cumulative grow-light hours (LED aging)",
         "tags": ["sensors"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -765,9 +1212,15 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "hours": { "type": "number" },
-                    "ratedHours": { "type": "number" },
-                    "pctUsed": { "type": "number" }
+                    "hours": {
+                      "type": "number"
+                    },
+                    "ratedHours": {
+                      "type": "number"
+                    },
+                    "pctUsed": {
+                      "type": "number"
+                    }
                   },
                   "required": ["hours", "ratedHours", "pctUsed"],
                   "additionalProperties": false
@@ -778,34 +1231,50 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -816,7 +1285,11 @@
       "get": {
         "operationId": "light-get",
         "tags": ["light"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -827,26 +1300,43 @@
                     {
                       "type": "object",
                       "properties": {
-                        "on": { "type": "boolean" },
-                        "level": { "type": "number", "minimum": 0, "maximum": 100 },
+                        "on": {
+                          "type": "boolean"
+                        },
+                        "level": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100
+                        },
                         "since": {
                           "type": "string",
                           "format": "date-time",
                           "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
                         },
-                        "fault": { "default": null, "type": ["string", "null"] },
+                        "fault": {
+                          "default": null,
+                          "type": ["string", "null"]
+                        },
                         "remainingS": {
                           "default": null,
                           "anyOf": [
-                            { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
-                            { "type": "null" }
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            {
+                              "type": "null"
+                            }
                           ]
                         }
                       },
                       "required": ["on", "level", "since", "fault", "remainingS"],
                       "additionalProperties": false
                     },
-                    { "type": "null" }
+                    {
+                      "type": "null"
+                    }
                   ]
                 }
               }
@@ -855,34 +1345,50 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -892,7 +1398,11 @@
         "operationId": "light-set",
         "summary": "Turn the grow light on/off and set brightness 0–100",
         "tags": ["light"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -901,8 +1411,14 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "on": { "type": "boolean" },
-                  "level": { "type": "number", "minimum": 0, "maximum": 100 }
+                  "on": {
+                    "type": "boolean"
+                  },
+                  "level": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100
+                  }
                 }
               }
             }
@@ -916,19 +1432,34 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "on": { "type": "boolean" },
-                    "level": { "type": "number", "minimum": 0, "maximum": 100 },
+                    "on": {
+                      "type": "boolean"
+                    },
+                    "level": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
                     "since": {
                       "type": "string",
                       "format": "date-time",
                       "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
                     },
-                    "fault": { "default": null, "type": ["string", "null"] },
+                    "fault": {
+                      "default": null,
+                      "type": ["string", "null"]
+                    },
                     "remainingS": {
                       "default": null,
                       "anyOf": [
-                        { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
-                        { "type": "null" }
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        {
+                          "type": "null"
+                        }
                       ]
                     }
                   },
@@ -941,28 +1472,40 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -973,7 +1516,11 @@
       "get": {
         "operationId": "pump-get",
         "tags": ["pump"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -984,26 +1531,43 @@
                     {
                       "type": "object",
                       "properties": {
-                        "on": { "type": "boolean" },
-                        "level": { "type": "number", "minimum": 0, "maximum": 100 },
+                        "on": {
+                          "type": "boolean"
+                        },
+                        "level": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100
+                        },
                         "since": {
                           "type": "string",
                           "format": "date-time",
                           "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
                         },
-                        "fault": { "default": null, "type": ["string", "null"] },
+                        "fault": {
+                          "default": null,
+                          "type": ["string", "null"]
+                        },
                         "remainingS": {
                           "default": null,
                           "anyOf": [
-                            { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
-                            { "type": "null" }
+                            {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 9007199254740991
+                            },
+                            {
+                              "type": "null"
+                            }
                           ]
                         }
                       },
                       "required": ["on", "level", "since", "fault", "remainingS"],
                       "additionalProperties": false
                     },
-                    { "type": "null" }
+                    {
+                      "type": "null"
+                    }
                   ]
                 }
               }
@@ -1012,34 +1576,50 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -1049,7 +1629,11 @@
         "operationId": "pump-set",
         "summary": "Run the pump; every run is bounded by the HAL max-run limit and the dry-run interlock",
         "tags": ["pump"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1058,8 +1642,14 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "on": { "type": "boolean" },
-                  "level": { "type": "number", "minimum": 0, "maximum": 100 },
+                  "on": {
+                    "type": "boolean"
+                  },
+                  "level": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
                   "durationS": {
                     "type": "integer",
                     "exclusiveMinimum": 0,
@@ -1078,19 +1668,34 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "on": { "type": "boolean" },
-                    "level": { "type": "number", "minimum": 0, "maximum": 100 },
+                    "on": {
+                      "type": "boolean"
+                    },
+                    "level": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
                     "since": {
                       "type": "string",
                       "format": "date-time",
                       "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
                     },
-                    "fault": { "default": null, "type": ["string", "null"] },
+                    "fault": {
+                      "default": null,
+                      "type": ["string", "null"]
+                    },
                     "remainingS": {
                       "default": null,
                       "anyOf": [
-                        { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
-                        { "type": "null" }
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        {
+                          "type": "null"
+                        }
                       ]
                     }
                   },
@@ -1103,28 +1708,40 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -1136,7 +1753,11 @@
         "operationId": "pump-runOnce",
         "summary": "Run the pump for N seconds at a speed",
         "tags": ["pump"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1150,7 +1771,11 @@
                     "exclusiveMinimum": 0,
                     "maximum": 9007199254740991
                   },
-                  "level": { "type": "number", "minimum": 1, "maximum": 100 }
+                  "level": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 100
+                  }
                 },
                 "required": ["durationS"]
               }
@@ -1165,19 +1790,34 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "on": { "type": "boolean" },
-                    "level": { "type": "number", "minimum": 0, "maximum": 100 },
+                    "on": {
+                      "type": "boolean"
+                    },
+                    "level": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
                     "since": {
                       "type": "string",
                       "format": "date-time",
                       "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
                     },
-                    "fault": { "default": null, "type": ["string", "null"] },
+                    "fault": {
+                      "default": null,
+                      "type": ["string", "null"]
+                    },
                     "remainingS": {
                       "default": null,
                       "anyOf": [
-                        { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
-                        { "type": "null" }
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        {
+                          "type": "null"
+                        }
                       ]
                     }
                   },
@@ -1190,28 +1830,40 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -1222,7 +1874,11 @@
       "post": {
         "operationId": "pump-stop",
         "tags": ["pump"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -1231,19 +1887,34 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "on": { "type": "boolean" },
-                    "level": { "type": "number", "minimum": 0, "maximum": 100 },
+                    "on": {
+                      "type": "boolean"
+                    },
+                    "level": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 100
+                    },
                     "since": {
                       "type": "string",
                       "format": "date-time",
                       "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
                     },
-                    "fault": { "default": null, "type": ["string", "null"] },
+                    "fault": {
+                      "default": null,
+                      "type": ["string", "null"]
+                    },
                     "remainingS": {
                       "default": null,
                       "anyOf": [
-                        { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
-                        { "type": "null" }
+                        {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 9007199254740991
+                        },
+                        {
+                          "type": "null"
+                        }
                       ]
                     }
                   },
@@ -1257,21 +1928,29 @@
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -1282,7 +1961,11 @@
       "get": {
         "operationId": "schedules-list",
         "tags": ["schedules"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -1293,11 +1976,22 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "id": { "type": "string" },
-                      "kind": { "type": "string", "enum": ["light", "pump"] },
-                      "name": { "type": "string" },
-                      "enabled": { "type": "boolean" },
-                      "days": { "type": "number" },
+                      "id": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": ["light", "pump"]
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "enabled": {
+                        "type": "boolean"
+                      },
+                      "days": {
+                        "type": "number"
+                      },
                       "spec": {
                         "anyOf": [
                           {
@@ -1309,8 +2003,16 @@
                                 "items": {
                                   "type": "object",
                                   "properties": {
-                                    "minute": { "type": "integer", "minimum": 0, "maximum": 1439 },
-                                    "level": { "type": "number", "minimum": 0, "maximum": 100 }
+                                    "minute": {
+                                      "type": "integer",
+                                      "minimum": 0,
+                                      "maximum": 1439
+                                    },
+                                    "level": {
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 100
+                                    }
                                   },
                                   "required": ["minute", "level"],
                                   "additionalProperties": false
@@ -1323,21 +2025,33 @@
                           {
                             "type": "object",
                             "properties": {
-                              "minute": { "type": "integer", "minimum": 0, "maximum": 1439 },
+                              "minute": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 1439
+                              },
                               "durationS": {
                                 "type": "integer",
                                 "exclusiveMinimum": 0,
                                 "maximum": 3600
                               },
-                              "level": { "type": "number", "minimum": 1, "maximum": 100 }
+                              "level": {
+                                "type": "number",
+                                "minimum": 1,
+                                "maximum": 100
+                              }
                             },
                             "required": ["minute", "durationS"],
                             "additionalProperties": false
                           }
                         ]
                       },
-                      "createdAt": { "type": "string" },
-                      "updatedAt": { "type": "string" }
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string"
+                      }
                     },
                     "required": [
                       "id",
@@ -1358,34 +2072,50 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -1397,12 +2127,19 @@
         "operationId": "schedules-upsert",
         "summary": "Create or replace a light curve or pump cycle",
         "tags": ["schedules"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
             "name": "id",
-            "schema": { "type": "string", "minLength": 1 },
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
             "required": true
           }
         ],
@@ -1413,10 +2150,22 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "kind": { "type": "string", "enum": ["light", "pump"] },
-                  "name": { "type": "string", "minLength": 1 },
-                  "enabled": { "type": "boolean" },
-                  "days": { "type": "integer", "minimum": 0, "maximum": 127 },
+                  "kind": {
+                    "type": "string",
+                    "enum": ["light", "pump"]
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "enabled": {
+                    "type": "boolean"
+                  },
+                  "days": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 127
+                  },
                   "spec": {
                     "anyOf": [
                       {
@@ -1428,8 +2177,16 @@
                             "items": {
                               "type": "object",
                               "properties": {
-                                "minute": { "type": "integer", "minimum": 0, "maximum": 1439 },
-                                "level": { "type": "number", "minimum": 0, "maximum": 100 }
+                                "minute": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 1439
+                                },
+                                "level": {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 100
+                                }
                               },
                               "required": ["minute", "level"]
                             }
@@ -1440,13 +2197,21 @@
                       {
                         "type": "object",
                         "properties": {
-                          "minute": { "type": "integer", "minimum": 0, "maximum": 1439 },
+                          "minute": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 1439
+                          },
                           "durationS": {
                             "type": "integer",
                             "exclusiveMinimum": 0,
                             "maximum": 3600
                           },
-                          "level": { "type": "number", "minimum": 1, "maximum": 100 }
+                          "level": {
+                            "type": "number",
+                            "minimum": 1,
+                            "maximum": 100
+                          }
                         },
                         "required": ["minute", "durationS"]
                       }
@@ -1466,11 +2231,22 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": { "type": "string" },
-                    "kind": { "type": "string", "enum": ["light", "pump"] },
-                    "name": { "type": "string" },
-                    "enabled": { "type": "boolean" },
-                    "days": { "type": "number" },
+                    "id": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": ["light", "pump"]
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "enabled": {
+                      "type": "boolean"
+                    },
+                    "days": {
+                      "type": "number"
+                    },
                     "spec": {
                       "anyOf": [
                         {
@@ -1482,8 +2258,16 @@
                               "items": {
                                 "type": "object",
                                 "properties": {
-                                  "minute": { "type": "integer", "minimum": 0, "maximum": 1439 },
-                                  "level": { "type": "number", "minimum": 0, "maximum": 100 }
+                                  "minute": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 1439
+                                  },
+                                  "level": {
+                                    "type": "number",
+                                    "minimum": 0,
+                                    "maximum": 100
+                                  }
                                 },
                                 "required": ["minute", "level"],
                                 "additionalProperties": false
@@ -1496,21 +2280,33 @@
                         {
                           "type": "object",
                           "properties": {
-                            "minute": { "type": "integer", "minimum": 0, "maximum": 1439 },
+                            "minute": {
+                              "type": "integer",
+                              "minimum": 0,
+                              "maximum": 1439
+                            },
                             "durationS": {
                               "type": "integer",
                               "exclusiveMinimum": 0,
                               "maximum": 3600
                             },
-                            "level": { "type": "number", "minimum": 1, "maximum": 100 }
+                            "level": {
+                              "type": "number",
+                              "minimum": 1,
+                              "maximum": 100
+                            }
                           },
                           "required": ["minute", "durationS"],
                           "additionalProperties": false
                         }
                       ]
                     },
-                    "createdAt": { "type": "string" },
-                    "updatedAt": { "type": "string" }
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
                   },
                   "required": [
                     "id",
@@ -1530,34 +2326,50 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -1566,9 +2378,20 @@
       "delete": {
         "operationId": "schedules-remove",
         "tags": ["schedules"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "parameters": [
-          { "in": "path", "name": "id", "schema": { "type": "string" }, "required": true }
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
         ],
         "responses": {
           "200": {
@@ -1577,7 +2400,11 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "properties": { "removed": { "type": "boolean" } },
+                  "properties": {
+                    "removed": {
+                      "type": "boolean"
+                    }
+                  },
                   "required": ["removed"],
                   "additionalProperties": false
                 }
@@ -1587,34 +2414,50 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -1625,7 +2468,11 @@
       "get": {
         "operationId": "schedules-recentRuns",
         "tags": ["schedules"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -1636,10 +2483,18 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "scheduleId": { "type": "string" },
-                      "key": { "type": "string" },
-                      "firedAt": { "type": "string" },
-                      "result": { "type": "string" }
+                      "scheduleId": {
+                        "type": "string"
+                      },
+                      "key": {
+                        "type": "string"
+                      },
+                      "firedAt": {
+                        "type": "string"
+                      },
+                      "result": {
+                        "type": "string"
+                      }
                     },
                     "required": ["scheduleId", "key", "firedAt", "result"],
                     "additionalProperties": false
@@ -1651,34 +2506,50 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -1689,7 +2560,11 @@
       "get": {
         "operationId": "grow-current",
         "tags": ["grow"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -1703,23 +2578,40 @@
                         {
                           "type": "object",
                           "properties": {
-                            "id": { "type": "string" },
-                            "startedAt": { "type": "string" },
-                            "endedAt": { "type": ["string", "null"] },
+                            "id": {
+                              "type": "string"
+                            },
+                            "startedAt": {
+                              "type": "string"
+                            },
+                            "endedAt": {
+                              "type": ["string", "null"]
+                            },
                             "stage": {
                               "type": "string",
                               "enum": ["germination", "seedling", "vegetative", "harvest", "ended"]
                             },
-                            "notes": { "type": "string" },
-                            "issued": { "type": "array", "items": { "type": "string" } }
+                            "notes": {
+                              "type": "string"
+                            },
+                            "issued": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            }
                           },
                           "required": ["id", "startedAt", "endedAt", "stage", "notes", "issued"],
                           "additionalProperties": false
                         },
-                        { "type": "null" }
+                        {
+                          "type": "null"
+                        }
                       ]
                     },
-                    "day": { "type": ["number", "null"] }
+                    "day": {
+                      "type": ["number", "null"]
+                    }
                   },
                   "required": ["cycle", "day"],
                   "additionalProperties": false
@@ -1730,34 +2622,50 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -1769,7 +2677,11 @@
         "operationId": "grow-start",
         "summary": "Start a new grow cycle (ends any open one)",
         "tags": ["grow"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1777,7 +2689,12 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "properties": { "notes": { "default": "", "type": "string" } }
+                "properties": {
+                  "notes": {
+                    "default": "",
+                    "type": "string"
+                  }
+                }
               }
             }
           }
@@ -1790,15 +2707,28 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": { "type": "string" },
-                    "startedAt": { "type": "string" },
-                    "endedAt": { "type": ["string", "null"] },
+                    "id": {
+                      "type": "string"
+                    },
+                    "startedAt": {
+                      "type": "string"
+                    },
+                    "endedAt": {
+                      "type": ["string", "null"]
+                    },
                     "stage": {
                       "type": "string",
                       "enum": ["germination", "seedling", "vegetative", "harvest", "ended"]
                     },
-                    "notes": { "type": "string" },
-                    "issued": { "type": "array", "items": { "type": "string" } }
+                    "notes": {
+                      "type": "string"
+                    },
+                    "issued": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
                   },
                   "required": ["id", "startedAt", "endedAt", "stage", "notes", "issued"],
                   "additionalProperties": false
@@ -1809,28 +2739,40 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -1841,7 +2783,11 @@
       "post": {
         "operationId": "grow-setStage",
         "tags": ["grow"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1870,20 +2816,35 @@
                     {
                       "type": "object",
                       "properties": {
-                        "id": { "type": "string" },
-                        "startedAt": { "type": "string" },
-                        "endedAt": { "type": ["string", "null"] },
+                        "id": {
+                          "type": "string"
+                        },
+                        "startedAt": {
+                          "type": "string"
+                        },
+                        "endedAt": {
+                          "type": ["string", "null"]
+                        },
                         "stage": {
                           "type": "string",
                           "enum": ["germination", "seedling", "vegetative", "harvest", "ended"]
                         },
-                        "notes": { "type": "string" },
-                        "issued": { "type": "array", "items": { "type": "string" } }
+                        "notes": {
+                          "type": "string"
+                        },
+                        "issued": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
                       },
                       "required": ["id", "startedAt", "endedAt", "stage", "notes", "issued"],
                       "additionalProperties": false
                     },
-                    { "type": "null" }
+                    {
+                      "type": "null"
+                    }
                   ]
                 }
               }
@@ -1892,28 +2853,40 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -1924,7 +2897,11 @@
       "post": {
         "operationId": "grow-end",
         "tags": ["grow"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -1935,20 +2912,35 @@
                     {
                       "type": "object",
                       "properties": {
-                        "id": { "type": "string" },
-                        "startedAt": { "type": "string" },
-                        "endedAt": { "type": ["string", "null"] },
+                        "id": {
+                          "type": "string"
+                        },
+                        "startedAt": {
+                          "type": "string"
+                        },
+                        "endedAt": {
+                          "type": ["string", "null"]
+                        },
                         "stage": {
                           "type": "string",
                           "enum": ["germination", "seedling", "vegetative", "harvest", "ended"]
                         },
-                        "notes": { "type": "string" },
-                        "issued": { "type": "array", "items": { "type": "string" } }
+                        "notes": {
+                          "type": "string"
+                        },
+                        "issued": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
                       },
                       "required": ["id", "startedAt", "endedAt", "stage", "notes", "issued"],
                       "additionalProperties": false
                     },
-                    { "type": "null" }
+                    {
+                      "type": "null"
+                    }
                   ]
                 }
               }
@@ -1958,21 +2950,29 @@
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -1983,7 +2983,11 @@
       "get": {
         "operationId": "grow-history",
         "tags": ["grow"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -1994,15 +2998,28 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "id": { "type": "string" },
-                      "startedAt": { "type": "string" },
-                      "endedAt": { "type": ["string", "null"] },
+                      "id": {
+                        "type": "string"
+                      },
+                      "startedAt": {
+                        "type": "string"
+                      },
+                      "endedAt": {
+                        "type": ["string", "null"]
+                      },
                       "stage": {
                         "type": "string",
                         "enum": ["germination", "seedling", "vegetative", "harvest", "ended"]
                       },
-                      "notes": { "type": "string" },
-                      "issued": { "type": "array", "items": { "type": "string" } }
+                      "notes": {
+                        "type": "string"
+                      },
+                      "issued": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
                     },
                     "required": ["id", "startedAt", "endedAt", "stage", "notes", "issued"],
                     "additionalProperties": false
@@ -2014,34 +3031,50 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -2052,7 +3085,11 @@
       "get": {
         "operationId": "grow-pods",
         "tags": ["grow"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -2063,15 +3100,25 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "slot": { "type": "number" },
-                      "plant": { "type": ["string", "null"] },
-                      "plantedAt": { "type": ["string", "null"] },
+                      "slot": {
+                        "type": "number"
+                      },
+                      "plant": {
+                        "type": ["string", "null"]
+                      },
+                      "plantedAt": {
+                        "type": ["string", "null"]
+                      },
                       "status": {
                         "type": "string",
                         "enum": ["empty", "seeded", "growing", "harvest", "attention"]
                       },
-                      "notes": { "type": "string" },
-                      "updatedAt": { "type": "string" }
+                      "notes": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string"
+                      }
                     },
                     "required": ["slot", "plant", "plantedAt", "status", "notes", "updatedAt"],
                     "additionalProperties": false
@@ -2083,34 +3130,50 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -2121,12 +3184,20 @@
       "patch": {
         "operationId": "grow-updatePod",
         "tags": ["grow"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
             "name": "slot",
-            "schema": { "type": "integer", "minimum": 1, "maximum": 60 },
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 60
+            },
             "required": true
           }
         ],
@@ -2137,13 +3208,19 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "plant": { "type": ["string", "null"] },
-                  "plantedAt": { "type": ["string", "null"] },
+                  "plant": {
+                    "type": ["string", "null"]
+                  },
+                  "plantedAt": {
+                    "type": ["string", "null"]
+                  },
                   "status": {
                     "type": "string",
                     "enum": ["empty", "seeded", "growing", "harvest", "attention"]
                   },
-                  "notes": { "type": "string" }
+                  "notes": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -2157,15 +3234,25 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "slot": { "type": "number" },
-                    "plant": { "type": ["string", "null"] },
-                    "plantedAt": { "type": ["string", "null"] },
+                    "slot": {
+                      "type": "number"
+                    },
+                    "plant": {
+                      "type": ["string", "null"]
+                    },
+                    "plantedAt": {
+                      "type": ["string", "null"]
+                    },
                     "status": {
                       "type": "string",
                       "enum": ["empty", "seeded", "growing", "harvest", "attention"]
                     },
-                    "notes": { "type": "string" },
-                    "updatedAt": { "type": "string" }
+                    "notes": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    }
                   },
                   "required": ["slot", "plant", "plantedAt", "status", "notes", "updatedAt"],
                   "additionalProperties": false
@@ -2176,34 +3263,50 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -2214,17 +3317,29 @@
       "get": {
         "operationId": "camera-list",
         "tags": ["camera"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "parameters": [
           {
             "in": "query",
             "name": "camera",
-            "schema": { "type": "string", "enum": ["upper", "lower"] }
+            "schema": {
+              "type": "string",
+              "enum": ["upper", "lower"]
+            }
           },
           {
             "in": "query",
             "name": "limit",
-            "schema": { "default": 100, "type": "integer", "minimum": 1, "maximum": 1000 }
+            "schema": {
+              "default": 100,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000
+            }
           }
         ],
         "responses": {
@@ -2237,12 +3352,25 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "id": { "type": "string" },
-                      "camera": { "type": "string", "enum": ["upper", "lower"] },
-                      "ts": { "type": "string" },
-                      "path": { "type": "string" },
-                      "bytes": { "type": "number" },
-                      "url": { "type": "string" }
+                      "id": {
+                        "type": "string"
+                      },
+                      "camera": {
+                        "type": "string",
+                        "enum": ["upper", "lower"]
+                      },
+                      "ts": {
+                        "type": "string"
+                      },
+                      "path": {
+                        "type": "string"
+                      },
+                      "bytes": {
+                        "type": "number"
+                      },
+                      "url": {
+                        "type": "string"
+                      }
                     },
                     "required": ["id", "camera", "ts", "path", "bytes", "url"],
                     "additionalProperties": false
@@ -2254,34 +3382,50 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -2293,12 +3437,19 @@
         "operationId": "camera-capture",
         "summary": "Take a still now",
         "tags": ["camera"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
             "name": "camera",
-            "schema": { "type": "string", "enum": ["upper", "lower"] },
+            "schema": {
+              "type": "string",
+              "enum": ["upper", "lower"]
+            },
             "required": true
           }
         ],
@@ -2310,12 +3461,25 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": { "type": "string" },
-                    "camera": { "type": "string", "enum": ["upper", "lower"] },
-                    "ts": { "type": "string" },
-                    "path": { "type": "string" },
-                    "bytes": { "type": "number" },
-                    "url": { "type": "string" }
+                    "id": {
+                      "type": "string"
+                    },
+                    "camera": {
+                      "type": "string",
+                      "enum": ["upper", "lower"]
+                    },
+                    "ts": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "bytes": {
+                      "type": "number"
+                    },
+                    "url": {
+                      "type": "string"
+                    }
                   },
                   "required": ["id", "camera", "ts", "path", "bytes", "url"],
                   "additionalProperties": false
@@ -2326,28 +3490,40 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -2359,7 +3535,11 @@
         "operationId": "vision-podTrends",
         "summary": "Per-pod green-area trend from camera stills (classical CV)",
         "tags": ["vision"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -2370,14 +3550,22 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "slot": { "type": "number" },
-                      "green": { "type": ["number", "null"] },
+                      "slot": {
+                        "type": "number"
+                      },
+                      "green": {
+                        "type": ["number", "null"]
+                      },
                       "verdict": {
                         "type": "string",
                         "enum": ["growing", "stalled", "declining", "unknown"]
                       },
-                      "slope": { "type": "number" },
-                      "samples": { "type": "number" }
+                      "slope": {
+                        "type": "number"
+                      },
+                      "samples": {
+                        "type": "number"
+                      }
                     },
                     "required": ["slot", "green", "verdict", "slope", "samples"],
                     "additionalProperties": false
@@ -2389,34 +3577,50 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -2427,12 +3631,20 @@
       "get": {
         "operationId": "vision-podSeries",
         "tags": ["vision"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
             "name": "slot",
-            "schema": { "type": "integer", "minimum": 1, "maximum": 60 },
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 60
+            },
             "required": true
           }
         ],
@@ -2446,9 +3658,15 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "ts": { "type": "string" },
-                      "green": { "type": "number" },
-                      "captureId": { "type": "string" }
+                      "ts": {
+                        "type": "string"
+                      },
+                      "green": {
+                        "type": "number"
+                      },
+                      "captureId": {
+                        "type": "string"
+                      }
                     },
                     "required": ["ts", "green", "captureId"],
                     "additionalProperties": false
@@ -2460,34 +3678,50 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -2498,9 +3732,20 @@
       "get": {
         "operationId": "alerts-list",
         "tags": ["alerts"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "parameters": [
-          { "in": "query", "name": "activeOnly", "schema": { "default": true, "type": "boolean" } }
+          {
+            "in": "query",
+            "name": "activeOnly",
+            "schema": {
+              "default": true,
+              "type": "boolean"
+            }
+          }
         ],
         "responses": {
           "200": {
@@ -2512,14 +3757,30 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "id": { "type": "number" },
-                      "kind": { "type": "string" },
-                      "active": { "type": "boolean" },
-                      "detail": { "type": "string" },
-                      "raisedAt": { "type": "string" },
-                      "clearedAt": { "type": ["string", "null"] },
-                      "acknowledgedAt": { "type": ["string", "null"] },
-                      "dismissedAt": { "type": ["string", "null"] }
+                      "id": {
+                        "type": "number"
+                      },
+                      "kind": {
+                        "type": "string"
+                      },
+                      "active": {
+                        "type": "boolean"
+                      },
+                      "detail": {
+                        "type": "string"
+                      },
+                      "raisedAt": {
+                        "type": "string"
+                      },
+                      "clearedAt": {
+                        "type": ["string", "null"]
+                      },
+                      "acknowledgedAt": {
+                        "type": ["string", "null"]
+                      },
+                      "dismissedAt": {
+                        "type": ["string", "null"]
+                      }
                     },
                     "required": [
                       "id",
@@ -2540,34 +3801,50 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.NOT_FOUND" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.NOT_FOUND"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -2579,7 +3856,11 @@
         "operationId": "alerts-acknowledge",
         "summary": "Acknowledge an alert; clears a latched hardware fault so the actuator may re-enable",
         "tags": ["alerts"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -2602,14 +3883,30 @@
                     {
                       "type": "object",
                       "properties": {
-                        "id": { "type": "number" },
-                        "kind": { "type": "string" },
-                        "active": { "type": "boolean" },
-                        "detail": { "type": "string" },
-                        "raisedAt": { "type": "string" },
-                        "clearedAt": { "type": ["string", "null"] },
-                        "acknowledgedAt": { "type": ["string", "null"] },
-                        "dismissedAt": { "type": ["string", "null"] }
+                        "id": {
+                          "type": "number"
+                        },
+                        "kind": {
+                          "type": "string"
+                        },
+                        "active": {
+                          "type": "boolean"
+                        },
+                        "detail": {
+                          "type": "string"
+                        },
+                        "raisedAt": {
+                          "type": "string"
+                        },
+                        "clearedAt": {
+                          "type": ["string", "null"]
+                        },
+                        "acknowledgedAt": {
+                          "type": ["string", "null"]
+                        },
+                        "dismissedAt": {
+                          "type": ["string", "null"]
+                        }
                       },
                       "required": [
                         "id",
@@ -2623,7 +3920,9 @@
                       ],
                       "additionalProperties": false
                     },
-                    { "type": "null" }
+                    {
+                      "type": "null"
+                    }
                   ]
                 }
               }
@@ -2632,28 +3931,40 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -2664,7 +3975,11 @@
       "post": {
         "operationId": "alerts-dismiss",
         "tags": ["alerts"],
-        "security": [{ "Authorization": [] }],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -2687,14 +4002,30 @@
                     {
                       "type": "object",
                       "properties": {
-                        "id": { "type": "number" },
-                        "kind": { "type": "string" },
-                        "active": { "type": "boolean" },
-                        "detail": { "type": "string" },
-                        "raisedAt": { "type": "string" },
-                        "clearedAt": { "type": ["string", "null"] },
-                        "acknowledgedAt": { "type": ["string", "null"] },
-                        "dismissedAt": { "type": ["string", "null"] }
+                        "id": {
+                          "type": "number"
+                        },
+                        "kind": {
+                          "type": "string"
+                        },
+                        "active": {
+                          "type": "boolean"
+                        },
+                        "detail": {
+                          "type": "string"
+                        },
+                        "raisedAt": {
+                          "type": "string"
+                        },
+                        "clearedAt": {
+                          "type": ["string", "null"]
+                        },
+                        "acknowledgedAt": {
+                          "type": ["string", "null"]
+                        },
+                        "dismissedAt": {
+                          "type": ["string", "null"]
+                        }
                       },
                       "required": [
                         "id",
@@ -2708,7 +4039,9 @@
                       ],
                       "additionalProperties": false
                     },
-                    { "type": "null" }
+                    {
+                      "type": "null"
+                    }
                   ]
                 }
               }
@@ -2717,28 +4050,40 @@
           "400": {
             "description": "Invalid input data",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.BAD_REQUEST" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.BAD_REQUEST"
+                }
+              }
             }
           },
           "401": {
             "description": "Authorization not provided",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.UNAUTHORIZED" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.UNAUTHORIZED"
+                }
               }
             }
           },
           "403": {
             "description": "Insufficient access",
             "content": {
-              "application/json": { "schema": { "$ref": "#/components/schemas/error.FORBIDDEN" } }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error.FORBIDDEN"
+                }
+              }
             }
           },
           "500": {
             "description": "Internal server error",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR" }
+                "schema": {
+                  "$ref": "#/components/schemas/error.INTERNAL_SERVER_ERROR"
+                }
               }
             }
           }
@@ -2756,14 +4101,22 @@
             "description": "The error message",
             "example": "Invalid input data"
           },
-          "code": { "type": "string", "description": "The error code", "example": "BAD_REQUEST" },
+          "code": {
+            "type": "string",
+            "description": "The error code",
+            "example": "BAD_REQUEST"
+          },
           "issues": {
             "description": "An array of issues that were responsible for the error",
             "example": [],
             "type": "array",
             "items": {
               "type": "object",
-              "properties": { "message": { "type": "string" } },
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
               "required": ["message"],
               "additionalProperties": false
             }
@@ -2773,7 +4126,11 @@
         "additionalProperties": false,
         "title": "Invalid input data error (400)",
         "description": "The error information",
-        "example": { "code": "BAD_REQUEST", "message": "Invalid input data", "issues": [] }
+        "example": {
+          "code": "BAD_REQUEST",
+          "message": "Invalid input data",
+          "issues": []
+        }
       },
       "error.UNAUTHORIZED": {
         "type": "object",
@@ -2783,14 +4140,22 @@
             "description": "The error message",
             "example": "Authorization not provided"
           },
-          "code": { "type": "string", "description": "The error code", "example": "UNAUTHORIZED" },
+          "code": {
+            "type": "string",
+            "description": "The error code",
+            "example": "UNAUTHORIZED"
+          },
           "issues": {
             "description": "An array of issues that were responsible for the error",
             "example": [],
             "type": "array",
             "items": {
               "type": "object",
-              "properties": { "message": { "type": "string" } },
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
               "required": ["message"],
               "additionalProperties": false
             }
@@ -2800,7 +4165,11 @@
         "additionalProperties": false,
         "title": "Authorization not provided error (401)",
         "description": "The error information",
-        "example": { "code": "UNAUTHORIZED", "message": "Authorization not provided", "issues": [] }
+        "example": {
+          "code": "UNAUTHORIZED",
+          "message": "Authorization not provided",
+          "issues": []
+        }
       },
       "error.FORBIDDEN": {
         "type": "object",
@@ -2810,14 +4179,22 @@
             "description": "The error message",
             "example": "Insufficient access"
           },
-          "code": { "type": "string", "description": "The error code", "example": "FORBIDDEN" },
+          "code": {
+            "type": "string",
+            "description": "The error code",
+            "example": "FORBIDDEN"
+          },
           "issues": {
             "description": "An array of issues that were responsible for the error",
             "example": [],
             "type": "array",
             "items": {
               "type": "object",
-              "properties": { "message": { "type": "string" } },
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
               "required": ["message"],
               "additionalProperties": false
             }
@@ -2827,7 +4204,11 @@
         "additionalProperties": false,
         "title": "Insufficient access error (403)",
         "description": "The error information",
-        "example": { "code": "FORBIDDEN", "message": "Insufficient access", "issues": [] }
+        "example": {
+          "code": "FORBIDDEN",
+          "message": "Insufficient access",
+          "issues": []
+        }
       },
       "error.NOT_FOUND": {
         "type": "object",
@@ -2837,14 +4218,22 @@
             "description": "The error message",
             "example": "Not found"
           },
-          "code": { "type": "string", "description": "The error code", "example": "NOT_FOUND" },
+          "code": {
+            "type": "string",
+            "description": "The error code",
+            "example": "NOT_FOUND"
+          },
           "issues": {
             "description": "An array of issues that were responsible for the error",
             "example": [],
             "type": "array",
             "items": {
               "type": "object",
-              "properties": { "message": { "type": "string" } },
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
               "required": ["message"],
               "additionalProperties": false
             }
@@ -2854,7 +4243,11 @@
         "additionalProperties": false,
         "title": "Not found error (404)",
         "description": "The error information",
-        "example": { "code": "NOT_FOUND", "message": "Not found", "issues": [] }
+        "example": {
+          "code": "NOT_FOUND",
+          "message": "Not found",
+          "issues": []
+        }
       },
       "error.INTERNAL_SERVER_ERROR": {
         "type": "object",
@@ -2875,7 +4268,11 @@
             "type": "array",
             "items": {
               "type": "object",
-              "properties": { "message": { "type": "string" } },
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              },
               "required": ["message"],
               "additionalProperties": false
             }
@@ -2892,6 +4289,11 @@
         }
       }
     },
-    "securitySchemes": { "Authorization": { "type": "http", "scheme": "bearer" } }
+    "securitySchemes": {
+      "Authorization": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
   }
 }
