@@ -16,4 +16,6 @@ export default {
   '0015-event-bus': '0015 Event bus and mutation broadcast',
   '0016-shared-design-language': '0016 Shared design language with sleepypod',
   '0017-ios-client': "0017 iOS client — reuse sleepypod's transport, not its app",
+  '0018-runtime-sensor-inventory': '0018 Runtime sensor inventory',
+  '0019-pluggable-capture-analysis': '0019 Pluggable capture analysis',
 }
