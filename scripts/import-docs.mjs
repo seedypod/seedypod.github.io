@@ -29,6 +29,7 @@ const pages = {
   'SENSORS.md': 'core/sensors',
   'ANALYSIS.md': 'core/analysis',
   'MAINTENANCE.md': 'core/maintenance',
+  'AUTOPILOT.md': 'core/autopilot',
   ...Object.fromEntries(adrs.map((f) => [`adr/${f}`, `developers/adr/${f.replace(/\.md$/, '')}`])),
 }
 const routes = {
