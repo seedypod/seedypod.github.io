@@ -15,4 +15,5 @@ export default {
   '0014-auto-dosing-safety': '0014 Auto-dosing safety',
   '0015-event-bus': '0015 Event bus and mutation broadcast',
   '0016-shared-design-language': '0016 Shared design language with sleepypod',
+  '0017-ios-client': "0017 iOS client — reuse sleepypod's transport, not its app",
 }
