@@ -203,6 +203,9 @@ export default function Home() {
           <a href="https://github.com/seedypod">
             Made in the open <LinkArrow direction="external" />
           </a>
+          <a href="https://sleepypod.github.io/">
+            Sibling project: sleepypod <LinkArrow direction="external" />
+          </a>
           <Link href="/core/privacy/">Privacy</Link>
         </nav>
       </footer>
