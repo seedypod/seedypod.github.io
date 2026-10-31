@@ -74,6 +74,16 @@ Open **Settings** in the web UI and set:
 
 Then add a [light curve and a watering schedule](/core/schedules/).
 
+## Change Wi-Fi
+
+No keyboard needed. Hold the unit's button for **10 seconds**. At 1 second it acknowledges any latched fault; keep holding. The unit then opens an open hotspot named `seedypod-setup-xxxx` for 15 minutes:
+
+1. Join `seedypod-setup-xxxx` from a phone.
+2. Open `http://10.42.0.1:3000/wifi`, pick your network, enter its password, and press **Join**.
+3. The unit leaves the hotspot and joins your network. Rejoin your network on the phone and open `http://seedypod.local:3000/`.
+
+If the password was wrong, the hotspot comes back and the Wi-Fi screen says why. On your network, **Settings → Wi-Fi** does the same without the button. The hotspot is open because pressing the button already proves someone is at the unit, and it closes itself after 15 minutes.
+
 ## Uninstall
 
 ```sh
@@ -85,4 +95,4 @@ Or reflash the stock image from the first step.
 
 ---
 
-**Source:** [`docs/INSTALLATION.md`](https://github.com/seedypod/core/blob/a2f6b4c98085d6729f8c2f315237f87f759518e2/docs/INSTALLATION.md) · [`scripts/install`](https://github.com/seedypod/core/blob/a2f6b4c98085d6729f8c2f315237f87f759518e2/scripts/install) · [`scripts/install-hal`](https://github.com/seedypod/core/blob/a2f6b4c98085d6729f8c2f315237f87f759518e2/scripts/install-hal)
+**Source:** [`docs/INSTALLATION.md`](https://github.com/seedypod/core/blob/1ec5dc13c084b8f5b0c9d0d50071bc7a210da85f/docs/INSTALLATION.md) · [`scripts/install`](https://github.com/seedypod/core/blob/1ec5dc13c084b8f5b0c9d0d50071bc7a210da85f/scripts/install) · [`scripts/install-hal`](https://github.com/seedypod/core/blob/1ec5dc13c084b8f5b0c9d0d50071bc7a210da85f/scripts/install-hal)

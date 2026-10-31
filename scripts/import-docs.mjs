@@ -26,6 +26,9 @@ const pages = {
   'hardware/pin-map.md': 'developers/hardware',
   'hardware/sim-bringup.md': 'developers/sim-bringup',
   'testing/index.md': 'developers/testing',
+  'SENSORS.md': 'core/sensors',
+  'ANALYSIS.md': 'core/analysis',
+  'MAINTENANCE.md': 'core/maintenance',
   ...Object.fromEntries(adrs.map((f) => [`adr/${f}`, `developers/adr/${f.replace(/\.md$/, '')}`])),
 }
 const routes = {

@@ -6,10 +6,13 @@ export default {
   'web-ui': 'Web UI tour',
   schedules: 'Schedules',
   'grow-cycle': 'Grow cycle and pods',
+  sensors: 'Adding a probe',
+  analysis: 'Capture analysis',
   '-- connect': { type: 'separator', title: 'Connect' },
   'home-assistant': 'Home Assistant',
   mcp: 'MCP for agents',
   '-- help': { type: 'separator', title: 'Help' },
+  maintenance: 'Maintenance and repair',
   debugging: 'Debugging',
   privacy: 'Privacy',
 }
