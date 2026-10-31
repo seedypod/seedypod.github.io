@@ -14,7 +14,7 @@ seedypod talks to Home Assistant over MQTT, from two places that show up as **on
 
 ## Connect the daemon
 
-Point Home Assistant's [MQTT integration](https://www.home-assistant.io/integrations/mqtt/) and `hald` at the same broker. `hald` uses `mqtt_url` in `/etc/seedypod/hal.toml` (default `mqtt://127.0.0.1:1883`; set `mqtt_username` and `mqtt_password` if your broker needs them). A device called **Gardyn** followed by the unit id appears with these entities:
+Point Home Assistant's [MQTT integration](https://www.home-assistant.io/integrations/mqtt/) and `hald` at the same broker: either the unit's own (installed by `install-hal`, opened to the LAN on port 1884 with `--mqtt-lan`) or Home Assistant's add-on (see [Install](/core/installation/#connect-home-assistant-optional)). `hald` uses `mqtt_url` in `/etc/seedypod/hal.toml` (default `mqtt://127.0.0.1:1883`; set `mqtt_username` and `mqtt_password` if your broker needs them). A device called **Gardyn** followed by the unit id appears with these entities:
 
 | Entity                           | Type          | Notes                                                                        |
 | -------------------------------- | ------------- | ---------------------------------------------------------------------------- |

@@ -44,7 +44,7 @@ curl -fsSL https://raw.githubusercontent.com/seedypod/core/main/scripts/install-
 hald --check
 ```
 
-The installer detects the CPU, downloads the matching `hald` binary from the latest GitHub release, writes a commented `/etc/seedypod/hal.toml`, creates a `seedypod` system user in the `gpio`, `i2c` and `video` groups, enables the PWM overlay for the grow light (one reboot needed), installs `fswebcam`, and enables `hald.service`. `hald --check` validates the config and prints the devices it plans to use. See the [hald reference](/developers/hal/#install) for options.
+The installer detects the CPU, downloads the matching `hald` binary from the latest GitHub release, writes a commented `/etc/seedypod/hal.toml`, creates a `seedypod` system user in the `gpio`, `i2c` and `video` groups, enables the PWM overlay for the grow light (one reboot needed), installs `fswebcam`, installs the Mosquitto MQTT broker on `127.0.0.1:1883` (reachable only from the Pi itself), and enables `hald.service`. `hald --check` validates the config and prints the devices it plans to use. See the [hald reference](/developers/hal/#install) for options.
 
 ### Install core
 
@@ -60,7 +60,12 @@ The installer accepts `--branch dev` to install the rolling development build, a
 
 ### Connect Home Assistant (optional)
 
-Point Home Assistant's MQTT integration at the same broker. The Gardyn appears through MQTT discovery with no core required. See [Home Assistant](/core/home-assistant/).
+Home Assistant needs to reach the broker `hald` publishes to. Pick one:
+
+- **Home Assistant on another machine, using the unit's broker.** Run the installer with `--mqtt-lan`: `curl -fsSL https://raw.githubusercontent.com/seedypod/core/main/scripts/install-hal | bash -s -- --mqtt-lan`. The broker then also listens on port **1884**, password-protected, and the installer prints the `homeassistant` password once. In Home Assistant, add the **MQTT** integration with host `seedypod.local`, port `1884`, user `homeassistant` and that password.
+- **Home Assistant's own broker** (the Mosquitto add-on). Install with `--no-broker` instead, then set `mqtt_url`, `mqtt_username` and `mqtt_password` in `/etc/seedypod/hal.toml`, and `HAL_MQTT_URL=mqtt://USER:PASS@homeassistant.local:1883` in `/etc/systemd/system/seedypod-core.service`. Restart both with `sudo systemctl daemon-reload && sudo systemctl restart hald seedypod-core`.
+
+Either way, the Gardyn appears through MQTT discovery. See [Home Assistant](/core/home-assistant/).
 
 </Steps>
 
