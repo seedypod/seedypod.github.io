@@ -1,0 +1,121 @@
+---
+title: 'HAL contract v1'
+description: 'The wire contract between hald and core: MQTT topics, JSON payloads, HTTP endpoints and golden fixtures.'
+---
+
+import { Callout } from 'nextra/components'
+
+# HAL contract v1
+
+The HAL contract is the only interface between `hald` and core, and the interface Home Assistant and your own scripts can use directly. It is small on purpose, versioned, and discoverable. [ADR 0007](/developers/adr/0007-hal-contract/) is the decision; the [hald reference](/developers/hal/#mqtt) has the full operational detail.
+
+## Conventions
+
+- MQTT topic prefix `seedypod/<unit-id>/`. The unit id comes from the Pi's serial number (`gardyn-<serial>`), never a shared default.
+- Payloads are JSON with SI units and RFC 3339 timestamps. QoS 1 throughout.
+- The contract version is the `contract` field of `system`. It is currently `1`.
+
+## Topics
+
+| Topic                 | Direction | Retained | Payload                                     |
+| --------------------- | --------- | -------- | ------------------------------------------- |
+| `availability`        | from hald | yes      | `online`, or `offline` (also the last will) |
+| `system`              | from hald | yes      | `SystemInfo`                                |
+| `sensor/<id>`         | from hald | no       | `Reading`                                   |
+| `actuator/<id>/state` | from hald | yes      | `ActuatorState`                             |
+| `actuator/<id>/set`   | to hald   | —        | `ActuatorCommand`; hald clamps or refuses   |
+| `event/button`        | from hald | no       | `{"press": "single" \| "double" \| "long"}` |
+| `alert/<kind>`        | from hald | yes      | `Alert`                                     |
+| `alert/<kind>/ack`    | to hald   | —        | any payload; clears a latched fault         |
+
+HTTP on the daemon (port 3001 by default): `GET /health`, `GET /system`, `GET /state`, and `GET /camera/<name>.jpg` for a still from the `upper` or `lower` camera.
+
+## Identifiers
+
+| Kind      | Values                                                                                                                          |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Sensors   | `air_temp`, `humidity`, `pcb_temp`, `water_distance`, `water_level_pct`, `pump_v`, `pump_a`, `pump_w`, `ph`, `ec`, `water_temp` |
+| Actuators | `light`, `pump`, `dose_1`, `dose_2`, `dose_3`                                                                                   |
+| Alerts    | `water_low`, `pump_fault`, `over_temp`, `camera_missing` (core adds `hal_offline`)                                              |
+| Quality   | `good`, `stale`, `suspect`                                                                                                      |
+
+## Payloads
+
+These are the golden fixtures in `hal/contract/fixtures/`. Both the Rust and TypeScript test suites must parse them identically.
+
+`SystemInfo`, published on `system`:
+
+```json
+{
+  "contract": 1,
+  "unitId": "gardyn-1a2b3c4d",
+  "model": "gardyn 3.0",
+  "halVersion": "0.1.0",
+  "caps": {
+    "sensors": [
+      "air_temp",
+      "humidity",
+      "pcb_temp",
+      "water_distance",
+      "water_level_pct",
+      "pump_v",
+      "pump_a",
+      "pump_w"
+    ],
+    "actuators": ["light", "pump"],
+    "cameras": ["upper", "lower"]
+  },
+  "limits": { "pumpMaxRunS": 900, "pumpMaxDuty": 30, "waterLowCm": 16 }
+}
+```
+
+`Reading`, published on `sensor/<id>` on change and at least every telemetry interval:
+
+```json
+{ "ts": "2026-10-31T03:57:23Z", "value": 7.95, "unit": "cm", "quality": "good" }
+```
+
+`ActuatorCommand`, sent to `actuator/<id>/set`. Every field is optional; `durationS` makes the run bounded, and hald clamps it to its own maximum:
+
+```json
+{ "on": true, "level": 100, "durationS": 300 }
+```
+
+`ActuatorState`, published on `actuator/<id>/state`. `fault` is a latched fault that only an acknowledge clears; `remainingS` counts down a bounded run. A refused command republishes the state with its `fault`:
+
+```json
+{ "on": true, "level": 30, "since": "2026-10-31T03:57:23Z", "fault": null, "remainingS": 19 }
+```
+
+Note the command above asked for level 100 and got 30: the pump's duty cap.
+
+`Alert`, published on `alert/<kind>`:
+
+```json
+{
+  "kind": "pump_fault",
+  "active": true,
+  "ts": "2026-10-31T03:57:23Z",
+  "detail": "pump stopped: tank ran dry"
+}
+```
+
+## Try it
+
+```sh
+mosquitto_sub -v -t 'seedypod/#'
+mosquitto_pub -t 'seedypod/gardyn-1a2b3c4d/actuator/light/set' -m '{"on":true,"level":60}'
+```
+
+<Callout type="warning">
+  A pump command sent this way still passes `PumpGuard`. There is no way around the guard through
+  the contract, by design.
+</Callout>
+
+## Changing the contract
+
+The contract lives twice: `hal/crates/hal-core/src/contract.rs` and `src/hardware/contract.ts`. Change it by adding a fixture to `hal/contract/fixtures/` first, then make both sides accept it. Adding a sensor (pH, EC, water temperature) is a new sensor id, a fixture and a driver, with no topic changes.
+
+---
+
+**Source:** [`hal/contract/`](https://github.com/seedypod/core/tree/a2f6b4c98085d6729f8c2f315237f87f759518e2/hal/contract) · [`src/hardware/contract.ts`](https://github.com/seedypod/core/blob/a2f6b4c98085d6729f8c2f315237f87f759518e2/src/hardware/contract.ts)

@@ -1,0 +1,35 @@
+---
+title: 'ADR 0014: Auto-dosing safety'
+description: 'Dosing pumps get their own guard with hard daily volume caps and lockouts; off by default.'
+---
+
+import { Callout } from 'nextra/components'
+
+# ADR 0014: Auto-dosing safety
+
+<Callout type="warning">
+  Draft. This page describes intended behaviour that has not been verified on a real Gardyn yet.
+</Callout>
+
+**Status:** Proposed
+**Date:** 2026-10-31
+
+## Decision
+
+Phase 6.3 adds peristaltic dosing (pH-down, nutrients A/B) as `dose_<n>`
+actuators. Each passes through `hal_core::safety::DoseGuard`: per-dose volume
+cap, hard daily volume cap, minimum interval between doses, lockout after N
+doses without a measured response, and a latched fault on any sensor loss.
+Dosing is disabled by default and enabled per pump in `hal.toml`; the core
+controller (target bands with hysteresis) is a later phase and also defaults
+off.
+
+## Consequences
+
+- No dosing ever happens from a schedule alone; a measured pH/EC is required.
+
+---
+
+**Sources:** [sleepypod/core (conventions and ADR precedents)](https://github.com/sleepypod/core) · [iot-root/garden-of-eden (reference implementation)](https://github.com/iot-root/garden-of-eden)
+
+**Imported from** [`docs/adr/0014-auto-dosing-safety.md`](https://github.com/seedypod/core/blob/a2f6b4c98085d6729f8c2f315237f87f759518e2/docs/adr/0014-auto-dosing-safety.md) in seedypod/core. Edit it there, not here.

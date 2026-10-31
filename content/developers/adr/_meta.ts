@@ -1,0 +1,18 @@
+export default {
+  index: 'Index',
+  '0001-new-repository': '0001 New repository and naming',
+  '0002-license': '0002 License',
+  '0003-core-stack': '0003 Core application stack',
+  '0004-two-tier-hal-core': '0004 Two tiers — hardware daemon and core',
+  '0005-trpc': '0005 tRPC as the primary control plane',
+  '0006-rust-for-the-hal': '0006 Rust for the hardware daemon',
+  '0007-hal-contract': '0007 HAL contract v1',
+  '0009-pump-safety-guard': '0009 Pump safety guard and latched faults',
+  '0010-drizzle-sqlite-store': '0010 Drizzle ORM + SQLite behind a Store interface',
+  '0011-mcp-and-mhs': '0011 MCP tool design and MHS alignment',
+  '0012-deployment-and-trust': '0012 Deployment and trust model',
+  '0013-ha-bridge': '0013 Core-level MQTT bridge for Home Assistant',
+  '0014-auto-dosing-safety': '0014 Auto-dosing safety',
+  '0015-event-bus': '0015 Event bus and mutation broadcast',
+  '0016-shared-design-language': '0016 Shared design language with sleepypod',
+}

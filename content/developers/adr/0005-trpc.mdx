@@ -1,0 +1,56 @@
+---
+title: 'ADR 0005: tRPC as the primary control plane; MCP, REST and MQTT are additive'
+description: 'tRPC first; REST, MCP, MQTT, SSE and WebSocket are generated or additive surfaces.'
+---
+
+import { Callout } from 'nextra/components'
+
+# ADR 0005: tRPC as the primary control plane; MCP, REST and MQTT are additive
+
+**Status:** Accepted
+**Date:** 2026-10-30
+
+## Context
+
+sleepypod's control plane is tRPC with an OpenAPI facade, an MCP server built
+over the tRPC caller, and an MQTT bridge for Home Assistant. The iOS app and
+web UI are tRPC clients. That shape worked well for "extending displays and
+control planes" and is what we want to reuse.
+
+## Decision
+
+- `src/server/routers/app.ts` is the root `appRouter`; every capability is a
+  procedure there first.
+- **REST** is generated from the same procedures with `trpc-to-openapi` at
+  `/api/*`; every exposed procedure declares `.input()` and `.output()` zod
+  schemas (the generator requires them; a contract test asserts the spec
+  builds).
+- **MCP** (`src/mcp/`) calls the tRPC caller; tools are named read/write
+  primitives with units and declared limits (ADR-0011).
+- **Live updates** are a tRPC subscription over SSE (`events.onChange`) fed by
+  the process event bus (ADR-0015). No WebSocket server unless a high-rate
+  stream needs one.
+- `superjson` transformer; `publicProcedure` only (LAN-only trust model).
+
+## Consequences
+
+- One place to add a feature; three surfaces get it.
+- Subscriptions in the browser demo are served by the in-page caller
+  (`src/demo/link.ts`).
+
+**Authors**: @ng
+
+## Amendment (2026-10-30): WebSocket event stream
+
+`GET /api/ws` streams the same `CoreEvent` frames as the SSE subscription,
+prefixed by a `hello` frame carrying the current HAL snapshot. It exists for
+clients that cannot speak tRPC — wall dashboards, an M5 dial, shell scripts —
+and mirrors sleepypod's `:3001` sensor stream on the same port via
+`@hono/node-ws`. It is **read-only**: commands still go through tRPC, REST or
+MQTT so the safety path has one entry.
+
+---
+
+**Sources:** [sleepypod/core (conventions and ADR precedents)](https://github.com/sleepypod/core) · [Model Hardware Standard research preview](https://www.anthropic.com/news/model-hardware-standard-research-preview)
+
+**Imported from** [`docs/adr/0005-trpc.md`](https://github.com/seedypod/core/blob/a2f6b4c98085d6729f8c2f315237f87f759518e2/docs/adr/0005-trpc.md) in seedypod/core. Edit it there, not here.

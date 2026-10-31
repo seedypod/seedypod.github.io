@@ -1,0 +1,29 @@
+---
+title: 'Architecture decision records'
+description: 'Why seedypod is built the way it is, one decision at a time.'
+---
+
+# Architecture decision records
+
+Format follows sleepypod/core (`# ADR NNNN: Title`, Status/Date, Context, Decision, Consequences, amendments appended) with OKF frontmatter on top. `status: stable` = Accepted, `draft` = Proposed.
+
+- [0001 New repository and naming](/developers/adr/0001-new-repository/)
+- [0002 License](/developers/adr/0002-license/)
+- [0003 Core application stack](/developers/adr/0003-core-stack/)
+- [0004 Two tiers — hardware daemon and core](/developers/adr/0004-two-tier-hal-core/)
+- [0005 tRPC as the primary control plane](/developers/adr/0005-trpc/)
+- [0006 Rust for the hardware daemon](/developers/adr/0006-rust-for-the-hal/)
+- [0007 HAL contract v1](/developers/adr/0007-hal-contract/)
+- 0008 Target controller per topology — _after Phase 1_
+- [0009 Pump safety guard and latched faults](/developers/adr/0009-pump-safety-guard/)
+- [0010 Drizzle ORM + SQLite behind a Store interface](/developers/adr/0010-drizzle-sqlite-store/)
+- [0011 MCP tool design and MHS alignment](/developers/adr/0011-mcp-and-mhs/)
+- [0012 Deployment and trust model](/developers/adr/0012-deployment-and-trust/)
+- [0013 Core-level MQTT bridge for Home Assistant](/developers/adr/0013-ha-bridge/)
+- [0014 Auto-dosing safety](/developers/adr/0014-auto-dosing-safety/) — proposed
+- [0015 Event bus and mutation broadcast](/developers/adr/0015-event-bus/)
+- [0016 Shared design language with sleepypod](/developers/adr/0016-shared-design-language/)
+
+---
+
+**Imported from** [`docs/adr/index.md`](https://github.com/seedypod/core/blob/a2f6b4c98085d6729f8c2f315237f87f759518e2/docs/adr/index.md) in seedypod/core.

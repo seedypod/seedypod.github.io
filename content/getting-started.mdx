@@ -1,0 +1,56 @@
+---
+title: 'Get started'
+description: 'Try seedypod in your browser, run it on your laptop, or install it on the Pi inside your Gardyn.'
+---
+
+import { Callout, Cards } from 'nextra/components'
+
+# Get started
+
+seedypod gives you local, cloud-free control of a Gardyn hydroponic tower. It runs on the Raspberry Pi already inside the unit and replaces the Gardyn cloud with two pieces of software:
+
+- **`hald`**, a small Rust daemon that owns the pins and buses: grow light, pump, water level, temperature and humidity, power monitor, cameras and the button.
+- **seedypod core**, a server with a web UI, schedules, grow-cycle reminders, alerts, a REST API, an MCP endpoint for AI agents, and a Home Assistant bridge.
+
+<Callout type="warning">
+  **seedypod is pre-hardware.** The software is complete through the simulator and its tests, but
+  **nothing has run on a real Gardyn yet**, and the [pin map](/developers/hardware/) is unverified.
+  If you install it on a real unit, back up the stock microSD card first so a mistake costs you a
+  five-minute reflash.
+</Callout>
+
+## 1. Try the live demo
+
+The fastest way to see seedypod is the [live demo](https://seedypod.vercel.app). It runs the real web UI against a simulated tower inside your browser, with seeded history: a grow cycle in progress, 24 planted pods, a light curve and a watering schedule. It talks to no backend, so nothing you do there leaves your browser.
+
+## 2. Run it on your computer
+
+No Gardyn needed. You need Node 24, pnpm and (for the daemon) a Rust toolchain.
+
+```sh
+git clone https://github.com/seedypod/core.git
+cd core
+pnpm install
+pnpm dev            # core on :3000 with the simulated HAL, web UI on :5173
+```
+
+Open `http://localhost:5173`. The REST spec is at `http://localhost:3000/api/openapi.json` and the MCP endpoint is `POST /api/mcp`.
+
+To watch the hardware daemon run against simulated hardware and print what it would publish over MQTT:
+
+```sh
+cargo run --manifest-path hal/Cargo.toml -p hald -- --sim --stdout --ticks 3
+```
+
+## 3. Install on a Gardyn
+
+When you are ready to open the base, follow the [installation guide](/core/installation/). In short: image the stock card, flash Raspberry Pi OS Lite, install `hald`, then install core and open `http://seedypod.local:3000/`.
+
+## What next
+
+<Cards>
+  <Cards.Card title="Tour the web UI" href="/core/web-ui/" />
+  <Cards.Card title="Set up schedules" href="/core/schedules/" />
+  <Cards.Card title="Connect Home Assistant" href="/core/home-assistant/" />
+  <Cards.Card title="Developer reference" href="/developers/" />
+</Cards>

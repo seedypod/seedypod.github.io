@@ -1,0 +1,77 @@
+---
+title: 'Home Assistant'
+description: 'The Gardyn appears in Home Assistant through MQTT discovery; core adds grow reminders and a water-now button.'
+---
+
+import { Callout } from 'nextra/components'
+
+# Home Assistant
+
+seedypod talks to Home Assistant over MQTT, from two places that show up as **one device**:
+
+1. **`hald`** publishes discovery for everything physical: the light, the pump, the sensors, the alerts and the button. This works with **no core at all**.
+2. **Core's bridge** adds what only core knows: the grow day and stage, reminders with "done" buttons, light hours, and a "water now" button.
+
+## Connect the daemon
+
+Point Home Assistant's [MQTT integration](https://www.home-assistant.io/integrations/mqtt/) and `hald` at the same broker. `hald` uses `mqtt_url` in `/etc/seedypod/hal.toml` (default `mqtt://127.0.0.1:1883`; set `mqtt_username` and `mqtt_password` if your broker needs them). A device called **Gardyn** followed by the unit id appears with these entities:
+
+| Entity                           | Type          | Notes                                                                        |
+| -------------------------------- | ------------- | ---------------------------------------------------------------------------- |
+| Light                            | light         | Brightness 0–100.                                                            |
+| Pump                             | fan           | HA's 100 % is the duty cap (30 % by default); runs are bounded by the guard. |
+| Air, board and water temperature | sensor        | °C                                                                           |
+| Humidity                         | sensor        | %                                                                            |
+| Water distance, water level      | sensor        | cm, %                                                                        |
+| Pump voltage, current, power     | sensor        | V, A, W                                                                      |
+| pH, EC                           | sensor        | Only when the optional probes are configured.                                |
+| Water low, pump fault            | binary_sensor | problem                                                                      |
+| Over temperature                 | binary_sensor | heat                                                                         |
+| Acknowledge pump fault           | button        | Clears a latched pump fault.                                                 |
+| Button                           | event         | `single`, `double`, `long` presses of the physical button.                   |
+
+The full discovery table is in the [hald reference](/developers/hal/#home-assistant-entities).
+
+<Callout type="warning">
+  The pump fault is latched on purpose. Pressing **Acknowledge pump fault** re-enables the pump, so
+  refill the tank or let the board cool first.
+</Callout>
+
+## Core bridge
+
+In the web UI, open **Settings → Home Assistant bridge** and enter your broker URL (for example `mqtt://homeassistant.local:1883`), plus a username and password if needed. TLS is opt-in, and accepting a self-signed certificate is a separate switch that stays off by default. The bridge stays dormant until a broker URL is set and reconnects when you change the settings.
+
+It adds these entities to the same device:
+
+| Entity                                                     | Type                                                |
+| ---------------------------------------------------------- | --------------------------------------------------- |
+| Grow day, grow stage                                       | sensor                                              |
+| Grow light hours                                           | sensor (total, for LED ageing)                      |
+| Thin seedlings, Check roots, Harvest window, Add nutrients | binary_sensor, on when due                          |
+| … : done                                                   | button that marks the reminder done                 |
+| Water now (5 min)                                          | button, runs a bounded pump cycle through the guard |
+
+If the pump refuses a "water now" press (dry tank, latched fault), the refusal shows up on the daemon's own alert entities.
+
+## Example dashboard and automations
+
+The core repository has a ready-made [Lovelace view](https://github.com/seedypod/core/blob/a2f6b4c98085d6729f8c2f315237f87f759518e2/docs/homeassistant/lovelace-example.yaml) and [automations](https://github.com/seedypod/core/blob/a2f6b4c98085d6729f8c2f315237f87f759518e2/docs/homeassistant/automations-example.yaml). A notification when the tank runs low looks like this:
+
+```yaml
+- alias: Gardyn — notify on water low
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.gardyn_water_low
+      to: 'on'
+  action:
+    - service: notify.mobile_app_phone
+      data:
+        title: Gardyn needs water
+        message: Tank is low; the pump will refuse to run until refilled.
+```
+
+Entity ids depend on your unit id and Home Assistant's naming, so check yours under **Settings → Devices & services → MQTT**.
+
+---
+
+**Design:** [ADR 0007: HAL contract](/developers/adr/0007-hal-contract/) · [ADR 0013: Core-level MQTT bridge](/developers/adr/0013-ha-bridge/)

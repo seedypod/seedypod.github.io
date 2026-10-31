@@ -1,0 +1,15 @@
+export default {
+  index: 'Overview',
+  architecture: 'Architecture',
+  api: 'REST API reference',
+  '-- hardware': { type: 'separator', title: 'Hardware' },
+  hal: 'hald reference',
+  'hal-contract': 'HAL contract v1',
+  hardware: 'Gardyn hardware map',
+  '-- project': { type: 'separator', title: 'Project' },
+  adr: 'Decision records',
+  deployment: 'Deployment',
+  testing: 'Testing',
+  'implementation-plan': 'Implementation plan',
+  handoff: 'Handoff and status',
+}

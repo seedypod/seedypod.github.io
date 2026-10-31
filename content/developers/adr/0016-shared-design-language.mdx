@@ -1,0 +1,30 @@
+---
+title: 'ADR 0016: Shared design language with sleepypod'
+description: 'Tokens, ds/ and ui/ ported verbatim with domain renames; extraction to a shared package deferred.'
+---
+
+import { Callout } from 'nextra/components'
+
+# ADR 0016: Shared design language with sleepypod
+
+**Status:** Accepted
+**Date:** 2026-10-31
+
+## Decision
+
+`web/src/globals.css`, `src/components/ds/`, `src/ui/` and `AppShell` are
+copies of sleepypod's with domain tokens renamed (`cool/warm` → `water/light`,
+`side-left/right` → `pod-ok/pod-attention`, sleep stages → growth phases,
+vitals → ph/ec/water). `next/link` and `next/navigation` became TanStack
+Router's `Link`/`useLocation`. A shared `@org/ds` package is deliberately
+deferred until the second consumer's needs have stabilised.
+
+## Consequences
+
+- The two apps read as one family; fixes are ported by hand until extraction.
+
+---
+
+**Sources:** [sleepypod/core (conventions and ADR precedents)](https://github.com/sleepypod/core)
+
+**Imported from** [`docs/adr/0016-shared-design-language.md`](https://github.com/seedypod/core/blob/a2f6b4c98085d6729f8c2f315237f87f759518e2/docs/adr/0016-shared-design-language.md) in seedypod/core. Edit it there, not here.

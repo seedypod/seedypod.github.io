@@ -1,0 +1,88 @@
+---
+title: 'Install seedypod on a Gardyn'
+description: 'Back up the stock card, flash Raspberry Pi OS, install hald and core, connect Home Assistant.'
+---
+
+import { Callout, Steps } from 'nextra/components'
+
+# Install seedypod on a Gardyn
+
+<Callout type="error">
+  **Phase 1 is not done: nothing here has run on a real Gardyn yet.** The install scripts' Raspberry
+  Pi OS steps, the pin map and the I²C addresses are documented assumptions. Follow at your own
+  risk, and **back up the stock card first** so bricking is a five-minute reflash.
+</Callout>
+
+seedypod runs on the Raspberry Pi already inside the unit: early Gardyns use a Pi Zero W, later ones a Pi Zero 2 W. The default setup runs both `hald` and core on that Pi. You can also run core on any other machine on your LAN and point it at the daemon ([deployment topologies](/developers/architecture/#deployment-topologies)).
+
+<Steps>
+
+### Back up the stock card
+
+1. Power off the unit, open the base, and remove the Pi's microSD card.
+2. On a computer, image it and keep the image somewhere safe:
+
+```sh
+sudo dd if=/dev/YOUR_CARD of=gardyn-stock.img bs=4M status=progress
+```
+
+This image is your way back to the stock Gardyn software. Do not skip it.
+
+### Flash Raspberry Pi OS
+
+In Raspberry Pi Imager, choose **Raspberry Pi OS Lite**: 64-bit for a Zero 2 W, Pi 4 or Pi 5, 32-bit for the original Zero W. In the advanced options set the hostname to `seedypod`, enable SSH and add your Wi-Fi. Reseat the card, boot, then connect:
+
+```sh
+ssh pi@seedypod.local
+```
+
+### Enable I²C and install the hardware daemon
+
+```sh
+sudo raspi-config nonint do_i2c 0
+curl -fsSL https://raw.githubusercontent.com/seedypod/core/main/scripts/install-hal | bash
+hald --check
+```
+
+The installer detects the CPU, downloads the matching `hald` binary from the latest GitHub release, writes a commented `/etc/seedypod/hal.toml`, creates a `seedypod` system user in the `gpio`, `i2c` and `video` groups, enables the PWM overlay for the grow light (one reboot needed), installs `fswebcam`, and enables `hald.service`. `hald --check` validates the config and prints the devices it plans to use. See the [hald reference](/developers/hal/#install) for options.
+
+### Install core
+
+On the same Pi, or on any machine on your LAN:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/seedypod/core/main/scripts/install | bash
+```
+
+Core listens on port 3000. If `hald` runs on another machine, set `HAL_MQTT_URL` in `/etc/systemd/system/seedypod-core.service`. Then open `http://seedypod.local:3000/`.
+
+The installer accepts `--branch dev` to install the rolling development build, and `--prefix` to change the install location (default `/opt/seedypod`).
+
+### Connect Home Assistant (optional)
+
+Point Home Assistant's MQTT integration at the same broker. The Gardyn appears through MQTT discovery with no core required. See [Home Assistant](/core/home-assistant/).
+
+</Steps>
+
+## First things to set
+
+Open **Settings** in the web UI and set:
+
+- **Timezone**, so schedules fire at the right local time.
+- **Tank calibration**: the ultrasonic distance in centimetres when the tank is just filled, and when the pump would run dry. These turn the distance reading into a tank percentage.
+- **Grow reminders**, if the defaults (thinning at day 14, root check at 21, harvest at 35, nutrients every 7 days) do not suit your plants.
+
+Then add a [light curve and a watering schedule](/core/schedules/).
+
+## Uninstall
+
+```sh
+sudo systemctl disable --now seedypod-core hald
+sudo rm -rf /opt/seedypod /etc/systemd/system/seedypod-core.service /etc/systemd/system/hald.service
+```
+
+Or reflash the stock image from the first step.
+
+---
+
+**Source:** [`docs/INSTALLATION.md`](https://github.com/seedypod/core/blob/a2f6b4c98085d6729f8c2f315237f87f759518e2/docs/INSTALLATION.md) · [`scripts/install`](https://github.com/seedypod/core/blob/a2f6b4c98085d6729f8c2f315237f87f759518e2/scripts/install) · [`scripts/install-hal`](https://github.com/seedypod/core/blob/a2f6b4c98085d6729f8c2f315237f87f759518e2/scripts/install-hal)

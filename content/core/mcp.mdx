@@ -1,0 +1,48 @@
+---
+title: 'MCP for agents'
+description: 'Let an AI agent read your tower and run bounded actions through the Model Context Protocol.'
+---
+
+import { Callout } from 'nextra/components'
+
+# MCP for agents
+
+Core exposes a [Model Context Protocol](https://modelcontextprotocol.io) server at `/api/mcp`, so an MCP host such as Claude Desktop or Cursor can read sensors, check the grow cycle, and act on your tower. It uses the stateless Streamable HTTP transport.
+
+```text
+http://seedypod.local:3000/api/mcp
+```
+
+Every tool calls the same procedures the web UI uses, never the hardware directly, so **the pump safety guard applies to agents too**. A refusal (dry tank, latched fault) comes back as a tool error with the daemon's reason. Limits are discoverable rather than implied, so an agent can plan within them.
+
+## Tools
+
+| Tool                | Kind  | What it does                                                                  |
+| ------------------- | ----- | ----------------------------------------------------------------------------- |
+| `status`            | read  | Sensors, light and pump state, active alerts, grow cycle and hardware limits. |
+| `history`           | read  | Downsampled history for a sensor.                                             |
+| `list_schedules`    | read  | Light curves and pump cycles with their day masks.                            |
+| `pods`              | read  | The 30 pods: plant, planted date, status and notes.                           |
+| `captures`          | read  | Recent camera stills.                                                         |
+| `pod_health`        | read  | Per-pod green-area trend from the cameras.                                    |
+| `set_light`         | write | Turn the light on or off and set brightness.                                  |
+| `run_pump`          | write | Run the pump for a bounded time.                                              |
+| `stop_pump`         | write | Stop the pump immediately.                                                    |
+| `acknowledge_alert` | write | Acknowledge an alert, which also clears a latched fault.                      |
+| `upsert_schedule`   | write | Create or replace a light curve or pump cycle.                                |
+| `delete_schedule`   | write | Delete a schedule.                                                            |
+| `update_pod`        | write | Set a pod's plant, status and notes.                                          |
+| `grow_cycle`        | write | Start, change the stage of, or end the grow cycle.                            |
+| `capture_still`     | write | Take a camera still now.                                                      |
+
+Two resources are also available: `seedypod://sensors` (latest readings) and `seedypod://limits` (the hardware limits).
+
+## Security
+
+The endpoint rejects requests whose `Origin` does not match the `Host`, which protects it from DNS-rebinding attacks by web pages. Beyond that it follows core's LAN-only trust model: if you set an API key in **Settings**, clients that are not on the unit itself must send it as `Authorization: Bearer YOUR_KEY` or `x-api-key`. See [Privacy](/core/privacy/#who-can-reach-it).
+
+<Callout>
+  The tool set is designed to line up with Anthropic's Model Hardware Standard research preview:
+  named read and write primitives with units and declared limits. Tool names may change to match the
+  standard once it is public. See [ADR 0011](/developers/adr/0011-mcp-and-mhs/).
+</Callout>

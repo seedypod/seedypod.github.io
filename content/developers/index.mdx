@@ -1,0 +1,47 @@
+---
+title: 'Developers'
+description: 'Architecture, APIs, the hardware daemon and its contract, decision records and the build plan.'
+---
+
+import { Callout, Cards } from 'nextra/components'
+
+# Developer documentation
+
+seedypod lives in one repository, [seedypod/core](https://github.com/seedypod/core): a Rust workspace for the hardware daemon in `hal/`, and TypeScript for the server (`server/`, `src/`) and the web UI (`web/`). It mirrors [sleepypod](https://github.com/sleepypod)'s conventions (branching, CI, releases, ADRs, a Vercel demo and this Nextra site) so tooling and habits carry over.
+
+<Callout type="warning">
+  **Pre-hardware.** Everything is tested against the simulator and a local Mosquitto broker. The
+  real drivers compile for both Pi targets, but their register sequences, timings, the PWM overlay
+  and the [pin map](/developers/hardware/) are unverified until Phase 1 is done on a real unit. See
+  the [handoff](/developers/handoff/#1-what-exists) for exactly what is and is not proven.
+</Callout>
+
+## Start here
+
+```sh
+pnpm install && pnpm dev                 # core :3000 (simulator), web :5173
+pnpm test · pnpm tsc · pnpm lint         # TypeScript checks
+pnpm hal:test                            # Rust
+cargo run --manifest-path hal/Cargo.toml -p hald -- --sim --stdout --ticks 3
+```
+
+`dev` is the integration branch and `main` is release-only. Commits are conventional, and every PR to `main` must be titled `feat:`, `fix:`, `perf:` or `revert:` because it cuts a release. Read the repository's `AGENTS.md` and the [ADRs](/developers/adr/) before changing safety or contract code.
+
+## Reference
+
+<Cards>
+  <Cards.Card title="Architecture" href="/developers/architecture/" />
+  <Cards.Card title="REST API reference" href="/developers/api/" />
+  <Cards.Card title="hald reference" href="/developers/hal/" />
+  <Cards.Card title="HAL contract v1" href="/developers/hal-contract/" />
+  <Cards.Card title="Gardyn hardware map" href="/developers/hardware/" />
+  <Cards.Card title="Decision records" href="/developers/adr/" />
+  <Cards.Card title="Deployment" href="/developers/deployment/" />
+  <Cards.Card title="Testing" href="/developers/testing/" />
+  <Cards.Card title="Implementation plan" href="/developers/implementation-plan/" />
+  <Cards.Card title="Handoff and status" href="/developers/handoff/" />
+</Cards>
+
+## About these pages
+
+The pages under **Hardware** (except the contract overview) and **Project** are imported from `docs/` in seedypod/core by `scripts/import-docs.mjs`, pinned to a commit shown at the bottom of each page. That folder is the source of truth: fix things there, then re-import.

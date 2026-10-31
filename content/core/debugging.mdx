@@ -1,0 +1,76 @@
+---
+title: 'Debugging'
+description: 'SSH, hald --check, journalctl, I²C probing, latched faults and the simulator.'
+---
+
+import { Callout } from 'nextra/components'
+
+# Debugging
+
+<Callout type="warning">
+  These steps are written for the expected hardware and have not been run on a real Gardyn yet. If
+  something here does not match what you see, please [open an
+  issue](https://github.com/seedypod/core/issues) with the output.
+</Callout>
+
+## Get a shell
+
+```sh
+ssh pi@seedypod.local
+```
+
+## Check the hardware daemon
+
+```sh
+hald --check                 # validate /etc/seedypod/hal.toml and print the planned devices
+journalctl -u hald -f        # follow the daemon's log
+curl localhost:3001/health   # {ok, uptime_s, mqtt_connected}
+curl localhost:3001/state    # every sensor, actuator and alert in one snapshot
+```
+
+To see everything `hald` publishes:
+
+```sh
+mosquitto_sub -t 'seedypod/#' -v
+```
+
+## Check core
+
+```sh
+journalctl -u seedypod-core -f
+curl localhost:3000/api/system
+```
+
+The **About** section at the bottom of **Settings** shows the core and daemon versions and the unit id. If it says the hardware daemon is offline, core cannot reach `hald` over MQTT; check `HAL_MQTT_URL` in `/etc/systemd/system/seedypod-core.service`.
+
+## Probe the I²C bus
+
+```sh
+sudo i2cdetect -y 1
+```
+
+Expect `0x40` (INA219 pump power monitor), `0x48` (PCT2075 board temperature), and `0x38` (DHT20 air sensor, Gardyn 3.0 and later). The AM2320 used in Gardyn 1.0 and 2.0 sits at `0x5C` but does **not** answer `i2cdetect`; that is expected.
+
+## The pump will not start
+
+If the pump state shows `fault: "dry-run"` or `fault: "over-temp"`, the fault is **latched**: the pump stays off until a person acknowledges it. Refill the tank or let the board cool, then acknowledge from any of:
+
+- the **Alerts** screen in the web UI;
+- the **Acknowledge pump fault** button in Home Assistant;
+- a long press of the physical button;
+- the API: `POST /api/alerts/{id}/acknowledge` with the alert's id from `GET /api/alerts`.
+
+If there is no latched fault but the pump still refuses, the tank probably reads low: check the **Water** screen's distance against your tank calibration in **Settings**.
+
+## Reproduce without hardware
+
+Run the daemon against simulated hardware, with time running 60 times faster, and core against it:
+
+```sh
+hald --sim --time-scale 60
+HAL_MQTT_URL= pnpm dev
+```
+
+---
+
+**Source:** [`docs/DEBUGGING.md`](https://github.com/seedypod/core/blob/a2f6b4c98085d6729f8c2f315237f87f759518e2/docs/DEBUGGING.md)

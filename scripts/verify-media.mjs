@@ -1,0 +1,31 @@
+import { readFile, readdir } from 'node:fs/promises'
+import { createHash } from 'node:crypto'
+import sharp from 'sharp'
+const { assets } = JSON.parse(await readFile('capture/manifest.json', 'utf8'))
+const actual = (await readdir('public/media')).sort()
+const expected = assets.map((a) => a.output).sort()
+if (JSON.stringify(actual) !== JSON.stringify(expected))
+  throw new Error('Manifest and media directory differ')
+for (const a of assets) {
+  const b = await readFile(`public/media/${a.output}`)
+  if (b.length > 5 * 1024 * 1024) throw new Error(`Asset over 5 MiB: ${a.output}`)
+  if (createHash('sha256').update(b).digest('hex') !== a.sha256)
+    throw new Error(`Checksum mismatch: ${a.output}`)
+  if (b.length !== a.bytes) throw new Error(`Byte size mismatch: ${a.output}`)
+  if (/\.(png|jpe?g)$/.test(a.output)) {
+    const m = await sharp(b).metadata()
+    if (
+      m.format !== (a.output.endsWith('.png') ? 'png' : 'jpeg') ||
+      m.width !== a.width ||
+      m.height !== a.height
+    )
+      throw new Error(`Invalid image: ${a.output}`)
+  }
+  if (a.output.endsWith('.svg') && !b.toString().startsWith('<svg'))
+    throw new Error(`Invalid SVG: ${a.output}`)
+}
+console.log(`Verified ${assets.length} product assets, dimensions, and SHA-256 checksums`)
+
+const icon = await readFile('app/icon.svg')
+if (!icon.equals(await readFile('public/media/seedypod-icon.svg')))
+  throw new Error('App icon differs from the core favicon')

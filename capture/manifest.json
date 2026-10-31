@@ -1,0 +1,113 @@
+{
+  "version": 1,
+  "assets": [
+    {
+      "repository": "seedypod/core",
+      "commit": "a2f6b4c98085d6729f8c2f315237f87f759518e2",
+      "source": "web demo build (VITE_DEMO=1), route /",
+      "output": "core-dashboard.png",
+      "method": "scripts/capture-core.mjs (Playwright, 1440x1000 @2x, dark)",
+      "sha256": "9eac2f67dac25dd1942448fdf7f25e429e40ff685b7184808d4fe28958eacfad",
+      "bytes": 121606,
+      "width": 2880,
+      "height": 2000
+    },
+    {
+      "repository": "seedypod/core",
+      "commit": "a2f6b4c98085d6729f8c2f315237f87f759518e2",
+      "source": "web demo build (VITE_DEMO=1), route /light",
+      "output": "core-light.png",
+      "method": "scripts/capture-core.mjs (Playwright, 1440x1000 @2x, dark)",
+      "sha256": "76017d24da1f1ff7f239136f0b5cedd0295f68cbb1e71687c232aeddf1f884b0",
+      "bytes": 154900,
+      "width": 2880,
+      "height": 2000
+    },
+    {
+      "repository": "seedypod/core",
+      "commit": "a2f6b4c98085d6729f8c2f315237f87f759518e2",
+      "source": "web demo build (VITE_DEMO=1), route /water",
+      "output": "core-water.png",
+      "method": "scripts/capture-core.mjs (Playwright, 1440x1000 @2x, dark)",
+      "sha256": "5e040c17af556b7b9172a25c4deb2121614212822aaec38177400555f6174cd1",
+      "bytes": 159821,
+      "width": 2880,
+      "height": 2000
+    },
+    {
+      "repository": "seedypod/core",
+      "commit": "a2f6b4c98085d6729f8c2f315237f87f759518e2",
+      "source": "web demo build (VITE_DEMO=1), route /schedule",
+      "output": "core-schedule.png",
+      "method": "scripts/capture-core.mjs (Playwright, 1440x1000 @2x, dark)",
+      "sha256": "e36385b5283d58d5ca293bcd9b4515b7efe588e0828537953690c66efd99df18",
+      "bytes": 104455,
+      "width": 2880,
+      "height": 2000
+    },
+    {
+      "repository": "seedypod/core",
+      "commit": "a2f6b4c98085d6729f8c2f315237f87f759518e2",
+      "source": "web demo build (VITE_DEMO=1), route /grow",
+      "output": "core-grow.png",
+      "method": "scripts/capture-core.mjs (Playwright, 1440x1000 @2x, dark)",
+      "sha256": "e465eade4530490e10905766e0ec541486aadc7c8108f68f734373e15625820d",
+      "bytes": 140123,
+      "width": 2880,
+      "height": 2000
+    },
+    {
+      "repository": "seedypod/core",
+      "commit": "a2f6b4c98085d6729f8c2f315237f87f759518e2",
+      "source": "web demo build (VITE_DEMO=1), route /cameras",
+      "output": "core-cameras.png",
+      "method": "scripts/capture-core.mjs (Playwright, 1440x1000 @2x, dark)",
+      "sha256": "7f286bf0dba34caed3c7b60d239996ec24653692acf033162118564cd2ef9474",
+      "bytes": 138292,
+      "width": 2880,
+      "height": 2000
+    },
+    {
+      "repository": "seedypod/core",
+      "commit": "a2f6b4c98085d6729f8c2f315237f87f759518e2",
+      "source": "web demo build (VITE_DEMO=1), route /alerts",
+      "output": "core-alerts.png",
+      "method": "scripts/capture-core.mjs (Playwright, 1440x1000 @2x, dark)",
+      "sha256": "a718cecc4e16f530c150955e2d0f34f299f51d238c31960e2d61805b7e6bf42e",
+      "bytes": 86298,
+      "width": 2880,
+      "height": 2000
+    },
+    {
+      "repository": "seedypod/core",
+      "commit": "a2f6b4c98085d6729f8c2f315237f87f759518e2",
+      "source": "web demo build (VITE_DEMO=1), route /settings",
+      "output": "core-settings.png",
+      "method": "scripts/capture-core.mjs (Playwright, 1440x1000 @2x, dark)",
+      "sha256": "e10ba05bba50c419a74c7a7e7ba39eaf8e53272cf56e1c1bd0b6ebdb4146085c",
+      "bytes": 150866,
+      "width": 2880,
+      "height": 2000
+    },
+    {
+      "repository": "seedypod/core",
+      "commit": "a2f6b4c98085d6729f8c2f315237f87f759518e2",
+      "source": "web demo build (VITE_DEMO=1), route /kiosk",
+      "output": "core-kiosk.png",
+      "method": "scripts/capture-core.mjs (Playwright, 1440x1000 @2x, dark)",
+      "sha256": "e2be1552fd30d704c06ea398edabaff596942457dd794dbb3a7468f312a67d0d",
+      "bytes": 60518,
+      "width": 2880,
+      "height": 2000
+    },
+    {
+      "repository": "seedypod/core",
+      "commit": "a2f6b4c98085d6729f8c2f315237f87f759518e2",
+      "source": "web/public/favicon.svg",
+      "output": "seedypod-icon.svg",
+      "method": "copied unchanged",
+      "sha256": "9ca46a21e15d274b81fabeb7fa8f0bd3a3bdb9af5db61d2d6770451d0ff46d6c",
+      "bytes": 330
+    }
+  ]
+}

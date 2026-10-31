@@ -1,0 +1,100 @@
+---
+title: 'Web UI tour'
+description: 'Every screen of the seedypod web UI, from the home screen to the wall-display kiosk.'
+---
+
+import { Callout } from 'nextra/components'
+
+# Web UI tour
+
+Open `http://seedypod.local:3000/` from any browser on your network. The sidebar (a tab bar on phones) has eight screens. Changes made anywhere, including from Home Assistant, an agent or a schedule, appear immediately: the UI listens to core's live event stream instead of polling.
+
+<Callout>
+  These screenshots are the real web UI from the [live demo](https://seedypod.vercel.app), which
+  runs against a simulated tower with seeded history.
+</Callout>
+
+## Home
+
+The grow light with a brightness slider and on/off button, the water card with tank level, ultrasonic distance and pump power, a **Run 5 min** button, and the environment readings: air temperature, humidity and the board temperature. Active alerts appear in a banner at the top.
+
+<BrowserFrame
+  src="/media/core-dashboard.png"
+  alt="Home screen with an active nutrients reminder, the grow light card, the water card and environment readings"
+/>
+
+## Light
+
+Turn the light on or off and set brightness. A manual change holds until the next scheduled setpoint. The page also shows the cumulative LED hours and how much of the rated life they represent. Below, you create and edit [light curves](/core/schedules/#light-curves).
+
+<BrowserFrame
+  src="/media/core-light.png"
+  alt="Grow light screen with the daylight curve chart and its four setpoints"
+/>
+
+## Water
+
+The tank level as a percentage and a bar, the pump state, and a run-once control: pick 1, 5, 10 or 15 minutes and press **Run pump**. The hardware limits are shown under the controls (max run time, max duty, and the distance at which a low tank refuses to start). Below are the supply voltage, pump current and power, seven days of tank level and pump power, and the recent scheduled runs.
+
+If the pump is latched off after a fault, the card turns red and **Run pump** is disabled until you acknowledge the fault on the Alerts screen.
+
+<BrowserFrame
+  src="/media/core-water.png"
+  alt="Water screen with tank level, run-once controls and seven-day charts"
+/>
+
+## Schedule
+
+All pump cycles and light curves in one place, each with an enable toggle. See [Schedules](/core/schedules/).
+
+## Grow
+
+The current grow cycle and its stage, and a grid of all 30 pods. See [Grow cycle and pods](/core/grow-cycle/).
+
+## Cameras
+
+The latest still from the upper and lower cameras, a **Capture now** button, and a slider that scrubs through the timelapse. Stills are captured automatically at the interval set in Settings (60 minutes by default; 0 disables it).
+
+<BrowserFrame
+  src="/media/core-cameras.png"
+  alt="Cameras screen with the upper and lower camera stills and timelapse sliders"
+/>
+
+## Alerts
+
+Active alerts, or the full history. Each alert has **Acknowledge** (or **Done** for a reminder) and **Dismiss**.
+
+| Alert                                                      | Raised when                                                     |
+| ---------------------------------------------------------- | --------------------------------------------------------------- |
+| Water low                                                  | The tank reading crosses the low-water threshold.               |
+| Pump fault                                                 | The pump stopped because the tank ran dry or the board got hot. |
+| Board over temperature                                     | The board temperature reached the cutoff (36 °C by default).    |
+| Camera missing                                             | A camera failed to capture.                                     |
+| Hardware daemon offline                                    | Core lost contact with `hald`.                                  |
+| Thin seedlings, Check roots, Harvest window, Add nutrients | A grow reminder is due.                                         |
+
+<Callout type="warning">
+  Acknowledging a pump fault re-enables the pump. Fix the cause first: refill the tank, or let the
+  board cool.
+</Callout>
+
+<BrowserFrame src="/media/core-alerts.png" alt="Alerts screen listing an active reminder" />
+
+## Settings
+
+Unit name, timezone and temperature unit; tank calibration (distance when full and when empty, and the tank capacity); grow reminder days; the camera capture interval; the [Home Assistant bridge](/core/home-assistant/#core-bridge); an optional [API key](/core/privacy/#who-can-reach-it); and an About section with the core and daemon versions and the unit id.
+
+<BrowserFrame
+  src="/media/core-settings.png"
+  alt="Settings screen with unit, tank calibration and grow reminder settings"
+/>
+
+## Kiosk
+
+`http://seedypod.local:3000/kiosk` is a wall-display mode: big numbers for the tank, air temperature, humidity, light and pump, plus any active alerts, with no sidebar. It refreshes on its own every few seconds.
+
+<BrowserFrame
+  address="seedypod.local:3000/kiosk"
+  src="/media/core-kiosk.png"
+  alt="Kiosk mode showing large tank, air, humidity, light and pump tiles"
+/>

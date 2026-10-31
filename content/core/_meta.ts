@@ -1,0 +1,15 @@
+export default {
+  index: 'Overview',
+  '-- setup': { type: 'separator', title: 'Set up' },
+  installation: 'Install',
+  '-- use': { type: 'separator', title: 'Use the web UI' },
+  'web-ui': 'Web UI tour',
+  schedules: 'Schedules',
+  'grow-cycle': 'Grow cycle and pods',
+  '-- connect': { type: 'separator', title: 'Connect' },
+  'home-assistant': 'Home Assistant',
+  mcp: 'MCP for agents',
+  '-- help': { type: 'separator', title: 'Help' },
+  debugging: 'Debugging',
+  privacy: 'Privacy',
+}

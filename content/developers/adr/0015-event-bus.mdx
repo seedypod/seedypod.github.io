@@ -1,0 +1,27 @@
+---
+title: 'ADR 0015: Event bus and mutation broadcast'
+description: 'One process-wide bus carries HAL events and mutations to SSE, WebSocket, the recorder and the HA bridge.'
+---
+
+import { Callout } from 'nextra/components'
+
+# ADR 0015: Event bus and mutation broadcast
+
+**Status:** Accepted
+**Date:** 2026-10-31
+
+## Decision
+
+`src/lib/eventBus.ts` is the single fan-out point. `createCore()` subscribes
+the HAL to it; routers emit `mutation` events; the scheduler emits
+`schedule` events. Consumers: the tRPC `events.onChange` subscription (SSE),
+`/api/ws`, the telemetry recorder, and the HA bridge. The UI invalidates
+queries on events instead of polling.
+
+Adapted from sleepypod ADR 0015.
+
+---
+
+**Sources:** [sleepypod/core (conventions and ADR precedents)](https://github.com/sleepypod/core)
+
+**Imported from** [`docs/adr/0015-event-bus.md`](https://github.com/seedypod/core/blob/a2f6b4c98085d6729f8c2f315237f87f759518e2/docs/adr/0015-event-bus.md) in seedypod/core. Edit it there, not here.

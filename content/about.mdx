@@ -1,0 +1,41 @@
+---
+title: 'About seedypod'
+description: 'Why seedypod exists, where it stands, and how it relates to sleepypod and garden-of-eden.'
+---
+
+import { Callout } from 'nextra/components'
+
+# About seedypod
+
+A Gardyn is a good piece of hardware: a vertical hydroponic tower with a grow light, a pump, sensors and two cameras, run by a Raspberry Pi. It also has a cloud subscription in front of it. seedypod replaces the cloud with open-source software you run on the Pi that is already there, so the tower keeps working on your terms.
+
+The name follows [sleepypod](https://github.com/sleepypod), the sibling project that does the same for Eight Sleep Pods, and Gardyn's plant slots are literally called pods: you put seeds in them. The project was drafted as **leafypod** and renamed to seedypod when it moved to the `seedypod` GitHub organization.
+
+## Project status
+
+<Callout type="warning">
+  **Nothing has run on a real Gardyn yet.** Everything described on this site is built and tested
+  against a simulator. The pin map, I²C addresses, driver timings, power-monitor calibration, button
+  polarity, PWM overlay, camera exposure and the install scripts' Raspberry Pi OS steps are all
+  documented assumptions.
+</Callout>
+
+What exists today:
+
+- The Rust hardware daemon `hald`, with its safety guard, simulator, MQTT and Home Assistant discovery, and drivers for every documented part, cross-built for the Pi Zero W and the Zero 2 W, Pi 4 and Pi 5.
+- Core: the tRPC, REST, MCP and WebSocket server, SQLite store, light curves and bounded pump cycles, grow cycle and reminders, 30-pod tracking, camera captures with per-pod growth trends, the Home Assistant bridge, an optional API key, the web UI and the browser demo.
+
+What comes next is **Phase 1**: open a unit, image the stock card, confirm the pin map on real hardware, and record the result. Until then the [hardware map](/developers/hardware/) is a hypothesis. The [implementation plan](/developers/implementation-plan/) and the [handoff](/developers/handoff/) have the details.
+
+## Credits and license
+
+seedypod is licensed under [AGPL-3.0](https://github.com/seedypod/core/blob/a2f6b4c98085d6729f8c2f315237f87f759518e2/LICENSE), the same as sleepypod.
+
+It is a clean-room implementation: no code from [iot-root/garden-of-eden](https://github.com/iot-root/garden-of-eden) (GPL-3.0) is used. That project's pin map and issue history were invaluable references; its known failure modes became seedypod's safety test cases. See [ADR 0002](/developers/adr/0002-license/).
+
+seedypod is independent, community-built software. It is not affiliated with or endorsed by Gardyn.
+
+## Get involved
+
+- Code and issues: [github.com/seedypod/core](https://github.com/seedypod/core)
+- This site: [github.com/seedypod/seedypod.github.io](https://github.com/seedypod/seedypod.github.io)

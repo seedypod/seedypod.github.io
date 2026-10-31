@@ -1,0 +1,31 @@
+---
+title: 'Privacy'
+description: 'No outbound connections, no accounts, no telemetry. Camera stills stay on your LAN.'
+---
+
+# Privacy
+
+seedypod makes **no outbound connections**. There is no account, no telemetry and no crash reporting.
+
+## What stays where
+
+- **Sensor history, schedules, grow cycles and pod notes** live in a SQLite database on the machine that runs core.
+- **Camera stills and timelapses** stay on the unit, or on the core host you chose, and are served only on your LAN.
+- **MQTT** traffic goes only to brokers you configure, such as your Home Assistant broker.
+- The **[live demo](https://seedypod.vercel.app)** runs a simulator in your browser and talks to no backend.
+
+## Who can reach it
+
+Core trusts your local network. By default the web UI, REST API, MCP endpoint and live event stream have no authentication, so do not port-forward or publicly reverse-proxy port 3000.
+
+If you want more than LAN trust, set an **API key** in **Settings → API access**. Clients that are not on the unit itself must then send it as `Authorization: Bearer YOUR_KEY` or in an `x-api-key` header. Requests from the unit itself (its own UI, scripts and schedules) are always allowed.
+
+MQTT credentials you enter for the Home Assistant bridge are stored in core's database in plain text: anyone who can read that database already controls the unit.
+
+## This website
+
+This documentation site is a static site on GitHub Pages. It sets no cookies of its own and has no analytics. Search runs in your browser.
+
+---
+
+**Source:** [`docs/PRIVACY.md`](https://github.com/seedypod/core/blob/a2f6b4c98085d6729f8c2f315237f87f759518e2/docs/PRIVACY.md) · [ADR 0012: Deployment and trust model](/developers/adr/0012-deployment-and-trust/)

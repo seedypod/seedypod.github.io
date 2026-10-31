@@ -1,0 +1,58 @@
+---
+title: 'User guide'
+description: 'Install seedypod on your Gardyn and use the web UI, schedules, grow cycle and Home Assistant.'
+---
+
+import { Callout, Cards } from 'nextra/components'
+
+# seedypod user guide
+
+seedypod core is the part you interact with. It serves the web UI at `http://seedypod.local:3000/`, runs your light curves and watering schedules, tracks the grow cycle and its reminders, records sensor history and camera stills, and raises alerts. It never touches a pin itself: every command goes to `hald`, the hardware daemon, which applies the safety rules before anything moves.
+
+<Callout type="warning">
+  Nothing in this guide has run on a real Gardyn yet. The screenshots are the real web UI running
+  against the simulated tower. Hardware behaviour, pin assignments and sensor addresses are
+  documented assumptions until the [Phase 1 checklist](/developers/hardware/#phase-1-checklist) is
+  done.
+</Callout>
+
+<BrowserFrame
+  src="/media/core-dashboard.png"
+  alt="seedypod home screen with grow light, water tank level, pump state and environment readings"
+  caption="The home screen: grow light, water and environment at a glance."
+/>
+
+## What you can do
+
+- **Grow light**: turn it on or off, set brightness from 0 to 100 %, and draw daily light curves with sunrise and sunset ramps.
+- **Water**: run the pump for a bounded time, watch the tank level and pump power, and schedule watering cycles.
+- **Grow cycle**: start a cycle, move it through germination, seedling, vegetative and harvest, and get thinning, root-check, harvest and nutrient reminders.
+- **Pods**: track what is planted in each of the 30 slots and flag pods that need attention.
+- **Cameras**: take stills from the upper and lower cameras and scrub through a timelapse.
+- **Alerts**: see low water, pump faults, board over-temperature and reminders, and acknowledge them.
+- **Integrations**: Home Assistant over MQTT, AI agents over MCP, and anything else over REST.
+
+## Safety you can count on
+
+The pump is the one part that can damage the tower: running dry burns it out, and the board browns out above about 30 % duty. `hald` puts every pump command through a single guard, whether it comes from the web UI, a schedule, Home Assistant, an agent or the physical button:
+
+- every run has a deadline, 900 seconds at most by default;
+- duty is capped at 30 %;
+- the pump will not start when the tank reads low, or when the water sensor is unavailable;
+- the pump will not start, and stops, when the board is too hot;
+- a stop caused by a dry tank or heat **latches** the pump off until you acknowledge it.
+
+[ADR 0009](/developers/adr/0009-pump-safety-guard/) has the full rules.
+
+## Guides
+
+<Cards>
+  <Cards.Card title="Install" href="/core/installation/" />
+  <Cards.Card title="Web UI tour" href="/core/web-ui/" />
+  <Cards.Card title="Schedules" href="/core/schedules/" />
+  <Cards.Card title="Grow cycle and pods" href="/core/grow-cycle/" />
+  <Cards.Card title="Home Assistant" href="/core/home-assistant/" />
+  <Cards.Card title="MCP for agents" href="/core/mcp/" />
+  <Cards.Card title="Debugging" href="/core/debugging/" />
+  <Cards.Card title="Privacy" href="/core/privacy/" />
+</Cards>

@@ -1,0 +1,47 @@
+---
+title: 'Deployment'
+description: 'How code moves from dev and main to a unit: tarballs, dev-latest, releases, scripts/deploy.'
+---
+
+import { Callout } from 'nextra/components'
+
+# Deployment
+
+<Callout type="warning">
+  Draft. This page describes intended behaviour that has not been verified on a real Gardyn yet.
+</Callout>
+
+How code gets from `dev` to a unit (mirrors sleepypod/core).
+
+- **`dev`** → every push builds a tarball (`build.yml`) and re-tags the rolling
+  `dev-latest` prerelease (`dev-release.yml`). `scripts/install --branch dev`
+  installs it.
+- **`main`** → `release.yml` cross-builds `hald` for armv6 and aarch64, builds
+  core, and `semantic-release` publishes `vX.Y.Z` with the tarball and both
+  binaries attached. `scripts/install` (no args) installs the latest release.
+- **Feature branches** → `build.yml` tarball artifact, installable via
+  `nightly.link` with `scripts/install --branch <name>`.
+- **Local** → `scripts/deploy user@host` builds here and ships over SSH.
+
+The unit runs two systemd services: `hald` (Rust, owns hardware) and
+`seedypod-core` (Node, `:3000`). Both restart on failure. Core is LAN-only;
+no outbound connections are made by either service.
+
+## Repository secrets and variables
+
+| Name                                 | Kind              | Used by                | How to get it                                                                                                                                                      |
+| ------------------------------------ | ----------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `CODECOV_TOKEN`                      | secret            | `test.yml`, `rust.yml` | sign in to codecov.io with GitHub, install the Codecov app on `seedypod`, then app.codecov.io/gh/seedypod/core → Configuration → General → Repository upload token |
+| `VERCEL_TOKEN`                       | secret            | `vercel.yml`           | vercel.com/account/settings/tokens → Create, scoped to _therealng's projects_                                                                                      |
+| `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID` | secrets           | `vercel.yml`           | set: team `therealngs-projects`, project `seedypod-demo` (`vercel project inspect seedypod-demo`)                                                                  |
+| `VERCEL_ENABLED`                     | variable = `true` | `vercel.yml`           | Settings → Variables; the workflow is skipped until set                                                                                                            |
+| `BACKMERGE_TOKEN`                    | secret            | `back-merge.yml`       | fine-grained PAT owned by a `seedypod` org admin (admins bypass the `Dev` ruleset), resource owner `seedypod`, repo `core`, `Contents: read and write`             |
+| Renovate                             | GitHub App        | `renovate.json`        | install the Renovate app on the repo; it opens an onboarding PR                                                                                                    |
+
+Renovate: minor/patch automerge after 3 days, Mondays; majors and the core stack (react, router, hono, vite, rppal, tokio…) stay manual; cargo is enabled; vulnerability alerts get the `security` label.
+
+---
+
+**Sources:** [sleepypod/core (conventions and ADR precedents)](https://github.com/sleepypod/core) · [Architecture decision records](/developers/adr/)
+
+**Imported from** [`docs/DEPLOYMENT.md`](https://github.com/seedypod/core/blob/a2f6b4c98085d6729f8c2f315237f87f759518e2/docs/DEPLOYMENT.md) in seedypod/core. Edit it there, not here.
