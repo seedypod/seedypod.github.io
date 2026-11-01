@@ -28,7 +28,11 @@ sudo dd if=/dev/YOUR_CARD of=gardyn-stock.img bs=4M status=progress
 
 This image is your way back to the stock Gardyn software. Do not skip it.
 
+<span id="1-flash" />
+
 ### Flash Raspberry Pi OS
+
+Use a **high-endurance** microSD card, the kind rated for continuous video recording (SanDisk High Endurance, Samsung PRO Endurance or similar). It costs a few dollars more than a standard card and is the cheapest reliability gain there is.
 
 In Raspberry Pi Imager, choose **Raspberry Pi OS Lite**: 64-bit for a Zero 2 W, Pi 4 or Pi 5, 32-bit for the original Zero W. In the advanced options set the hostname to `seedypod`, enable SSH and add your Wi-Fi. Reseat the card, boot, then connect:
 
@@ -46,6 +50,14 @@ hald --check
 
 The installer detects the CPU, downloads the matching `hald` binary from the latest GitHub release, writes a commented `/etc/seedypod/hal.toml`, creates a `seedypod` system user in the `gpio`, `i2c` and `video` groups, enables the PWM overlay for the grow light (one reboot needed), installs `fswebcam`, installs the Mosquitto MQTT broker on `127.0.0.1:1883` (reachable only from the Pi itself), and enables `hald.service`. `hald --check` validates the config and prints the devices it plans to use. See the [hald reference](/developers/hal/#install) for options.
 
+It also cuts how much the Pi writes to its card ([ADR 0021](/developers/adr/0021-sd-card-wear-and-recovery/)): the system journal stays in RAM, swap moves to compressed RAM (zram), and `/` is mounted with `noatime`. Each change is checked once it's applied and undone if the check fails, and `--no-wear` skips all three. Logs then last until reboot; [Debugging](/core/debugging/#logs-only-last-until-reboot) shows how to keep them longer. **Settings → Storage** shows how much the unit writes a day.
+
+<Callout type="warning">
+  How these three settings behave on a real Raspberry Pi OS install is on the [hardware
+  checklist](/developers/hardware/#phase-1-checklist). So far they are tested only against stubbed
+  system commands.
+</Callout>
+
 ### Install core
 
 On the same Pi, or on any machine on your LAN:
@@ -56,7 +68,11 @@ curl -fsSL https://raw.githubusercontent.com/seedypod/core/main/scripts/install 
 
 Core listens on port 3000. If `hald` runs on another machine, set `HAL_MQTT_URL` in `/etc/systemd/system/seedypod-core.service`. Then open `http://seedypod.local:3000/`.
 
-The installer accepts `--branch dev` to install the rolling development build, and `--prefix` to change the install location (default `/opt/seedypod`).
+A new install opens on **Welcome**. Choose **Set up a new garden**, or **Restore from a backup** if this card replaces one that died ([Replace a dead SD card](#replace-a-dead-sd-card)).
+
+The installer accepts `--branch dev` to install the rolling development build, `--prefix` to change the install location (default `/opt/seedypod`), and `--restore <file|url>` to restore a backup straight after installing. It also installs the restore helper at `/usr/local/sbin/seedypod-restore` and lets core's user run it with `sudo`, for that one path.
+
+<span id="4-home-assistant" />
 
 ### Connect Home Assistant (optional)
 
@@ -79,6 +95,40 @@ Open **Settings** in the web UI and set:
 
 Then add a [light curve and a watering schedule](/core/schedules/).
 
+## Back up off the card
+
+**Settings → Backup → Download backup** saves a `seedypod-backup-<unit>-<date>.tar.gz` with the database, `hal.toml`, the Home Assistant broker password and `hald`'s state. Switch on **Include photos** to add the stills as well. The file holds your bucket secret and MQTT password, so keep it somewhere private.
+
+With the [off-device mirror](/core/analysis/#mirror-photos-off-the-unit-opt-in) set up, a backup also goes to `backups/` in your bucket every night after 03:00, keeping the newest 14. If no backup succeeds for 7 days, a **Backup overdue** alert appears on Home, in Alerts and in Home Assistant. There is no backup on the card itself, since it would die with the card. See [Maintenance → Backups](/core/maintenance/#backups).
+
+## Replace a dead SD card
+
+With a recent backup in the bucket or a downloaded file, this takes about fifteen minutes and no shell:
+
+<Steps>
+
+### Flash a new card
+
+Flash Raspberry Pi OS Lite as above, with the same hostname and Wi-Fi. A high-endurance card is worth it.
+
+### Run both installers
+
+Run `install-hal`, then `install`, as above.
+
+### Restore
+
+Open `http://seedypod.local:3000`, choose **Restore from a backup**, and either upload the file or enter the mirror's bucket settings from the old card and pick the newest backup. The unit restarts on it, with its schedules, grow cycle, pods, Autopilot rules, probes, calibration and history. It keeps the same unit id, so Home Assistant keeps the same device.
+
+</Steps>
+
+From the shell, `scripts/install --restore <file|url>` does the same. The restore checks the backup first. It refuses a damaged file, and a backup from **newer** software than the unit runs, naming the version to install first. If you restored the wrong backup, **Settings → Backup → Undo restore** puts back what it replaced.
+
+<Callout type="warning">
+  The full backup → wipe → restore round trip runs in the [simulated
+  bring-up](/developers/sim-bringup/). Restoring on a real card is on the [hardware
+  checklist](/developers/hardware/#phase-1-checklist).
+</Callout>
+
 ## Change Wi-Fi
 
 No keyboard needed. Hold the unit's button for **10 seconds**. At 1 second it acknowledges any latched fault; keep holding. The unit then opens an open hotspot named `seedypod-setup-xxxx` for 15 minutes:
@@ -93,11 +143,12 @@ If the password was wrong, the hotspot comes back and the Wi-Fi screen says why.
 
 ```sh
 sudo systemctl disable --now seedypod-core hald
-sudo rm -rf /opt/seedypod /etc/systemd/system/seedypod-core.service /etc/systemd/system/hald.service
+sudo rm -rf /opt/seedypod /etc/systemd/system/seedypod-core.service /etc/systemd/system/hald.service \
+  /usr/local/sbin/seedypod-restore /etc/sudoers.d/seedypod-restore /var/lib/seedypod-restore
 ```
 
 Or reflash the stock image from the first step.
 
 ---
 
-**Source:** [`docs/INSTALLATION.md`](https://github.com/seedypod/core/blob/1ec5dc13c084b8f5b0c9d0d50071bc7a210da85f/docs/INSTALLATION.md) · [`scripts/install`](https://github.com/seedypod/core/blob/1ec5dc13c084b8f5b0c9d0d50071bc7a210da85f/scripts/install) · [`scripts/install-hal`](https://github.com/seedypod/core/blob/1ec5dc13c084b8f5b0c9d0d50071bc7a210da85f/scripts/install-hal)
+**Source:** [`docs/INSTALLATION.md`](https://github.com/seedypod/core/blob/b81f90b6d18258db764c4ee4d594a944915bb6b7/docs/INSTALLATION.md) · [`docs/MAINTENANCE.md`](https://github.com/seedypod/core/blob/b81f90b6d18258db764c4ee4d594a944915bb6b7/docs/MAINTENANCE.md) · [`scripts/install`](https://github.com/seedypod/core/blob/b81f90b6d18258db764c4ee4d594a944915bb6b7/scripts/install) · [`scripts/install-hal`](https://github.com/seedypod/core/blob/b81f90b6d18258db764c4ee4d594a944915bb6b7/scripts/install-hal) · [`scripts/seedypod-restore.cjs`](https://github.com/seedypod/core/blob/b81f90b6d18258db764c4ee4d594a944915bb6b7/scripts/seedypod-restore.cjs)

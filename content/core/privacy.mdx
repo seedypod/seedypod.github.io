@@ -5,7 +5,7 @@ description: 'No outbound connections, no accounts, no telemetry. Camera stills 
 
 # Privacy
 
-seedypod makes **no outbound connections**. There is no account, no telemetry and no crash reporting.
+seedypod makes **no outbound connections unless you configure one**. There is no account, no telemetry and no crash reporting.
 
 ## What stays where
 
@@ -13,6 +13,8 @@ seedypod makes **no outbound connections**. There is no account, no telemetry an
 - **Camera stills and timelapses** stay on the unit, or on the core host you chose, and are served only on your LAN.
 - **MQTT** traffic goes only to brokers you configure, such as your Home Assistant broker.
 - The **[live demo](https://seedypod.vercel.app)** runs a simulator in your browser and talks to no backend.
+- **Off-device storage** is opt-in. With an S3-compatible bucket saved in **Settings → Off-device storage and analysis**, new stills are copied to it, and a **backup** of the unit goes to `backups/` there every night. The bucket is yours, and seedypod talks to no other service.
+- A **backup download** goes only to the browser that asked for it. A backup holds the unit's secrets (bucket keys, MQTT password), so keep it somewhere private.
 
 ## Who can reach it
 
@@ -28,4 +30,4 @@ This documentation site is a static site on GitHub Pages. It sets no cookies of 
 
 ---
 
-**Source:** [`docs/PRIVACY.md`](https://github.com/seedypod/core/blob/a2f6b4c98085d6729f8c2f315237f87f759518e2/docs/PRIVACY.md) · [ADR 0012: Deployment and trust model](/developers/adr/0012-deployment-and-trust/)
+**Source:** [`docs/PRIVACY.md`](https://github.com/seedypod/core/blob/b81f90b6d18258db764c4ee4d594a944915bb6b7/docs/PRIVACY.md) · [ADR 0012: Deployment and trust model](/developers/adr/0012-deployment-and-trust/)
