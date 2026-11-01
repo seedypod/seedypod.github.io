@@ -34,6 +34,18 @@ To see everything `hald` publishes:
 mosquitto_sub -t 'seedypod/#' -v
 ```
 
+## Logs only last until reboot
+
+`install-hal` keeps the system journal in RAM to spare the SD card ([ADR 0021](/developers/adr/0021-sd-card-wear-and-recovery/)). Alerts and faults are still in the database (the **Alerts** screen, `GET /api/alerts`). To chase a crash that needs logs from before a reboot, keep the journal on the card for a while, then turn it back off:
+
+```sh
+sudo mkdir -p /etc/systemd/journald.conf.d
+printf '[Journal]\nStorage=persistent\n' | sudo tee /etc/systemd/journald.conf.d/99-debug-persistent.conf
+sudo systemctl restart systemd-journald      # logs now survive reboots
+# … reproduce, reboot, then: journalctl -b -1 -u hald -u seedypod-core
+sudo rm /etc/systemd/journald.conf.d/99-debug-persistent.conf && sudo systemctl restart systemd-journald
+```
+
 ## Check core
 
 ```sh
@@ -62,6 +74,20 @@ If the pump state shows `fault: "dry-run"` or `fault: "over-temp"`, the fault is
 
 If there is no latched fault but the pump still refuses, the tank probably reads low: check the **Water** screen's distance against your tank calibration in **Settings**.
 
+## A restore that didn't finish
+
+The restore helper logs each step to `/var/lib/seedypod-restore/status.json`, and `sudo seedypod-restore --status` prints the last run. A restore started from the web UI runs as its own transient unit:
+
+```sh
+journalctl -u 'seedypod-restore-*'
+```
+
+If the web UI says restore isn't installed, `scripts/install` hasn't put the helper and its sudoers rule in place. Run as core's user, `sudo -n -l /usr/local/sbin/seedypod-restore` should print the path. A failed restore puts the old files back by itself, and `sudo seedypod-restore --undo` reverses the last restore that did finish.
+
+## SD card writes
+
+**Settings → Storage** (or `GET /api/storage/flash`) shows how much the unit writes to its card per day. To see which process is writing, use `sudo iotop -ao` or `cat /proc/<pid>/io`. `swapon --show` should list only `/dev/zram0`.
+
 ## Reproduce without hardware
 
 Run the daemon against simulated hardware, with time running 60 times faster, and core against it:
@@ -73,4 +99,4 @@ HAL_MQTT_URL= pnpm dev
 
 ---
 
-**Source:** [`docs/DEBUGGING.md`](https://github.com/seedypod/core/blob/a2f6b4c98085d6729f8c2f315237f87f759518e2/docs/DEBUGGING.md)
+**Source:** [`docs/DEBUGGING.md`](https://github.com/seedypod/core/blob/b81f90b6d18258db764c4ee4d594a944915bb6b7/docs/DEBUGGING.md)

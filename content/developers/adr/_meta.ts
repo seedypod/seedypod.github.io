@@ -19,4 +19,5 @@ export default {
   '0018-runtime-sensor-inventory': '0018 Runtime sensor inventory',
   '0019-pluggable-capture-analysis': '0019 Pluggable capture analysis',
   '0020-autopilot-reactive-automations': '0020 Autopilot — reactive automations',
+  '0021-sd-card-wear-and-recovery': '0021 SD card wear and fast recovery',
 }
