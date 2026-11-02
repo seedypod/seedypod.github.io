@@ -51,6 +51,13 @@ VITE_DEMO=1 npx vite build --config web/vite.config.ts --outDir /tmp/seedypod-de
 DEMO_DIST=/tmp/seedypod-demo CORE_COMMIT=<sha> pnpm media:capture
 ```
 
+The homepage overview video (`public/media/seedypod-overview.mp4` and its poster) is recorded from the same demo build, one Playwright video per scene with real pointer and keyboard input, then framed with chapter titles by ffmpeg. `capture/overview.json` records the scenes, what each verified, and the timeline. It needs `ffmpeg` and a GPU for WebGL (Metal on a Mac; set `CAPTURE_GL` otherwise, see the script):
+
+```sh
+DEMO_DIST=/tmp/seedypod-demo CORE_COMMIT=<sha> node scripts/capture-overview.mjs
+node scripts/render-overview.mjs
+```
+
 ## CI and publishing
 
 Pull requests run **Build and browser checks**. The Pages workflow repeats the production checks and deploys `out/` on pushes to `main`. In GitHub Settings → Pages, the build source is **GitHub Actions**.

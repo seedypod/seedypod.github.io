@@ -98,6 +98,27 @@ figure figcaption {
   max-height: 560px;
   background: #080e12;
 }
+.demo figcaption {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #b0b0b6;
+}
+.demo-wide {
+  max-width: none;
+  width: 100%;
+}
+.demo-wide video {
+  width: 100%;
+  max-height: none;
+  aspect-ratio: 16 / 9;
+  background: #11100c;
+}
+.web-showcase .demo-wide {
+  margin-top: 32px;
+}
+.web-showcase .demo-wide video {
+  box-shadow: 0 28px 80px #0005;
+}
 .home {
   background: #0b0b0c;
   color: #ececec;

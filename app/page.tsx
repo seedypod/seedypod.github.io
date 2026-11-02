@@ -2,7 +2,7 @@ import { BrandLogo } from '../components/BrandLogo'
 import { GitHubIcon } from 'nextra/icons'
 import Link from 'next/link'
 import { LinkArrow } from '../components/LinkArrow'
-import { BrowserFrame } from '../components/media'
+import { BrowserFrame, Demo } from '../components/media'
 export default function Home() {
   return (
     <div className="home">
@@ -58,6 +58,28 @@ export default function Home() {
               caption="The real seedypod web UI, running against the simulated tower."
             />
           </div>
+        </section>
+        <section className="web-showcase" aria-labelledby="tour-heading">
+          <div className="section-heading">
+            <p className="eyebrow">A ONE-MINUTE TOUR.</p>
+            <h2 id="tour-heading">Meet your tower.</h2>
+            <p>
+              Turn the tower in 3D, see Gardyn&apos;s light zones, scrub a plant from seedling to
+              harvest, and check the whole system at a glance, all in the real web UI.
+            </p>
+            <Link className="text-link" href="/core/web-ui/">
+              Tour the web UI screen by screen <LinkArrow />
+            </Link>
+          </div>
+          <Demo
+            src="/media/seedypod-overview.mp4"
+            poster="/media/seedypod-overview.png"
+            title="Truly own your Gardyn."
+            wide
+          >
+            A silent tour of seedypod core against the simulated tower. Nothing has run on a real
+            Gardyn yet.
+          </Demo>
         </section>
         <section className="web-showcase" aria-labelledby="web-heading">
           <div className="section-heading">

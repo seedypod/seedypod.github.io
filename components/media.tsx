@@ -18,3 +18,27 @@ export function BrowserFrame({
     </figure>
   )
 }
+export function Demo({
+  src,
+  poster,
+  title,
+  wide = false,
+  children,
+}: {
+  src: string
+  poster: string
+  title: string
+  wide?: boolean
+  children: React.ReactNode
+}) {
+  return (
+    <figure className={wide ? 'demo demo-wide' : 'demo'}>
+      <video controls playsInline preload="metadata" poster={poster} aria-label={title}>
+        <source src={src} type="video/mp4" />
+      </video>
+      <figcaption>
+        <strong>{title}</strong> — {children}
+      </figcaption>
+    </figure>
+  )
+}
