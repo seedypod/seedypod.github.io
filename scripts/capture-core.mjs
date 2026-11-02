@@ -87,15 +87,4 @@ for (const { route, output } of shots) {
 }
 await browser.close()
 server.close()
-
-const icon = await readFile('public/media/seedypod-icon.svg')
-assets.push({
-  repository: 'seedypod/core',
-  commit,
-  source: 'web/public/favicon.svg',
-  output: 'seedypod-icon.svg',
-  method: 'copied unchanged',
-  sha256: createHash('sha256').update(icon).digest('hex'),
-  bytes: icon.length,
-})
 await writeFile('capture/manifest.json', JSON.stringify({ version: 1, assets }, null, 2) + '\n')

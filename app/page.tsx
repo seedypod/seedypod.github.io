@@ -11,8 +11,7 @@ export default function Home() {
       </a>
       <header className="home-nav">
         <Link className="wordmark" href="/">
-          <BrandLogo />
-          seedypod
+          <BrandLogo tone="dark" />
         </Link>
         <nav aria-label="Main navigation">
           <Link href="/getting-started/">Documentation</Link>
@@ -191,8 +190,7 @@ export default function Home() {
       </main>
       <footer className="home-footer">
         <Link className="wordmark" href="/">
-          <BrandLogo />
-          seedypod
+          <BrandLogo tone="dark" />
         </Link>
         <p>
           Independent, community-built software for Gardyn hydroponic towers.
