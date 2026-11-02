@@ -36,13 +36,13 @@ pnpm check
 
   OKF `title`/`description` become Nextra frontmatter, `status: draft` becomes a warning callout, `sources` becomes a footer, and `type`/`generated` are dropped. Links between docs are rewritten to site routes; other repository links point at the pinned commit on GitHub.
 
-- **Hand-written pages** (`getting-started`, `core/*`, `developers/index`, `architecture`, `hal-contract`, `api`, `about`) are written from core's docs and source and cite them.
+- **Hand-written pages** (`getting-started`, `core/*`, `ios`, `developers/index`, `architecture`, `hal-contract`, `api`, `about`) are written from core's docs and source and cite them.
 
 - **API reference**: `public/openapi.json` is a snapshot of core's spec, rendered by `components/OpenApiReference.tsx`. To refresh it, build core (`pnpm build`), run `DATA_DIR=$(mktemp -d) CI=1 node server/dist/index.js`, and save `GET http://localhost:3000/api/openapi.json`.
 
 ## Media
 
-`public/brand/` holds the seedypod icon (favicon and apple-touch icon) and the horizontal logo in light and dark variants, resized from the brand asset set; they are stored in Git LFS. `public/media/` holds real web UI screenshots captured from core's demo build (`VITE_DEMO=1`, simulated tower). `capture/manifest.json` records the source commit, method, dimensions and SHA-256 of each file; `pnpm media:verify` checks them. To recapture:
+`public/brand/` holds the seedypod icon (favicon and apple-touch icon) and the horizontal logo in light and dark variants, resized from the brand asset set; they are stored in Git LFS. `public/media/` holds real web UI screenshots captured from core's demo build (`VITE_DEMO=1`, simulated tower). The `ios-*.png` screenshots come from [seedypod/ios](https://github.com/seedypod/ios)'s demo mode in the iPhone 17 Pro simulator, resized to 552x1200 with `sips -Z 1200`. `capture/manifest.json` records the source commit, method, dimensions and SHA-256 of each file; `pnpm media:verify` checks them. To recapture:
 
 ```sh
 # in a core checkout at the pinned commit

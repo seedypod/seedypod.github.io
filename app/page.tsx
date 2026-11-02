@@ -129,7 +129,10 @@ export default function Home() {
           <div className="section-heading">
             <p className="eyebrow">TWO TIERS, ONE CONTRACT</p>
             <h2>A daemon for the hardware. A core for everything else.</h2>
-            <p>Both run on the Pi already inside your Gardyn, or core can live on any LAN box.</p>
+            <p>
+              Both run on the Pi already inside your Gardyn, or core can live on any LAN box. Use
+              them from a browser, Home Assistant or the iPhone app.
+            </p>
           </div>
           <div className="product-grid">
             <Link className="product-card" href="/developers/hal/">
@@ -164,6 +167,17 @@ export default function Home() {
                 with nothing else installed. Core adds grow reminders and a water-now button.
               </p>
               <span className="card-link">Connect Home Assistant</span>
+            </Link>
+            <Link className="product-card" href="/ios/">
+              <span className="card-number">04 — YOUR POCKET</span>
+              <h3>
+                iPhone app <LinkArrow />
+              </h3>
+              <p>
+                Your tower in 3D on your phone. Tap a pod to harvest or plant it, set the light, run
+                a bounded watering, and clear alerts. Finds your unit with Bonjour; no account.
+              </p>
+              <span className="card-link">Get the iPhone app</span>
             </Link>
           </div>
           <div className="build-invitation">
