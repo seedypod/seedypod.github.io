@@ -85,6 +85,28 @@ test('search finds an indexed guide', async ({ page }) => {
   await hit.click()
   await expect(page).toHaveURL(/core\/home-assistant/)
 })
+test('docs search index paths and anchors resolve', async ({ page, request }) => {
+  test.setTimeout(120000)
+  const response = await request.get('/search-index.json')
+  expect(response.status()).toBe(200)
+  const index: {
+    version: number
+    base: string
+    pages: { path: string; headings: { anchor: string }[] }[]
+  } = await response.json()
+  expect(index.version).toBe(1)
+  expect(index.base).toBe('https://seedypod.github.io')
+  expect(index.pages.length).toBeGreaterThan(0)
+  expect(index.pages.map((p) => p.path)).toContain('/getting-started/')
+  for (const { path: route, headings } of index.pages) {
+    expect((await page.goto(route))?.status(), route).toBe(200)
+    const missing = await page.evaluate(
+      (ids) => ids.filter((id) => !document.getElementById(id)),
+      headings.map((h) => h.anchor),
+    )
+    expect(missing, route).toEqual([])
+  }
+})
 test('docs sidebar navigation works', async ({ page }) => {
   await page.goto('/getting-started/')
   const menu = page.getByRole('button', { name: 'Menu', exact: true })
