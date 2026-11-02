@@ -3,18 +3,11 @@ title: 'Developers'
 description: 'Architecture, APIs, the hardware daemon and its contract, decision records and the build plan.'
 ---
 
-import { Callout, Cards } from 'nextra/components'
+import { Cards } from 'nextra/components'
 
 # Developer documentation
 
-seedypod lives in one repository, [seedypod/core](https://github.com/seedypod/core): a Rust workspace for the hardware daemon in `hal/`, and TypeScript for the server (`server/`, `src/`) and the web UI (`web/`). It mirrors [sleepypod](https://github.com/sleepypod)'s conventions (branching, CI, releases, ADRs, a Vercel demo and this Nextra site) so tooling and habits carry over.
-
-<Callout type="warning">
-  **Pre-hardware.** Everything is tested against the simulator and a local Mosquitto broker. The
-  real drivers compile for both Pi targets, but their register sequences, timings, the PWM overlay
-  and the [pin map](/developers/hardware/) are unverified until Phase 1 is done on a real unit. See
-  the [handoff](/developers/handoff/#1-what-exists) for exactly what is and is not proven.
-</Callout>
+seedypod lives in one repository, [seedypod/core](https://github.com/seedypod/core): a Rust workspace for the hardware daemon in `hal/`, and TypeScript for the server (`server/`, `src/`) and the web UI (`web/`). It mirrors [sleepypod](https://sleepypod.github.io/developers/workflows/)'s conventions (branching, CI, releases, ADRs, a Vercel demo and this Nextra site) so tooling and habits carry over.
 
 ## Start here
 

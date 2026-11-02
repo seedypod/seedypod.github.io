@@ -12,7 +12,7 @@ import { Callout } from 'nextra/components'
 
 ## Context
 
-sleepypod uses drizzle + better-sqlite3 (ADR 0010 there). seedypod has the
+[sleepypod](https://sleepypod.github.io/developers/architecture/) uses drizzle + better-sqlite3 (ADR 0010 there). seedypod has the
 same shape of data (settings, schedules, alerts, history) but also needs the
 whole application to run in a browser for the Vercel demo, where native
 SQLite is unavailable.
@@ -38,4 +38,4 @@ file; a second database is unnecessary at this volume.
 
 **Sources:** [sleepypod/core (conventions and ADR precedents)](https://github.com/sleepypod/core)
 
-**Imported from** [`docs/adr/0010-drizzle-sqlite-store.md`](https://github.com/seedypod/core/blob/b81f90b6d18258db764c4ee4d594a944915bb6b7/docs/adr/0010-drizzle-sqlite-store.md) in seedypod/core. Edit it there, not here.
+**Imported from** [`docs/adr/0010-drizzle-sqlite-store.md`](https://github.com/seedypod/core/blob/8781ac82e6a3549d5c7684ab33ac66f3c79e5ba2/docs/adr/0010-drizzle-sqlite-store.md) in seedypod/core. Edit it there, not here.

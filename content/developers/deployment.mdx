@@ -11,7 +11,7 @@ import { Callout } from 'nextra/components'
   Draft. This page describes intended behaviour that has not been verified on a real Gardyn yet.
 </Callout>
 
-How code gets from `dev` to a unit (mirrors sleepypod/core).
+How code gets from `dev` to a unit (mirrors [sleepypod/core](https://sleepypod.github.io/developers/workflows/)).
 
 - **`dev`** → every push builds a tarball (`build.yml`) and re-tags the rolling
   `dev-latest` prerelease (`dev-release.yml`). `scripts/install --branch dev`
@@ -44,4 +44,4 @@ Renovate runs as the Mend Renovate GitHub App on the `seedypod` org (no token; i
 
 **Sources:** [sleepypod/core (conventions and ADR precedents)](https://github.com/sleepypod/core) · [Architecture decision records](/developers/adr/)
 
-**Imported from** [`docs/DEPLOYMENT.md`](https://github.com/seedypod/core/blob/b81f90b6d18258db764c4ee4d594a944915bb6b7/docs/DEPLOYMENT.md) in seedypod/core. Edit it there, not here.
+**Imported from** [`docs/DEPLOYMENT.md`](https://github.com/seedypod/core/blob/8781ac82e6a3549d5c7684ab33ac66f3c79e5ba2/docs/DEPLOYMENT.md) in seedypod/core. Edit it there, not here.

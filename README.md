@@ -2,7 +2,7 @@
 
 Nextra + Next.js static export, served at https://seedypod.github.io/. Modeled on [sleepypod.github.io](https://github.com/sleepypod/sleepypod.github.io).
 
-seedypod is **pre-hardware**: nothing has run on a real Gardyn yet and the pin map is unverified. Every page that describes hardware behaviour must say so.
+The pin map has been checked against the stock Gardyn 3.0 firmware but not yet probed on a board. Pages must not present hardware behaviour that hasn't been probed on a unit as verified.
 
 ## Develop
 
@@ -26,7 +26,7 @@ pnpm check
 
 ## Content sources
 
-[seedypod/core](https://github.com/seedypod/core)'s `docs/` folder is the source of truth. All pages pin core commit `a2f6b4c98085d6729f8c2f315237f87f759518e2` (the `chore/rename-seedypod` branch).
+[seedypod/core](https://github.com/seedypod/core)'s `docs/` folder is the source of truth. Imported pages pin the core commit they were imported from (currently `8781ac82e6a3549d5c7684ab33ac66f3c79e5ba2` on `dev`); hand-written pages cite `a2f6b4c98085d6729f8c2f315237f87f759518e2` (the `chore/rename-seedypod` branch).
 
 - **Imported pages** (`content/developers/adr/`, `hal`, `hardware`, `deployment`, `testing`, `implementation-plan`, `handoff`) are generated from core's OKF documents. Do not edit them here; change core, then re-import:
 

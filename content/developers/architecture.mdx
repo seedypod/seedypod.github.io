@@ -60,9 +60,9 @@ Every capability is a tRPC procedure first ([ADR 0005](/developers/adr/0005-trpc
 
 ## Core stack
 
-Hono on Node serves tRPC, the REST facade, MCP and the built SPA from one `node server/dist/index.js`. The UI is Vite, React 19 and TanStack Router, styled with Tailwind 4 and sleepypod's design system ([ADR 0003](/developers/adr/0003-core-stack/), [ADR 0016](/developers/adr/0016-shared-design-language/)). Persistence goes through a `Store` interface: SQLite with drizzle on the unit, an in-memory store in tests and in the browser demo, held to one conformance suite ([ADR 0010](/developers/adr/0010-drizzle-sqlite-store/)).
+Hono on Node serves tRPC, the REST facade, MCP and the built SPA from one `node server/dist/index.js`. The UI is Vite, React 19 and TanStack Router, styled with Tailwind 4 and [sleepypod](https://sleepypod.github.io/)'s design system ([ADR 0003](/developers/adr/0003-core-stack/), [ADR 0016](/developers/adr/0016-shared-design-language/)). Persistence goes through a `Store` interface: SQLite with drizzle on the unit, an in-memory store in tests and in the browser demo, held to one conformance suite ([ADR 0010](/developers/adr/0010-drizzle-sqlite-store/)).
 
-The choice of Hono and Vite over sleepypod's Next.js is about memory: the Gardyn's Zero 2 W has 512 MB, and nothing in core needs server rendering.
+The choice of Hono and Vite over [sleepypod](https://sleepypod.github.io/developers/architecture/)'s Next.js is about memory: the Gardyn's Zero 2 W has 512 MB, and nothing in core needs server rendering.
 
 ## Deployment topologies
 

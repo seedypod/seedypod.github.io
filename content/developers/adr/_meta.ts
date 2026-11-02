@@ -20,4 +20,6 @@ export default {
   '0019-pluggable-capture-analysis': '0019 Pluggable capture analysis',
   '0020-autopilot-reactive-automations': '0020 Autopilot — reactive automations',
   '0021-sd-card-wear-and-recovery': '0021 SD card wear and fast recovery',
+  '0022-harvest-outlook': '0022 Harvest outlook from the camera, with optional plant profiles',
+  '0023-homekit': '0023 HomeKit bridge and per-unit identity',
 }

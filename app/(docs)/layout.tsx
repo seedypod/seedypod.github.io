@@ -1,16 +1,10 @@
 import { BrandLogo } from '../../components/BrandLogo'
 import { LinkArrow } from '../../components/LinkArrow'
-import { Banner } from 'nextra/components'
 import { Layout, Navbar, Footer } from 'nextra-theme-docs'
 import { getPageMap } from 'nextra/page-map'
 export default async function DocsLayout({ children }: { children: React.ReactNode }) {
   return (
     <Layout
-      banner={
-        <Banner storageKey="seedypod-pre-hardware" dismissible={false}>
-          Pre-hardware: nothing has run on a real Gardyn yet, and the pin map is unverified.
-        </Banner>
-      }
       navbar={
         <Navbar
           logo={

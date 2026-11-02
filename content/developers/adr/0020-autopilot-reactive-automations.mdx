@@ -27,7 +27,7 @@ Nothing reacts to a reading. Owners want rules like these:
 The signals already exist: sensor telemetry, actuator state, alerts, and since
 ADR 0019, per-pod analysis results.
 
-sleepypod solved the same problem for the Pod with **Autopilot** (its ADR 0023):
+[sleepypod](https://sleepypod.github.io/core/autopilot/) solved the same problem for the Pod with **Autopilot** (its ADR 0023):
 
 - WHEN/IF/THEN rules over live signals.
 - Windowed aggregates (`avg(ph, 60m)`).
@@ -128,7 +128,7 @@ as the run's outcome and never retried by the engine.
 The arbiter writes only when the resolved level changes. While a higher source
 is in charge, the schedule's clock keeps running. That way, when a hold
 expires, the light resolves to the current curve point and doesn't replay old
-ones. This is the precedence sleepypod reached in its revision of ADR 0023,
+ones. This is the precedence [sleepypod](https://sleepypod.github.io/core/autopilot-engine/) reached in its revision of ADR 0023,
 minus run-once sessions, which seedypod doesn't have.
 
 ### Safety
@@ -262,4 +262,4 @@ Code:
 
 **Sources:** [sleepypod ADR 0023: Reactive automations engine (Autopilot)](https://github.com/sleepypod/core/blob/dev/docs/adr/0023-autopilot-reactive-automations.md) · [ADR 0004: Two tiers — hardware daemon and core](/developers/adr/0004-two-tier-hal-core/) · [ADR 0009: Pump safety guard](/developers/adr/0009-pump-safety-guard/) · [ADR 0014: Auto-dosing safety](/developers/adr/0014-auto-dosing-safety/) · [ADR 0015: Event bus and mutation broadcast](/developers/adr/0015-event-bus/) · [ADR 0019: Pluggable capture analysis](/developers/adr/0019-pluggable-capture-analysis/)
 
-**Imported from** [`docs/adr/0020-autopilot-reactive-automations.md`](https://github.com/seedypod/core/blob/b81f90b6d18258db764c4ee4d594a944915bb6b7/docs/adr/0020-autopilot-reactive-automations.md) in seedypod/core. Edit it there, not here.
+**Imported from** [`docs/adr/0020-autopilot-reactive-automations.md`](https://github.com/seedypod/core/blob/8781ac82e6a3549d5c7684ab33ac66f3c79e5ba2/docs/adr/0020-autopilot-reactive-automations.md) in seedypod/core. Edit it there, not here.

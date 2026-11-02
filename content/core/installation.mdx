@@ -7,12 +7,6 @@ import { Callout, Steps } from 'nextra/components'
 
 # Install seedypod on a Gardyn
 
-<Callout type="error">
-  **Phase 1 is not done: nothing here has run on a real Gardyn yet.** The install scripts' Raspberry
-  Pi OS steps, the pin map and the I²C addresses are documented assumptions. Follow at your own
-  risk, and **back up the stock card first** so bricking is a five-minute reflash.
-</Callout>
-
 seedypod runs on the Raspberry Pi already inside the unit: early Gardyns use a Pi Zero W, later ones a Pi Zero 2 W. The default setup runs both `hald` and core on that Pi. You can also run core on any other machine on your LAN and point it at the daemon ([deployment topologies](/developers/architecture/#deployment-topologies)).
 
 <Steps>
