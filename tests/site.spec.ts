@@ -169,6 +169,26 @@ test('web UI screenshot enlarges and closes', async ({ page }) => {
   await page.keyboard.press('Escape')
   await expect(page.getByRole('dialog')).not.toBeVisible()
 })
+test('homepage overview video has its poster and an MP4 the manifest vouches for', async ({
+  page,
+  request,
+}) => {
+  await page.goto('/')
+  const video = page.getByRole('region', { name: 'Meet your tower.' }).locator('video')
+  await expect(video).toHaveAttribute('poster', '/media/seedypod-overview.png')
+  await expect(video).toHaveAttribute('aria-label', 'Truly own your Gardyn.')
+  const poster = await request.get('/media/seedypod-overview.png')
+  expect(poster.status()).toBe(200)
+  // Playwright's Chromium has no H.264 decoder, so check the file rather than play it.
+  const src = await video.locator('source').getAttribute('src')
+  const mp4 = await request.get(src!)
+  expect(mp4.status()).toBe(200)
+  expect(mp4.headers()['content-type']).toBe('video/mp4')
+  const { assets } = JSON.parse(readFileSync('capture/manifest.json', 'utf8'))
+  const asset = assets.find((a: { output: string }) => a.output === 'seedypod-overview.mp4')
+  expect((await mp4.body()).length).toBe(asset.bytes)
+  expect(asset.durationSeconds).toBeGreaterThan(30)
+})
 test('docs theme preference persists', async ({ page }) => {
   await page.goto('/getting-started/')
   const menu = page.getByRole('button', { name: 'Menu', exact: true })

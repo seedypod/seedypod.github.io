@@ -99,6 +99,29 @@
       "bytes": 60518,
       "width": 2880,
       "height": 2000
+    },
+    {
+      "repository": "seedypod/core",
+      "commit": "d5c5f45827a0b3ad2cfdc41aaed933d32b63be7b",
+      "source": "web demo build (VITE_DEMO=1), overview tour",
+      "output": "seedypod-overview.mp4",
+      "method": "scripts/capture-overview.mjs + scripts/render-overview.mjs; scripts/capture-overview.mjs; core web demo build (VITE_DEMO=1) with the in-browser simulated tower; loopback only, off-origin requests blocked; Playwright 1440x1000 video, dark, GPU WebGL; original chapter typography and the repository seedypod logo around unchanged UI recordings",
+      "sha256": "7e093c1386195571373fbe23803ffe8a32647e1e9f7d77724a7a9390f7483d43",
+      "bytes": 1807008,
+      "width": 1920,
+      "height": 1080,
+      "durationSeconds": 54.64
+    },
+    {
+      "repository": "seedypod/core",
+      "commit": "d5c5f45827a0b3ad2cfdc41aaed933d32b63be7b",
+      "source": "web demo build (VITE_DEMO=1), overview tour",
+      "output": "seedypod-overview.png",
+      "method": "scripts/capture-overview.mjs + scripts/render-overview.mjs; scripts/capture-overview.mjs; core web demo build (VITE_DEMO=1) with the in-browser simulated tower; loopback only, off-origin requests blocked; Playwright 1440x1000 video, dark, GPU WebGL; original chapter typography and the repository seedypod logo around unchanged UI recordings",
+      "sha256": "4b0144453e9ed75a6508b7eb5f2fc419a41a96c381950ae97fc16610733890f8",
+      "bytes": 347665,
+      "width": 1920,
+      "height": 1080
     }
   ]
 }
