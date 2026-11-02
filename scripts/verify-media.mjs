@@ -25,7 +25,3 @@ for (const a of assets) {
     throw new Error(`Invalid SVG: ${a.output}`)
 }
 console.log(`Verified ${assets.length} product assets, dimensions, and SHA-256 checksums`)
-
-const icon = await readFile('app/icon.svg')
-if (!icon.equals(await readFile('public/media/seedypod-icon.svg')))
-  throw new Error('App icon differs from the core favicon')

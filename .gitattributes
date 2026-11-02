@@ -1,0 +1,2 @@
+# Brand PNGs live in Git LFS. Scoped to the brand directory so the captured screenshots in public/media stay in git.
+public/brand/**/*.png filter=lfs diff=lfs merge=lfs -text

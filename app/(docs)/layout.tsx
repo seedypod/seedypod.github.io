@@ -16,7 +16,7 @@ export default async function DocsLayout({ children }: { children: React.ReactNo
           logo={
             <span className="wordmark">
               <BrandLogo />
-              seedypod<span className="docs-label"> / docs</span>
+              <span className="docs-label">/ docs</span>
             </span>
           }
           projectLink="https://github.com/seedypod"

@@ -6,7 +6,7 @@ seedypod is **pre-hardware**: nothing has run on a real Gardyn yet and the pin m
 
 ## Develop
 
-Use Node 24 and pnpm 10.34.5.
+Use Node 24 and pnpm 10.34.5. The logo and icon PNGs in `public/brand/` are stored with [Git LFS](https://git-lfs.com), so install it before cloning (`brew install git-lfs`, then `git lfs install` once per machine). In a clone made without it, run `git lfs pull`, or the images are text pointer files and the browser checks fail on the broken logo.
 
 ```sh
 pnpm install --frozen-lockfile
@@ -42,7 +42,7 @@ pnpm check
 
 ## Media
 
-`public/media/` holds real web UI screenshots captured from core's demo build (`VITE_DEMO=1`, simulated tower) and the core favicon, which is also `app/icon.svg`. `capture/manifest.json` records the source commit, method, dimensions and SHA-256 of each file; `pnpm media:verify` checks them. To recapture:
+`public/brand/` holds the seedypod icon (favicon and apple-touch icon) and the horizontal logo in light and dark variants, resized from the brand asset set; they are stored in Git LFS. `public/media/` holds real web UI screenshots captured from core's demo build (`VITE_DEMO=1`, simulated tower). `capture/manifest.json` records the source commit, method, dimensions and SHA-256 of each file; `pnpm media:verify` checks them. To recapture:
 
 ```sh
 # in a core checkout at the pinned commit

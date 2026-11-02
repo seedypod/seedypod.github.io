@@ -99,15 +99,6 @@
       "bytes": 60518,
       "width": 2880,
       "height": 2000
-    },
-    {
-      "repository": "seedypod/core",
-      "commit": "a2f6b4c98085d6729f8c2f315237f87f759518e2",
-      "source": "web/public/favicon.svg",
-      "output": "seedypod-icon.svg",
-      "method": "copied unchanged",
-      "sha256": "9ca46a21e15d274b81fabeb7fa8f0bd3a3bdb9af5db61d2d6770451d0ff46d6c",
-      "bytes": 330
     }
   ]
 }
