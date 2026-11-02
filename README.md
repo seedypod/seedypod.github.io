@@ -20,7 +20,9 @@ pnpm exec playwright install chromium
 pnpm check
 ```
 
-`pnpm check` verifies media, builds `out/`, creates its Pagefind index, checks TypeScript, and runs desktop/mobile browser tests (every route, every internal link and fragment, search, sidebar, API reference, Mermaid, 404) against a static file server. Set `PORT` for `scripts/serve.mjs` and `SITE_URL` for Playwright if port 4173 is taken.
+`pnpm check` verifies media, builds `out/`, creates its Pagefind index and `out/search-index.json`, checks TypeScript, and runs desktop/mobile browser tests (every route, every internal link and fragment, search, sidebar, API reference, Mermaid, 404) against a static file server. Set `PORT` for `scripts/serve.mjs` and `SITE_URL` for Playwright if port 4173 is taken.
+
+`scripts/build-search-index.mjs` writes `/search-index.json` for the core web app's command palette: one entry per visible guide with its path, title, section, description, h2/h3 anchors read from the built HTML, and frontmatter `keywords`. Set `searchable: false` in a page's frontmatter to leave it out.
 
 ## Content sources
 
