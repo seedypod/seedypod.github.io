@@ -18,6 +18,16 @@ export function BrowserFrame({
     </figure>
   )
 }
+export function PhoneFrame({ src, alt, caption }: MediaProps) {
+  return (
+    <figure className="phone-figure">
+      <div className="phone-frame">
+        <img src={src} alt={alt} width={552} height={1200} loading="lazy" />
+      </div>
+      {caption && <figcaption>{caption}</figcaption>}
+    </figure>
+  )
+}
 export function Demo({
   src,
   poster,

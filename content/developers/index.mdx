@@ -20,6 +20,10 @@ cargo run --manifest-path hal/Cargo.toml -p hald -- --sim --stdout --ticks 3
 
 `dev` is the integration branch and `main` is release-only. Commits are conventional, and every PR to `main` must be titled `feat:`, `fix:`, `perf:` or `revert:` because it cuts a release. Read the repository's `AGENTS.md` and the [ADRs](/developers/adr/) before changing safety or contract code.
 
+## Clients
+
+Everything a client needs is core's API: tRPC (with the generated REST facade) and the live event stream at `/api/ws`. The web UI ships with core. The [iPhone app](/ios/) lives in its own repository, [seedypod/ios](https://github.com/seedypod/ios) (SwiftUI, AGPL-3.0); it ports sleepypod's iOS transport and finds units over Bonjour (`_seedypod._tcp`), as recorded in [ADR-0017](/developers/adr/0017-ios-client/).
+
 ## Reference
 
 <Cards>

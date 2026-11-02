@@ -86,6 +86,24 @@ figure figcaption {
 .browser-frame figcaption {
   padding: 0 12px 12px;
 }
+.phone-figure {
+  margin: 24px auto;
+  max-width: 280px;
+}
+.phone-frame {
+  border: 6px solid #26262a;
+  border-radius: 40px;
+  overflow: hidden;
+  background: #0f0f10;
+}
+.phone-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.media-grid .phone-figure {
+  margin: 0 auto;
+}
 .demo {
   margin: 26px auto;
   max-width: 580px;
@@ -296,7 +314,7 @@ figure figcaption {
 }
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 18px;
   margin-top: 40px;
 }

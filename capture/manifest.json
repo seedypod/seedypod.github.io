@@ -122,6 +122,61 @@
       "bytes": 347665,
       "width": 1920,
       "height": 1080
+    },
+    {
+      "repository": "seedypod/ios",
+      "commit": "db6746eba3718949943dcf99c98d42d6196bf4f2",
+      "source": "iOS app demo mode (simulated tower, day 19), Home, the tower in 3D",
+      "output": "ios-home.png",
+      "method": "Xcode iPhone 17 Pro simulator screenshot (1206x2622, dark), resized with sips -Z 1200",
+      "sha256": "b8171d541e1b5d8a2528f53b16b0b4802780efeca8672c0d27ecb80336d24446",
+      "bytes": 343961,
+      "width": 552,
+      "height": 1200
+    },
+    {
+      "repository": "seedypod/ios",
+      "commit": "db6746eba3718949943dcf99c98d42d6196bf4f2",
+      "source": "iOS app demo mode (simulated tower, day 19), Home with the Pod 2 card open (ready to harvest)",
+      "output": "ios-pod.png",
+      "method": "Xcode iPhone 17 Pro simulator screenshot (1206x2622, dark), resized with sips -Z 1200",
+      "sha256": "21d224224a5859f1fc6bd70b71595de74af21789bbe95cc549ed9e804da7f050",
+      "bytes": 276052,
+      "width": 552,
+      "height": 1200
+    },
+    {
+      "repository": "seedypod/ios",
+      "commit": "db6746eba3718949943dcf99c98d42d6196bf4f2",
+      "source": "iOS app demo mode (simulated tower, day 19), Home with the Grow light sheet open",
+      "output": "ios-light.png",
+      "method": "Xcode iPhone 17 Pro simulator screenshot (1206x2622, dark), resized with sips -Z 1200",
+      "sha256": "4aec032969a7623b720244addb134cd3e313829501bf3f54801e0cc6f56e9f3d",
+      "bytes": 186546,
+      "width": 552,
+      "height": 1200
+    },
+    {
+      "repository": "seedypod/ios",
+      "commit": "db6746eba3718949943dcf99c98d42d6196bf4f2",
+      "source": "iOS app demo mode (simulated tower, day 19), Home with the Water sheet open",
+      "output": "ios-water.png",
+      "method": "Xcode iPhone 17 Pro simulator screenshot (1206x2622, dark), resized with sips -Z 1200",
+      "sha256": "492fa926f442924910bd3a63129a0e43c73858076ac8d85720b6784fb00ec465",
+      "bytes": 190003,
+      "width": 552,
+      "height": 1200
+    },
+    {
+      "repository": "seedypod/ios",
+      "commit": "db6746eba3718949943dcf99c98d42d6196bf4f2",
+      "source": "iOS app demo mode (simulated tower, day 19), connect screen",
+      "output": "ios-connect.png",
+      "method": "Xcode iPhone 17 Pro simulator screenshot (1206x2622, dark), resized with sips -Z 1200",
+      "sha256": "f125601312c916c91a021903dd23f6233e8c613fb186b5fa3ab1f6733597793d",
+      "bytes": 119266,
+      "width": 552,
+      "height": 1200
     }
   ]
 }
