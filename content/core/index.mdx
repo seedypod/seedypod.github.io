@@ -3,18 +3,11 @@ title: 'User guide'
 description: 'Install seedypod on your Gardyn and use the web UI, schedules, grow cycle and Home Assistant.'
 ---
 
-import { Callout, Cards } from 'nextra/components'
+import { Cards } from 'nextra/components'
 
 # seedypod user guide
 
 seedypod core is the part you interact with. It serves the web UI at `http://seedypod.local:3000/`, runs your light curves and watering schedules, tracks the grow cycle and its reminders, records sensor history and camera stills, and raises alerts. It never touches a pin itself: every command goes to `hald`, the hardware daemon, which applies the safety rules before anything moves.
-
-<Callout type="warning">
-  Nothing in this guide has run on a real Gardyn yet. The screenshots are the real web UI running
-  against the simulated tower. Hardware behaviour, pin assignments and sensor addresses are
-  documented assumptions until the [Phase 1 checklist](/developers/hardware/#phase-1-checklist) is
-  done.
-</Callout>
 
 <BrowserFrame
   src="/media/core-dashboard.png"

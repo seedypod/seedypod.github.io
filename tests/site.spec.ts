@@ -62,13 +62,14 @@ test('homepage navigation and keyboard access', async ({ page }) => {
   await page.getByRole('link', { name: 'Get started', exact: false }).first().click()
   await expect(page.locator('h1')).toHaveText('Get started')
 })
-test('pre-hardware status is visible on the homepage and in the docs', async ({ page }) => {
+test('no pre-hardware banner, and getting started still says to back up the stock card', async ({
+  page,
+}) => {
   await page.goto('/')
-  await expect(page.getByRole('note')).toContainText('nothing has run on a real Gardyn yet')
+  await expect(page.getByText(/pre-hardware/i)).toHaveCount(0)
   await page.goto('/getting-started/')
-  await expect(
-    page.getByText('Pre-hardware: nothing has run on a real Gardyn yet').first(),
-  ).toBeVisible()
+  await expect(page.getByText(/pre-hardware/i)).toHaveCount(0)
+  await expect(page.getByText('back up the stock microSD card')).toBeVisible()
 })
 test('search finds an indexed guide', async ({ page }) => {
   await page.goto('/getting-started/')

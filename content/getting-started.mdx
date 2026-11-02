@@ -3,7 +3,7 @@ title: 'Get started'
 description: 'Try seedypod in your browser, run it on your laptop, or install it on the Pi inside your Gardyn.'
 ---
 
-import { Callout, Cards } from 'nextra/components'
+import { Cards } from 'nextra/components'
 
 # Get started
 
@@ -11,13 +11,6 @@ seedypod gives you local, cloud-free control of a Gardyn hydroponic tower. It ru
 
 - **`hald`**, a small Rust daemon that owns the pins and buses: grow light, pump, water level, temperature and humidity, power monitor, cameras and the button.
 - **seedypod core**, a server with a web UI, schedules, grow-cycle reminders, alerts, a REST API, an MCP endpoint for AI agents, and a Home Assistant bridge.
-
-<Callout type="warning">
-  **seedypod is pre-hardware.** The software is complete through the simulator and its tests, but
-  **nothing has run on a real Gardyn yet**, and the [pin map](/developers/hardware/) is unverified.
-  If you install it on a real unit, back up the stock microSD card first so a mistake costs you a
-  five-minute reflash.
-</Callout>
 
 ## 1. Try the live demo
 
@@ -44,7 +37,7 @@ cargo run --manifest-path hal/Cargo.toml -p hald -- --sim --stdout --ticks 3
 
 ## 3. Install on a Gardyn
 
-When you are ready to open the base, follow the [installation guide](/core/installation/). In short: image the stock card, flash Raspberry Pi OS Lite, install `hald`, then install core and open `http://seedypod.local:3000/`.
+When you are ready to open the base, follow the [installation guide](/core/installation/). Before anything else, back up the stock microSD card: with that image, a mistake costs you a five-minute reflash. Then flash Raspberry Pi OS Lite, install `hald`, then install core and open `http://seedypod.local:3000/`.
 
 ## What next
 

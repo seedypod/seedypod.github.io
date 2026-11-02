@@ -46,7 +46,10 @@ export default function Home() {
                 Try the live demo <LinkArrow direction="external" />
               </a>
             </div>
-            <p className="hero-note">Open source · AGPL-3.0 · Sibling of sleepypod</p>
+            <p className="hero-note">
+              Open source · AGPL-3.0 · Sibling of{' '}
+              <a href="https://sleepypod.github.io/">sleepypod</a>
+            </p>
           </div>
           <div className="hero-media">
             <BrowserFrame
@@ -56,12 +59,6 @@ export default function Home() {
             />
           </div>
         </section>
-        <p className="status-banner" role="note">
-          <strong>Pre-hardware.</strong> The software is built and tested against a simulator, but
-          nothing has run on a real Gardyn yet. The pin map comes from upstream research and is
-          unverified. Back up your stock microSD card before you try anything.{' '}
-          <Link href="/about/#project-status">Read the project status</Link>.
-        </p>
         <section className="web-showcase" aria-labelledby="web-heading">
           <div className="section-heading">
             <p className="eyebrow">IN YOUR BROWSER. ON YOUR NETWORK.</p>
