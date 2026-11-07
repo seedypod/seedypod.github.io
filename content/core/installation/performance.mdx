@@ -7,16 +7,23 @@ description: 'Measured install, boot, update and idle-resource observations from
 
 These are observations from the November 6, 2026 bring-up of one Gardyn 3.0 with a **Pi Zero W Rev 1.1**, a 64 GB card and Wi-Fi. They are not multi-device benchmarks; a Zero 2 W has not been timed.
 
-| Measurement               | Earlier bring-up                                            | After the changes                                         |
-| ------------------------- | ----------------------------------------------------------- | --------------------------------------------------------- |
-| New-card setup            | About an hour using the scripts with a local SQLite compile | Image: web app serving **4m31s after power-on**           |
-| Core update               | 6m13s                                                       | **1m24s**                                                 |
-| Reboot to web app serving | About 4 minutes                                             | **About 2.5 minutes**                                     |
-| Card writes, daily rate   | About 440 MB/day                                            | **About 63 MB/day**, extrapolated from a 20-minute sample |
-| Core at idle              | 6.4% CPU, 90 MB RAM                                         | **3.4% CPU, 109 MB RAM**                                  |
+| Measurement                                | Earlier bring-up                                            | After the changes                                         |
+| ------------------------------------------ | ----------------------------------------------------------- | --------------------------------------------------------- |
+| New-card setup                             | About an hour using the scripts with a local SQLite compile | Image: web app serving **4m31s after power-on**           |
+| Prebuilt script path (HAL + core redeploy) | —                                                           | **6m13s** to core serving pages                           |
+| Core-only update (later installer rerun)   | —                                                           | **1m24s**                                                 |
+| Reboot to web app serving                  | About 4 minutes                                             | **About 2.5 minutes**                                     |
+| Card writes, daily rate                    | About 440 MB/day                                            | **About 63 MB/day**, extrapolated from a 20-minute sample |
+| Core at idle                               | 6.4% CPU, 90 MB RAM                                         | **3.4% CPU, 109 MB RAM**                                  |
 
-The image timing excludes downloading and writing the card. SSH became available later, at about **7.5 minutes** on first boot; web access does not need SSH. A fresh script install using the prebuilt SQLite binary has not been timed separately. The write rate is a short observation, not a card-lifetime estimate, and the lower idle CPU came with higher memory use.
+The **prebuilt script path was timed**: the [first-boot checklist](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/docs/hardware/first-boot-checklist.md) records about six minutes, measured as a redeploy. The saved November 6 `deploy.log` starts at **12:49:40** and records `CORE_SERVING` at **12:55:53**, a total of **6m13s** for HAL and core together. Dependencies were already present (`Already up to date` in the log), so this measures a redeploy without compilation, not a fresh dependency install. It excludes initial OS boot and the hardware-configuration reboot.
 
-## The [bring-up record](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/docs/HANDOFF.md#measured) contains the measurements and hardware limits. Camera USB-hub enumeration remains under investigation; these web-start timings do not establish that every peripheral is ready. The longer boot comparison is still in progress.
+The later **1m24s** figure is a core-only installer rerun. It is a different scope, so it should not be presented as a direct speedup from the combined 6m13s run.
+
+The image timing excludes downloading and writing the card. SSH became available later, at about **7.5 minutes** on first boot; web access does not need SSH. The write rate is a short observation, not a card-lifetime estimate, and the lower idle CPU came with higher memory use.
+
+The [bring-up record](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/docs/HANDOFF.md#measured) contains the measurements and hardware limits. Camera USB-hub enumeration remains under investigation; these web-start timings do not establish that every peripheral is ready. The longer boot comparison is still in progress.
+
+---
 
 **Source:** [`docs/INSTALLATION.md`](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/docs/INSTALLATION.md) · [`docs/MAINTENANCE.md`](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/docs/MAINTENANCE.md) · [`scripts/install`](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/scripts/install) · [`scripts/install-hal`](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/scripts/install-hal) · [`scripts/seedypod-restore.cjs`](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/scripts/seedypod-restore.cjs)
