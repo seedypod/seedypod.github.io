@@ -1,0 +1,38 @@
+---
+title: 'Flash seedypod OS'
+description: 'Install the prebuilt image with Raspberry Pi Imager.'
+---
+
+# Flash seedypod OS (recommended)
+
+[Back up the stock card](/core/installation/#back-up-the-stock-card) first. This path installs both services; do not also follow the script-install guide.
+
+The development image includes Raspberry Pi OS Lite (32-bit), `hald`, core, Node 22, the ARMv6 SQLite binary, Mosquitto, and the light and camera configuration. It runs on both the Pi Zero W and Zero 2 W.
+
+In Raspberry Pi Imager, set **App Options → Content Repository → Edit → Use custom URL** to:
+
+```text
+https://github.com/seedypod/core/releases/download/dev-latest/seedypod-os-imager.json
+```
+
+Apply and restart Imager, then choose your Pi:
+
+![Raspberry Pi Imager showing the seedypod repository's Zero W and Zero 2 W device choices](/media/install-imager-device.png)
+
+Choose **seedypod OS**:
+
+![seedypod OS development image listed in Raspberry Pi Imager 2.0.12, with a 647.2 MB download](/media/install-imager-os.png)
+
+These screenshots show development build `531ca8b`; the download size and revision change with each build.
+
+Set a username, password, 2.4 GHz Wi-Fi and SSH in the customisation steps. Check the saved values before writing. Keep the password: `sudo` needs it. The hostname defaults to `seedypod`.
+
+Write a high-endurance card of at least 4 GB, reseat it and power on. On the measured Zero W, core served pages after **4 minutes 31 seconds**, and SSH opened after about **7.5 minutes**. Open `http://seedypod.local/`. The image already includes both services. Continue to [garden setup](/core/installation/#first-things-to-set); you do not need the script-install path.
+
+The first hardware bring-up used the development image. The released `main` installer still lacks the Zero W ARMv6 fixes; use the development image or the [development script commands](/core/installation/scripts/) until the next release.
+
+If you enabled SSH, connect with the username you chose in Imager. There is no default login; the example below uses `seedypod`. The login banner shows the installed revision and local web address.
+
+## ![SSH login to seedypod showing the plant logo, development revision 531ca8b and local web address](/media/install-ssh-login.png)
+
+**Source:** [`docs/INSTALLATION.md`](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/docs/INSTALLATION.md) · [`docs/MAINTENANCE.md`](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/docs/MAINTENANCE.md) · [`scripts/install`](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/scripts/install) · [`scripts/install-hal`](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/scripts/install-hal) · [`scripts/seedypod-restore.cjs`](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/scripts/seedypod-restore.cjs)

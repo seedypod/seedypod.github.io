@@ -113,7 +113,12 @@ test('docs sidebar navigation works', async ({ page }) => {
   const menu = page.getByRole('button', { name: 'Menu', exact: true })
   if (await menu.isVisible()) await menu.click()
   await page
-    .getByRole('link', { name: 'Install', exact: true })
+    .getByRole('button', { name: 'Install', exact: true })
+    .filter({ visible: true })
+    .first()
+    .click()
+  await page
+    .getByRole('link', { name: 'Start here: back up and choose', exact: true })
     .filter({ visible: true })
     .first()
     .click()

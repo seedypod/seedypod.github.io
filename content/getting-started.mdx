@@ -39,7 +39,7 @@ cargo run --manifest-path hal/Cargo.toml -p hald -- --sim --stdout --ticks 3
 
 When you are ready to open the base, follow the [installation guide](/core/installation/). Before anything else, back up the stock microSD card: with that image, a mistake costs you a five-minute reflash. Then flash **seedypod OS** with Raspberry Pi Imager, set your login and Wi-Fi, and open `http://seedypod.local/` after boot. The image already includes `hald`, core and their dependencies; there is nothing to compile on the Pi. The [installation guide](/core/installation/#choose-an-install-path) also covers installing onto an existing Raspberry Pi OS.
 
-On the first measured Pi Zero W, the image served the web app **4 minutes 31 seconds after power-on**, excluding download and card-writing time. See the [performance measurements](/core/installation/#measured-on-a-pi-zero-w) for update times, idle resource use and the limits of those observations.
+On the first measured Pi Zero W, the image served the web app **4 minutes 31 seconds after power-on**, excluding download and card-writing time. See the [performance measurements](/core/installation/performance/) for update times, idle resource use and the limits of those observations.
 
 ## What next
 
