@@ -22,4 +22,6 @@ export default {
   '0021-sd-card-wear-and-recovery': '0021 SD card wear and fast recovery',
   '0022-harvest-outlook': '0022 Harvest outlook from the camera, with optional plant profiles',
   '0023-homekit': '0023 HomeKit bridge and per-unit identity',
+  '0024-pod-planner': '0024 Pod planner and Gardyn plant catalog',
+  '0025-accessory-sensor-nodes': '0025 Accessory sensor nodes',
 }

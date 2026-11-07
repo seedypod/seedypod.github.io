@@ -1,6 +1,6 @@
 ---
 title: 'Install seedypod on a Gardyn'
-description: 'Back up the stock card, flash Raspberry Pi OS, install hald and core, connect Home Assistant.'
+description: 'Back up the stock card, flash seedypod OS or install on Raspberry Pi OS, and connect Home Assistant.'
 ---
 
 import { Callout, Steps } from 'nextra/components'
@@ -22,6 +22,24 @@ sudo dd if=/dev/YOUR_CARD of=gardyn-stock.img bs=4M status=progress
 
 This image is your way back to the stock Gardyn software. Do not skip it.
 
+### Flash seedypod OS (recommended)
+
+The development image includes Raspberry Pi OS Lite (32-bit), `hald`, core, Node 22, the ARMv6 SQLite binary, Mosquitto, and the light and camera configuration. It runs on both the Pi Zero W and Zero 2 W.
+
+In Raspberry Pi Imager, set **App Options → Content Repository → Edit → Use custom URL** to:
+
+```text
+https://github.com/seedypod/core/releases/download/dev-latest/seedypod-os-imager.json
+```
+
+Apply and restart Imager, choose your Pi and **seedypod OS**, then set a username, password, 2.4 GHz Wi-Fi and SSH in the customisation steps. Check the saved values before writing. Keep the password: `sudo` needs it. The hostname defaults to `seedypod`.
+
+Write a high-endurance card of at least 4 GB, reseat it and power on. On the measured Zero W, core served pages after **4 minutes 31 seconds**, and SSH opened after about **7.5 minutes**. Open `http://seedypod.local/`. The image already includes both services, so skip the manual installation steps below and continue to Home Assistant or garden setup.
+
+The first hardware bring-up used the development image. The released `main` installer still lacks the Zero W ARMv6 fixes; use the development image or the development commands below until the next release.
+
+### Or install on Raspberry Pi OS
+
 <span id="1-flash" />
 
 ### Flash Raspberry Pi OS
@@ -31,10 +49,19 @@ Use a **high-endurance** microSD card, the kind rated for continuous video recor
 In Raspberry Pi Imager, choose **Raspberry Pi OS Lite**: 64-bit for a Zero 2 W, Pi 4 or Pi 5, 32-bit for the original Zero W. In the advanced options set the hostname to `seedypod`, enable SSH and add your Wi-Fi. Reseat the card, boot, then connect:
 
 ```sh
-ssh pi@seedypod.local
+ssh <your-login>@seedypod.local
 ```
 
 ### Enable I²C and install the hardware daemon
+
+On an original **Pi Zero W**, use the development installers for both services:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/seedypod/core/dev/scripts/install-hal | bash -s -- --version dev-latest
+curl -fsSL https://raw.githubusercontent.com/seedypod/core/dev/scripts/install | bash -s -- --branch dev
+```
+
+The second command installs core too. For other supported boards, the release commands are:
 
 ```sh
 sudo raspi-config nonint do_i2c 0
@@ -46,11 +73,7 @@ The installer detects the CPU, downloads the matching `hald` binary from the lat
 
 It also cuts how much the Pi writes to its card ([ADR 0021](/developers/adr/0021-sd-card-wear-and-recovery/)): the system journal stays in RAM, swap moves to compressed RAM (zram), and `/` is mounted with `noatime`. Each change is checked once it's applied and undone if the check fails, and `--no-wear` skips all three. Logs then last until reboot; [Debugging](/core/debugging/#logs-only-last-until-reboot) shows how to keep them longer. **Settings → Storage** shows how much the unit writes a day.
 
-<Callout type="warning">
-  How these three settings behave on a real Raspberry Pi OS install is on the [hardware
-  checklist](/developers/hardware/#phase-1-checklist). So far they are tested only against stubbed
-  system commands.
-</Callout>
+The first Zero W bring-up measured about **63 MB/day** of card writes over a 20-minute sample, down from about 440 MB/day. This is a short sample, not a long-term endurance result; see the [bring-up handoff](/developers/handoff/#7-real-unit-bring-up-2026-11-06).
 
 ### Install core
 
@@ -60,7 +83,7 @@ On the same Pi, or on any machine on your LAN:
 curl -fsSL https://raw.githubusercontent.com/seedypod/core/main/scripts/install | bash
 ```
 
-Core listens on port 3000. If `hald` runs on another machine, set `HAL_MQTT_URL` in `/etc/systemd/system/seedypod-core.service`. Then open `http://seedypod.local:3000/`.
+Development installs also forward port 80 to core on port 3000, so `http://seedypod.local/` opens the app. If `hald` runs on another machine, set `HAL_MQTT_URL` in `/etc/systemd/system/seedypod-core.service`. Then open `http://seedypod.local:3000/`.
 
 A new install opens on **Welcome**. Choose **Set up a new garden**, or **Restore from a backup** if this card replaces one that died ([Replace a dead SD card](#replace-a-dead-sd-card)).
 
@@ -103,11 +126,11 @@ With a recent backup in the bucket or a downloaded file, this takes about fiftee
 
 ### Flash a new card
 
-Flash Raspberry Pi OS Lite as above, with the same hostname and Wi-Fi. A high-endurance card is worth it.
+Flash seedypod OS as above, with the same hostname and Wi-Fi. A high-endurance card is worth it.
 
 ### Run both installers
 
-Run `install-hal`, then `install`, as above.
+The seedypod OS image already includes both services. On a plain Raspberry Pi OS card, run `install-hal`, then `install`, as above.
 
 ### Restore
 
@@ -145,4 +168,4 @@ Or reflash the stock image from the first step.
 
 ---
 
-**Source:** [`docs/INSTALLATION.md`](https://github.com/seedypod/core/blob/b81f90b6d18258db764c4ee4d594a944915bb6b7/docs/INSTALLATION.md) · [`docs/MAINTENANCE.md`](https://github.com/seedypod/core/blob/b81f90b6d18258db764c4ee4d594a944915bb6b7/docs/MAINTENANCE.md) · [`scripts/install`](https://github.com/seedypod/core/blob/b81f90b6d18258db764c4ee4d594a944915bb6b7/scripts/install) · [`scripts/install-hal`](https://github.com/seedypod/core/blob/b81f90b6d18258db764c4ee4d594a944915bb6b7/scripts/install-hal) · [`scripts/seedypod-restore.cjs`](https://github.com/seedypod/core/blob/b81f90b6d18258db764c4ee4d594a944915bb6b7/scripts/seedypod-restore.cjs)
+**Source:** [`docs/INSTALLATION.md`](https://github.com/seedypod/core/blob/449700eb94ad96b1bc1ff872bd76233eed459585/docs/INSTALLATION.md) · [`docs/MAINTENANCE.md`](https://github.com/seedypod/core/blob/449700eb94ad96b1bc1ff872bd76233eed459585/docs/MAINTENANCE.md) · [`scripts/install`](https://github.com/seedypod/core/blob/449700eb94ad96b1bc1ff872bd76233eed459585/scripts/install) · [`scripts/install-hal`](https://github.com/seedypod/core/blob/449700eb94ad96b1bc1ff872bd76233eed459585/scripts/install-hal) · [`scripts/seedypod-restore.cjs`](https://github.com/seedypod/core/blob/449700eb94ad96b1bc1ff872bd76233eed459585/scripts/seedypod-restore.cjs)
