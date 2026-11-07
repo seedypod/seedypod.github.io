@@ -1,0 +1,126 @@
+---
+title: 'Install seedypod on a Gardyn'
+description: 'Back up the stock card, flash seedypod OS or install on Raspberry Pi OS, and connect Home Assistant.'
+---
+
+import { Callout, Steps } from 'nextra/components'
+
+# Install seedypod on a Gardyn
+
+seedypod runs on the Raspberry Pi already inside the unit: check the board to identify your model. The original Pi Zero W and the Zero 2 W upgrade are supported. The default setup runs both `hald` and core on that Pi. You can also run core on any other machine on your LAN and point it at the daemon ([deployment topologies](/developers/architecture/#deployment-topologies)).
+
+## Back up the stock card
+
+Do this **before writing anything to the original microSD card**. A full-card image is your way back to the stock Gardyn software. If possible, install seedypod on a second card and keep the original untouched too.
+
+1. Power off the unit, open the base, and remove the Pi's microSD card.
+2. On your computer, identify the whole card device and unmount its partitions. Check the device name carefully: the command below reads from `if=` and writes to `of=`.
+3. Save a **whole-card disk image**, including the partition table and boot partition, to storage off the card. For example, on Linux:
+
+```sh
+sudo dd if=/dev/YOUR_CARD of=gardyn-stock.img bs=4M status=progress
+```
+
+Keep the image somewhere private and preserve a second copy. Check that the imaging command completed successfully; a restore to a spare card is the strongest check that your backup boots. To return to stock, write that disk image back to a suitable card.
+
+### What about a Docker backup?
+
+We also kept a local `gardyn-stock` Docker image during bring-up. A Docker copy can preserve the stock filesystem for inspection, but it does not by itself establish that you have a bootable SD-card backup: an imported filesystem may omit the partition table and boot partition. Keep the original whole-card `.img` separately. Docker is optional and is not needed to install seedypod.
+
+The stock disk image is also different from a **seedypod garden backup**. Once seedypod is running, use [Settings → Backup](#back-up-off-the-card) to save its garden data and configuration.
+
+<span id="flash-seedypod-os-recommended" />
+
+## Choose an install path
+
+Choose **one** of these alternatives after backing up:
+
+| Path                           | Best fit                                                                                                                            | Guide                                               |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| **seedypod OS (recommended)**  | A new or replacement card for a Zero W or Zero 2 W. Everything is preinstalled; no compilation or installer commands on first boot. | [Flash seedypod OS](/core/installation/image/)      |
+| **Scripts on Raspberry Pi OS** | An existing OS, another supported board, or a 64-bit OS on a Zero 2 W. Downloads prebuilt releases and installs dependencies.       | [Install with scripts](/core/installation/scripts/) |
+
+Both paths end at `http://seedypod.local/`, where you can set up a garden or restore a seedypod backup. Then continue with the shared setup below.
+
+<span id="1-flash" />
+
+Using plain Raspberry Pi OS? Its flashing and installer steps are now in the [script-install guide](/core/installation/scripts/).
+
+<span id="measured-on-a-pi-zero-w" />
+
+On the first measured Zero W, the image served the web app **4m31s after power-on**, excluding download and card-writing time. See [performance measurements](/core/installation/performance/) for boot and update times, CPU, memory and card writes.
+
+## First things to set
+
+Open **Settings** in the web UI and set:
+
+- **Timezone**, so schedules fire at the right local time.
+- **Tank calibration**: the ultrasonic distance in centimetres when the tank is just filled, and when the pump would run dry. These turn the distance reading into a tank percentage.
+- **Grow reminders**, if the defaults (thinning at day 14, root check at 21, harvest at 35, nutrients every 7 days) do not suit your plants.
+
+Then add a [light curve and a watering schedule](/core/schedules/).
+
+## Back up off the card
+
+**Settings → Backup → Download backup** saves a `seedypod-backup-<unit>-<date>.tar.gz` with the database, `hal.toml`, the Home Assistant broker password and `hald`'s state. Switch on **Include photos** to add the stills as well. The file holds your bucket secret and MQTT password, so keep it somewhere private.
+
+With the [off-device mirror](/core/analysis/#mirror-photos-off-the-unit-opt-in) set up, a backup also goes to `backups/` in your bucket every night after 03:00, keeping the newest 14. If no backup succeeds for 7 days, a **Backup overdue** alert appears on Home, in Alerts and in Home Assistant. There is no backup on the card itself, since it would die with the card. See [Maintenance → Backups](/core/maintenance/#backups).
+
+## Replace a dead SD card
+
+With a recent backup in the bucket or a downloaded file, this takes about fifteen minutes and no shell:
+
+<Steps>
+
+### Flash a new card
+
+Follow the [seedypod OS guide](/core/installation/image/), with the same hostname and Wi-Fi. Both services are already included. A high-endurance card is worth it. If you prefer a plain Raspberry Pi OS card, follow the [script-install guide](/core/installation/scripts/) instead.
+
+### Restore
+
+Open `http://seedypod.local:3000`, choose **Restore from a backup**, and either upload the file or enter the mirror's bucket settings from the old card and pick the newest backup. The unit restarts on it, with its schedules, grow cycle, pods, Autopilot rules, probes, calibration and history. It keeps the same unit id, so Home Assistant keeps the same device.
+
+</Steps>
+
+From the shell, `scripts/install --restore <file|url>` does the same. The restore checks the backup first. It refuses a damaged file, and a backup from **newer** software than the unit runs, naming the version to install first. If you restored the wrong backup, **Settings → Backup → Undo restore** puts back what it replaced.
+
+<Callout type="warning">
+  The full backup → wipe → restore round trip runs in the [simulated
+  bring-up](/developers/sim-bringup/). Restoring on a real card is on the [hardware
+  checklist](/developers/hardware/#phase-1-checklist).
+</Callout>
+
+## Change Wi-Fi
+
+No keyboard needed. Hold the unit's button for **10 seconds**. At 1 second it acknowledges any latched fault; keep holding. The unit then opens an open hotspot named `seedypod-setup-xxxx` for 15 minutes:
+
+1. Join `seedypod-setup-xxxx` from a phone.
+2. Open `http://10.42.0.1:3000/wifi`, pick your network, enter its password, and press **Join**.
+3. The unit leaves the hotspot and joins your network. Rejoin your network on the phone and open `http://seedypod.local:3000/`.
+
+If the password was wrong, the hotspot comes back and the Wi-Fi screen says why. On your network, **Settings → Wi-Fi** does the same without the button. The hotspot is open because pressing the button already proves someone is at the unit, and it closes itself after 15 minutes.
+
+## Uninstall
+
+```sh
+sudo systemctl disable --now seedypod-core hald
+sudo rm -rf /opt/seedypod /etc/systemd/system/seedypod-core.service /etc/systemd/system/hald.service \
+  /usr/local/sbin/seedypod-restore /etc/sudoers.d/seedypod-restore /var/lib/seedypod-restore
+```
+
+Or reflash the stock image from the first step.
+
+<span id="4-home-assistant" />
+
+## Connect Home Assistant (optional)
+
+Home Assistant needs to reach the broker `hald` publishes to. Pick one:
+
+- **Home Assistant on another machine, using the unit's broker.** Run the installer with `--mqtt-lan`: `curl -fsSL https://raw.githubusercontent.com/seedypod/core/main/scripts/install-hal | bash -s -- --mqtt-lan`. The broker then also listens on port **1884**, password-protected, and the installer prints the `homeassistant` password once. In Home Assistant, add the **MQTT** integration with host `seedypod.local`, port `1884`, user `homeassistant` and that password.
+- **Home Assistant's own broker** (the Mosquitto add-on). Install with `--no-broker` instead, then set `mqtt_url`, `mqtt_username` and `mqtt_password` in `/etc/seedypod/hal.toml`, and `HAL_MQTT_URL=mqtt://USER:PASS@homeassistant.local:1883` in `/etc/systemd/system/seedypod-core.service`. Restart both with `sudo systemctl daemon-reload && sudo systemctl restart hald seedypod-core`.
+
+Either way, the Gardyn appears through MQTT discovery. See [Home Assistant](/core/home-assistant/).
+
+---
+
+**Source:** [`docs/INSTALLATION.md`](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/docs/INSTALLATION.md) · [`docs/MAINTENANCE.md`](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/docs/MAINTENANCE.md) · [`scripts/install`](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/scripts/install) · [`scripts/install-hal`](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/scripts/install-hal) · [`scripts/seedypod-restore.cjs`](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/scripts/seedypod-restore.cjs)

@@ -1,0 +1,65 @@
+---
+title: 'Install on Raspberry Pi OS'
+description: 'Install prebuilt hald and core releases on an existing OS.'
+---
+
+# Install on Raspberry Pi OS
+
+This is an alternative to flashing seedypod OS. If you flashed the seedypod image, go straight to [garden setup](/core/installation/#first-things-to-set). [Back up the stock card](/core/installation/#back-up-the-stock-card) before replacing its contents.
+
+The script path does **not** normally build the whole app on the device. If the ARMv6 `better-sqlite3` binary is missing or fails its load check, the installer falls back to compiling that dependency. That compile took about **53 minutes** on the original Zero W. The OS image includes the binary and avoids that step entirely.
+
+<span id="1-flash" />
+
+## Flash Raspberry Pi OS
+
+Use a **high-endurance** microSD card, the kind rated for continuous video recording (SanDisk High Endurance, Samsung PRO Endurance or similar). It costs a few dollars more than a standard card and is the cheapest reliability gain there is.
+
+In Raspberry Pi Imager, choose **Raspberry Pi OS Lite**: 64-bit for a Zero 2 W, Pi 4 or Pi 5, 32-bit for the original Zero W. In the advanced options set the hostname to `seedypod`, enable SSH and add your Wi-Fi. Reseat the card, boot, then connect:
+
+```sh
+ssh <your-login>@seedypod.local
+```
+
+## Enable I²C and install the hardware daemon
+
+On an original **Pi Zero W**, use the development installers for both services:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/seedypod/core/dev/scripts/install-hal | bash -s -- --version dev-latest
+curl -fsSL https://raw.githubusercontent.com/seedypod/core/dev/scripts/install | bash -s -- --branch dev
+```
+
+The second command installs core too. For other supported boards, the release commands are:
+
+```sh
+sudo raspi-config nonint do_i2c 0
+curl -fsSL https://raw.githubusercontent.com/seedypod/core/main/scripts/install-hal | bash
+hald --check
+```
+
+The installer detects the CPU, downloads the matching `hald` binary from the latest GitHub release, writes a commented `/etc/seedypod/hal.toml`, creates a `seedypod` system user in the `gpio`, `i2c` and `video` groups, enables the PWM overlay for the grow light (one reboot needed), installs `fswebcam`, installs the Mosquitto MQTT broker on `127.0.0.1:1883` (reachable only from the Pi itself), and enables `hald.service`. `hald --check` validates the config and prints the devices it plans to use. See the [hald reference](/developers/hal/#install) for options.
+
+It also cuts how much the Pi writes to its card ([ADR 0021](/developers/adr/0021-sd-card-wear-and-recovery/)): the system journal stays in RAM, swap moves to compressed RAM (zram), and `/` is mounted with `noatime`. Each change is checked once it's applied and undone if the check fails, and `--no-wear` skips all three. Logs then last until reboot; [Debugging](/core/debugging/#logs-only-last-until-reboot) shows how to keep them longer. **Settings → Storage** shows how much the unit writes a day.
+
+The first Zero W bring-up measured about **63 MB/day** of card writes over a 20-minute sample, down from about 440 MB/day. This is a short sample, not a long-term endurance result; see the [bring-up handoff](/developers/handoff/#7-real-unit-bring-up-2026-11-06).
+
+## Install core
+
+If you ran both Zero W development commands above, core is already installed: skip this command. Otherwise, on the same Pi or another machine on your LAN:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/seedypod/core/main/scripts/install | bash
+```
+
+Development installs also forward port 80 to core on port 3000, so `http://seedypod.local/` opens the app. If `hald` runs on another machine, set `HAL_MQTT_URL` in `/etc/systemd/system/seedypod-core.service`. Then open `http://seedypod.local:3000/`.
+
+A new install opens on **Welcome**. Choose **Set up a new garden**, or **Restore from a backup** if this card replaces one that died ([Replace a dead SD card](/core/installation/#replace-a-dead-sd-card)).
+
+The installer accepts `--branch dev` to install the rolling development build, `--prefix` to change the install location (default `/opt/seedypod`), and `--restore <file|url>` to restore a backup straight after installing. It also installs the restore helper at `/usr/local/sbin/seedypod-restore` and lets core's user run it with `sudo`, for that one path.
+
+Continue to [garden setup](/core/installation/#first-things-to-set).
+
+---
+
+**Source:** [`docs/INSTALLATION.md`](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/docs/INSTALLATION.md) · [`docs/MAINTENANCE.md`](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/docs/MAINTENANCE.md) · [`scripts/install`](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/scripts/install) · [`scripts/install-hal`](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/scripts/install-hal) · [`scripts/seedypod-restore.cjs`](https://github.com/seedypod/core/blob/e6d5f76db6af428750724fc73546d86d147c4637/scripts/seedypod-restore.cjs)

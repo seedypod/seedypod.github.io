@@ -177,6 +177,39 @@
       "bytes": 119266,
       "width": 552,
       "height": 1200
+    },
+    {
+      "repository": "seedypod/core",
+      "commit": "531ca8b58d4ac0ccd9d09ada35671f70029e8cef",
+      "source": "Raspberry Pi Imager 2.0.12, custom seedypod repository, device selection",
+      "output": "install-imager-device.png",
+      "method": "Owner-supplied macOS screenshot, 2026-11-06 America/Los_Angeles; original PNG copied unchanged",
+      "sha256": "3e4042e1e336685705838d83be83eaddfaf7cb52cf3b61f1b99da369213f1a97",
+      "bytes": 419939,
+      "width": 1584,
+      "height": 1188
+    },
+    {
+      "repository": "seedypod/core",
+      "commit": "531ca8b58d4ac0ccd9d09ada35671f70029e8cef",
+      "source": "Raspberry Pi Imager 2.0.12, seedypod OS selection",
+      "output": "install-imager-os.png",
+      "method": "Owner-supplied macOS screenshot, 2026-11-06 America/Los_Angeles; original PNG copied unchanged",
+      "sha256": "6f0c7d83cfbc4f9e4b7e95097cbe01393e3d427395092b96b217c6cdd1e4d7d1",
+      "bytes": 503400,
+      "width": 1584,
+      "height": 1188
+    },
+    {
+      "repository": "seedypod/core",
+      "commit": "531ca8b58d4ac0ccd9d09ada35671f70029e8cef",
+      "source": "Real Pi SSH login banner",
+      "output": "install-ssh-login.png",
+      "method": "Owner-supplied macOS screenshot, 2026-11-06 America/Los_Angeles; original PNG copied unchanged",
+      "sha256": "2823c182008789c16a3a6cdf05add6f94cddb32b85ed2de62b2f2edcb13366d3",
+      "bytes": 971951,
+      "width": 1884,
+      "height": 1430
     }
   ]
 }
