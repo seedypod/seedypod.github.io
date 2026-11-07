@@ -53,9 +53,9 @@ Send `{"debugMinutes":0}` to close it early. The maximum is 240 minutes. Errors 
 
 ## Cameras missing after boot
 
-The Gardyn 3.0 bring-up found an intermittent USB hub fault: some boots have neither camera. Check `lsusb` and `journalctl -b -u seedypod-usb-recover`. The hub is `1a40:0801`; both cameras are `c499:0ac8`. Root hub re-probes did not resolve the fault in the recorded tests. **Do not unbind and rebind `dwc_otg`**: rebinding crashed the kernel during testing.
+The Gardyn 3.0 bring-up found an intermittent USB hub fault: some boots have neither camera. Check `lsusb` and `journalctl -b -u seedypod-usb-recover`. The hub is `1a40:0801`; both cameras are `c499:0ac8`. A controlled 40-boot comparison found the hub and both cameras on 8/20 boots with the original settings and 7/20 with stock turbo/voltage settings. Seven connections appeared late, at 123–151 seconds after boot, without anyone touching the unit. Some followed root-hub re-probes, but waiting alone has not yet been separated from their effect. **Do not unbind and rebind `dwc_otg`**: rebinding crashed the kernel during testing.
 
-The cause remains under investigation. See the [hardware evidence and next steps](/developers/handoff/#the-usb-hub-the-one-open-fault). Automatic reboot recovery is still a proposed change, not a verified fix.
+The cause remains under investigation. See the [hardware evidence and next steps](/developers/handoff/#8-controlled-hub-comparison-2026-11-07). Automatic reboot recovery is still a proposed change, not a verified fix.
 
 ## Check core
 
@@ -110,3 +110,5 @@ pnpm dev:sim
 ---
 
 **Source:** [`docs/DEBUGGING.md`](https://github.com/seedypod/core/blob/449700eb94ad96b1bc1ff872bd76233eed459585/docs/DEBUGGING.md)
+
+**Comparison evidence:** [`docs/HANDOFF.md`, section 8](https://github.com/seedypod/core/blob/eac45f7/docs/HANDOFF.md#8-controlled-hub-comparison-2026-11-07)
