@@ -1,17 +1,19 @@
 ---
 title: 'Web UI tour'
-description: 'Every screen of the seedypod web UI, from the home screen to the wall-display kiosk.'
+description: 'Every screen of the seedypod web UI, from the 3D tower on Home to the wall-display kiosk.'
 ---
 
 import { Callout } from 'nextra/components'
 
 # Web UI tour
 
-Open `http://seedypod.local:3000/` from any browser on your network. The sidebar (a tab bar on phones) has eight screens. Changes made anywhere, including from Home Assistant, an agent or a schedule, appear immediately: the UI listens to core's live event stream instead of polling.
+Open `http://seedypod.local` from any browser on your network (`:3000` works too; see [Install](/core/installation/#open-the-app)). Changes made anywhere, including from Home Assistant, the Home app, an agent or a schedule, appear immediately: the UI listens to core's live event stream instead of polling.
+
+The sidebar groups twelve screens: **Garden** (Home, Grow, Plan), **Control** (Light, Water, Autopilot), **Observe** (Cameras, Analysis) and **System** (Status, Sensors), with **Alerts** and **Settings** at the foot. Above them, **Search** (⌘K) finds any screen, setting or docs page, and a summary keeps the light, tank and air readings and a **Needs you** list in view. On a phone a tab bar holds Home, Grow, Light, Water and Settings.
 
 <Callout>
   These screenshots are the real web UI from the [live demo](https://seedypod.vercel.app), which
-  runs against a simulated tower with seeded history.
+  runs against a simulated tower with seeded history: day 19 of a grow, 24 planted pods.
 </Callout>
 
 <Demo
@@ -28,27 +30,49 @@ Open `http://seedypod.local:3000/` from any browser on your network. The sidebar
 
 A fresh install opens on **Welcome** instead of Home, with two choices. **Set up a new garden** starts from the defaults. **Restore from a backup** brings a unit back from a downloaded file or from the backups in your bucket ([Replace a dead SD card](/core/installation/#replace-a-dead-sd-card)).
 
-## Home
+## Garden
 
-Your tower in 3D: every pod colored by its status, the light bars at their level and the tank's water level. Drag to turn it, ⌘-scroll to zoom, and click a pod to open it. The day of the grow and a count of growing, ready, attention and empty pods sit above it. The sidebar keeps the light, tank and air readings and a **Needs you** list in view on every screen.
+### Home
+
+Your tower in 3D: every pod colored by its status, the light bars at their level and the tank's water level. Drag to turn it, ⌘-scroll to zoom, and click a pod to open it. The day of the grow and a count of growing, ready, attention and empty pods sit above it. **Light zones** colors the pods by how much light each gets.
 
 <BrowserFrame
   src="/media/core-home.webp"
   alt="Home screen with the tower in 3D on day 19, and the sidebar's light, tank and air readings and Needs you list"
 />
 
-## Light
+### Grow
 
-Turn the light on or off and set brightness. A change you make here holds for 30 minutes, then the light goes back to [Autopilot](/core/autopilot/#who-controls-the-light) or the schedule; **Resume** hands it back early. The page also shows the cumulative LED hours and how much of the rated life they represent. Below, you create and edit [light curves](/core/schedules/#light-curves).
+The current grow cycle and its stage, and all 30 pods in three towers, each with its plant and leaf cover. Click a pod for its card: status, a photo crop with a slider through its history, the leaf-cover trend, and the plant, status and notes to edit. **Tower** switches to the 3D view. See [Grow cycle and pods](/core/grow-cycle/).
+
+<BrowserFrame
+  src="/media/core-grow.png"
+  alt="Grow screen on day 19 of the vegetative stage, with 24 of 30 pods planted and their leaf cover"
+/>
+
+### Plan
+
+Plan the next planting. Pick plants from Gardyn's catalog (or **Add plant** for one it lacks) and the planner places them by light zone, around the pods already planted: high light in the centre, medium around it, low at the top and bottom. Click a planned pod for why it sits there. **3D** and **2D** switch views, and **Home · 30** and **Studio · 16** switch models. Below are a staggered sowing schedule, so harvests don't all land at once, and your saved plans: **Open** one to see it again, **Apply** to write it onto the pods. An agent can do the same over MCP, starting from a pasted seed order ([Plan from an order](/core/mcp/#plan-from-an-order)).
+
+<BrowserFrame
+  src="/media/core-plan.webp"
+  alt="Plan screen with the 3D tower colored by light zone, and the plant catalog with counts"
+/>
+
+## Control
+
+### Light
+
+Turn the light on or off and set brightness. A change you make here holds for 30 minutes, then the light goes back to [Autopilot](/core/autopilot/#who-controls-the-light) or the schedule; **Resume** hands it back early. Today's chart shows the curve and where it is now, with the LED hours against their rated life. Below, you create and edit [light curves](/core/schedules/#light-curves).
 
 <BrowserFrame
   src="/media/core-light.png"
   alt="Light screen at 85 % following the daylight curve, with today's chart and the curve's four setpoints"
 />
 
-## Water
+### Water
 
-The tank level as a percentage and a bar, the pump state, and a run-once control: pick 1, 5, 10 or 15 minutes and press **Run pump**. The hardware limits are shown under the controls (max run time, max duty, and the distance at which a low tank refuses to start). Below are the supply voltage, pump current and power, seven days of tank level and pump power, and the recent scheduled runs.
+The tank level as a percentage and a bar, with the distance, pump power and supply voltage, and a run-once control: pick 1, 5, 10 or 15 minutes and press **Run pump**. The hardware limits are under it (max run time, max duty, and the distance at which a low tank refuses to start). Below are your [pump cycles](/core/schedules/#pump-cycles), the tank level over 24 hours, 7 or 30 days, and the recent scheduled runs.
 
 If the pump is latched off after a fault, the card turns red and **Run pump** is disabled until you acknowledge the fault on the Alerts screen.
 
@@ -57,34 +81,58 @@ If the pump is latched off after a fault, the card turns red and **Run pump** is
   alt="Water screen with tank level, run-once controls, the two pump cycles and the week's tank level chart"
 />
 
-## Schedules
+### Autopilot
 
-Light curves live on the **Light** screen and pump cycles on **Water**, each with an enable toggle. See [Schedules](/core/schedules/).
+Rules that act on readings rather than the clock: notify you, set the light, run the pump or a doser, or flag a pod when a condition holds. Each rule reads back as a sentence, starts in dry run, and shows a 7-day backtest before you arm it. A timeline of the last 24 hours and an activity log say what each rule did or would have done, and the switch at the top turns them all off. See [Autopilot](/core/autopilot/).
 
-## Autopilot
+<BrowserFrame
+  src="/media/core-autopilot.png"
+  alt="Autopilot screen with three rules as sentences, each with its backtest, and the last 24 hours of checks"
+/>
 
-Rules that act on readings rather than the clock: notify you, set the light, run the pump or a doser, or flag a pod when a condition holds. Each rule reads back as a sentence, starts in dry run, and can be backtested over recorded history before you arm it. A run log says why each rule did or didn't act. See [Autopilot](/core/autopilot/).
+## Observe
 
-## Grow
+### Cameras
 
-The current grow cycle and its stage, and a grid of all 30 pods. See [Grow cycle and pods](/core/grow-cycle/).
-
-## Cameras
-
-The latest still from the upper and lower cameras, a **Capture now** button, and a slider that scrubs through the timelapse. Stills are captured automatically at the interval set in Settings (60 minutes by default; 0 disables it).
+The latest still from the upper and lower cameras, each with **Capture now** (or **Capture both**), and a strip of the last two days' frames: drag to scrub, or press **Play** for a timelapse. Frames you've played are kept in the browser, so a replay doesn't download them again. Stills are taken automatically at the interval set in **Settings → Cameras** (60 minutes by default; 0 turns it off).
 
 <BrowserFrame
   src="/media/core-cameras.png"
-  alt="Cameras screen with the upper and lower camera stills and timelapse sliders"
+  alt="Cameras screen with the upper and lower camera stills and their timelapse strips"
 />
 
-## Analysis
+### Analysis
 
-How the camera analysers score each pod: which one drives the growth trends (**Make primary**), a pod's green area over time from every analyser side by side, the latest photo with every analyser's number per pod, and a dataset export. See [Capture analysis](/core/analysis/).
+How the camera analysers score each pod's leaf cover. One card shows the latest photos from both cameras, or one, with each analyser's result and **Pod bounds** to see or edit the box each pod is scored on. The analyser cards say how each one works, which is **primary** for growth trends, and **Re-run** to rescore the stored photos. A table of all 30 pods compares the analysers side by side, and **Export dataset** downloads the photos and scores. See [Capture analysis](/core/analysis/).
 
-## Alerts
+<BrowserFrame
+  src="/media/core-analysis.png"
+  alt="Analysis screen with both cameras' latest photos, the primary analyser card, and per-pod leaf cover for two analysers"
+/>
 
-Active alerts, or the full history. Each alert has **Acknowledge** (or **Done** for a reminder) and **Dismiss**.
+## System
+
+### Status
+
+The whole unit at a glance, live: a health ring with the checks that pass, core, hardware daemon, Wi-Fi, Home Assistant, SD card and uptime, any active alert, a timeline of today's light, water and air with the next scheduled job, and cards for the light, water and climate.
+
+<BrowserFrame
+  src="/media/core-status.png"
+  alt="Status screen: 12 of 12 checks passing, a reminder, today's timeline and the light, water and climate cards"
+/>
+
+### Sensors
+
+Every sensor the unit has, its part and address, whether it's ready, and its latest reading with a chart over 6 hours, 24 hours or 7 days. **Add sensor** adds a pH, EC or water-temperature probe with a guided calibration. See [Adding a probe](/core/sensors/).
+
+<BrowserFrame
+  src="/media/core-sensors.png"
+  alt="Sensors screen with environment, water and pump readings and their charts, and the device list"
+/>
+
+### Alerts
+
+Active alerts, or the full history, and plants flagged from Grow. Each alert has **Acknowledge** (or **Done** for a reminder) and **Dismiss**.
 
 | Alert                                                      | Raised when                                                                        |
 | ---------------------------------------------------------- | ---------------------------------------------------------------------------------- |
@@ -107,13 +155,9 @@ Active alerts, or the full history. Each alert has **Acknowledge** (or **Done** 
   alt="Alerts screen listing an add-nutrients reminder and a plant flagged from Grow"
 />
 
-## Sensors
+### Settings
 
-Every sensor the unit has, whether it answered at boot, and its latest reading. Add a pH, EC or water-temperature probe, calibrate it with a guided wizard, or remove it. See [Adding a probe](/core/sensors/).
-
-## Settings
-
-Unit name, timezone and temperature unit; tank calibration (distance when full and when empty, and the tank capacity); grow reminder days; the camera capture interval; the [Home Assistant bridge](/core/home-assistant/#core-bridge); an optional [API key](/core/privacy/#who-can-reach-it); [off-device storage and analysis](/core/analysis/#mirror-photos-off-the-unit-opt-in) (opt-in); **Storage**, the SD card's writes per day; **Backup**, which downloads a backup, shows the nightly bucket backups, restores one and undoes a restore ([Maintenance → Backups](/core/maintenance/#backups)); a link to **Wi-Fi**, where you change networks or open the setup hotspot ([Change Wi-Fi](/core/installation/#change-wi-fi)); and an About section with the core and daemon versions and the unit id.
+Sections down the side: unit name, timezone and temperature unit; tank calibration (distance when full and when empty, and the tank capacity); grow reminder days; the camera capture interval; the [Home Assistant bridge](/core/home-assistant/#core-bridge); an optional [API key](/core/privacy/#who-can-reach-it); **Apple Home** ([HomeKit](/core/homekit/)); [off-device storage and analysis](/core/analysis/#mirror-photos-off-the-unit-opt-in) (opt-in); **Storage** and **SD card**, the card's writes per day and a **Database** view of what's writing, table by table; **Backup**, which downloads a backup, shows the nightly bucket backups, restores one and undoes a restore ([Maintenance → Backups](/core/maintenance/#backups)); a link to **Wi-Fi**, where you change networks or open the setup hotspot ([Change Wi-Fi](/core/installation/#change-wi-fi)); **Updates**, which checks for and installs a new release ([Maintenance → Updates](/core/maintenance/#updates)); and **About**, with the core and daemon versions and the unit id.
 
 <BrowserFrame
   src="/media/core-settings.png"
@@ -122,10 +166,10 @@ Unit name, timezone and temperature unit; tank calibration (distance when full a
 
 ## Kiosk
 
-`http://seedypod.local:3000/kiosk` is a wall-display mode: big numbers for the tank, air temperature, humidity, light and pump, plus any active alerts, with no sidebar. It refreshes on its own every few seconds.
+`http://seedypod.local/kiosk` is a wall-display mode: big numbers for the tank, air temperature, humidity, light and pump, plus any active alerts, with no sidebar. It refreshes on its own every few seconds.
 
 <BrowserFrame
-  address="seedypod.local:3000/kiosk"
+  address="seedypod.local/kiosk"
   src="/media/core-kiosk.png"
   alt="Kiosk mode showing large tank, air, humidity, light and pump tiles"
 />

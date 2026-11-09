@@ -55,8 +55,8 @@ async function zoomTower(page) {
   await page.mouse.move(5, 995)
 }
 
-// Home is WebP: the 3D tower's lit gradient bands as a palette PNG and is
-// several times larger as a full-colour one.
+// Home and Plan are WebP: the 3D tower's lit gradient bands as a palette PNG
+// and is several times larger as a full-colour one.
 const shots = [
   {
     route: '/',
@@ -74,6 +74,11 @@ const shots = [
       page.getByRole('button', { name: 'Add curve' }).evaluate((el) => el.scrollIntoView()),
   },
   { route: '/grow', output: 'core-grow.png' },
+  { route: '/plan', output: 'core-plan.webp', source: 'route /plan, the 3D tower' },
+  { route: '/autopilot', output: 'core-autopilot.png' },
+  { route: '/analysis', output: 'core-analysis.png' },
+  { route: '/status', output: 'core-status.png' },
+  { route: '/sensors', output: 'core-sensors.png' },
   { route: '/cameras', output: 'core-cameras.png' },
   { route: '/alerts', output: 'core-alerts.png' },
   { route: '/settings', output: 'core-settings.png' },
