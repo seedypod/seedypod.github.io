@@ -1,6 +1,6 @@
 ---
 title: 'Home Assistant'
-description: 'The Gardyn appears in Home Assistant through MQTT discovery; core adds grow reminders and a water-now button.'
+description: 'The Gardyn appears in Home Assistant through MQTT discovery; core adds grow reminders, a water-now button and camera snapshots.'
 ---
 
 import { Callout } from 'nextra/components'
@@ -51,8 +51,11 @@ It adds these entities to the same device:
 | … : done                                                   | button that marks the reminder done                                 |
 | Backup overdue                                             | binary_sensor (problem), on after 7 days without an off-card backup |
 | Water now (5 min)                                          | button, runs a bounded pump cycle through the guard                 |
+| Upper camera, lower camera                                 | camera, the newest stored still, published once per capture         |
 
 If the pump refuses a "water now" press (dry tank, latched fault), the refusal shows up on the daemon's own alert entities.
+
+Without the bridge, add the cameras as [generic cameras](https://www.home-assistant.io/integrations/generic/) with the still image URL `http://seedypod.local/api/camera/upper/latest.jpg` (and `lower`). It serves the newest stored still and never takes a capture ([ADR 0027](/developers/adr/0027-camera-exposure/)).
 
 ## Example dashboard and automations
 
