@@ -10,14 +10,14 @@ import { Callout } from 'nextra/components'
 Core's REST API is generated from its tRPC procedures by `trpc-to-openapi`, so it always matches what the web UI uses. Every running core serves its own spec:
 
 ```text
-http://seedypod.local:3000/api/openapi.json
+http://seedypod.local/api/openapi.json
 ```
 
 The reference below is rendered from a snapshot of that spec ([download `openapi.json`](/openapi.json)), taken by building seedypod/core at commit [`a2f6b4c`](https://github.com/seedypod/core/commit/a2f6b4c98085d6729f8c2f315237f87f759518e2) and booting the server with `CI=1`. When in doubt, the spec from your own unit wins.
 
 ## Base URL and transport
 
-- REST: `http://seedypod.local:3000/api/*`, JSON in and out.
+- REST: `http://seedypod.local/api/*`, JSON in and out. Port 3000 serves the same API, and is the one to use where the port-80 forward is off ([Install](/core/installation/#open-the-app)).
 - tRPC: `/api/trpc`, used by the web UI.
 - Live events: tRPC subscription `events.onChange` over SSE, or the read-only WebSocket at `/api/ws`.
 - MCP: `POST /api/mcp` ([MCP for agents](/core/mcp/)).
@@ -36,13 +36,13 @@ If an API key is set in **Settings → API access**, requests from anything othe
 Read every sensor:
 
 ```bash
-curl --fail http://seedypod.local:3000/api/sensors
+curl --fail http://seedypod.local/api/sensors
 ```
 
 Set the grow light to 70 %:
 
 ```bash
-curl --fail -X POST http://seedypod.local:3000/api/light \
+curl --fail -X POST http://seedypod.local/api/light \
   -H 'Content-Type: application/json' \
   -d '{"on":true,"level":70}'
 ```
@@ -50,7 +50,7 @@ curl --fail -X POST http://seedypod.local:3000/api/light \
 Water for two minutes. The pump is real hardware: the daemon clamps the run to its maximum and refuses it if the tank is low or a fault is latched, returning the reason as an error.
 
 ```bash
-curl --fail -X POST http://seedypod.local:3000/api/pump/run-once \
+curl --fail -X POST http://seedypod.local/api/pump/run-once \
   -H 'Content-Type: application/json' \
   -d '{"durationS":120}'
 ```

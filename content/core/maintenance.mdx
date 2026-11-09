@@ -120,7 +120,7 @@ If **Settings → Backup** says a file was left out with "permission denied",
 rerun `install-hal`. It adds core's user to the `seedypod` group, which can
 read `hald`'s files.
 
-From a script: `curl -OJ http://seedypod.local:3000/api/backup/download`
+From a script: `curl -OJ http://seedypod.local/api/backup/download`
 (`?photos=1` for photos). `GET /api/backup` shows the last backup, and
 `POST /api/backup/run` runs a bucket backup.
 
@@ -218,7 +218,7 @@ A longer interval saves a little more wear and risks a little more history.
 To change it (1–60 minutes):
 
 ```bash
-curl -X PATCH http://seedypod.local:3000/api/settings \
+curl -X PATCH http://seedypod.local/api/settings \
   -H 'content-type: application/json' -d '{"telemetryFlushMin": 10}'
 ```
 
@@ -299,4 +299,4 @@ confirm the unit sees what it should.
 
 **Sources:** [hald reference](/developers/hal/) · [Gardyn hardware map](/developers/hardware/) · [Installation](/core/installation/) · [Adding a probe](/core/sensors/)
 
-**Imported from** [`docs/MAINTENANCE.md`](https://github.com/seedypod/core/blob/cfac0b4cbbd20d1599332ad438531540944f6b5a/docs/MAINTENANCE.md) in seedypod/core. Edit it there, not here.
+**Imported from** [`docs/MAINTENANCE.md`](https://github.com/seedypod/core/blob/12d2a2284e24ea735003e947bb5a5343873aa779/docs/MAINTENANCE.md) in seedypod/core. Edit it there, not here.
