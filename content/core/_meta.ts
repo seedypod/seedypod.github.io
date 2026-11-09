@@ -8,6 +8,7 @@ export default {
   autopilot: 'Autopilot',
   'grow-cycle': 'Grow cycle and pods',
   sensors: 'Adding a probe',
+  feeding: 'Feeding and water quality',
   analysis: 'Capture analysis',
   '-- connect': { type: 'separator', title: 'Connect' },
   'home-assistant': 'Home Assistant',
