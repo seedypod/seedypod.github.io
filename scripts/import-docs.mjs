@@ -27,6 +27,7 @@ const pages = {
   'hardware/sim-bringup.md': 'developers/sim-bringup',
   'testing/index.md': 'developers/testing',
   'SENSORS.md': 'core/sensors',
+  'FEEDING.md': 'core/feeding',
   'ANALYSIS.md': 'core/analysis',
   'MAINTENANCE.md': 'core/maintenance',
   'AUTOPILOT.md': 'core/autopilot',
