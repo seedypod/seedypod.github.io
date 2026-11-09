@@ -24,4 +24,7 @@ export default {
   '0023-homekit': '0023 HomeKit bridge and per-unit identity',
   '0024-pod-planner': '0024 Pod planner and Gardyn plant catalog',
   '0025-accessory-sensor-nodes': '0025 Accessory sensor nodes',
+  '0026-web-update': '0026 One-click update from the web UI',
+  '0027-camera-exposure': '0027 Cameras in HomeKit and Home Assistant',
+  '0028-camera-capture-format': '0028 Camera capture format for image analysis',
 }

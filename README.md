@@ -2,7 +2,7 @@
 
 Nextra + Next.js static export, served at https://seedypod.github.io/. Modeled on [sleepypod.github.io](https://github.com/sleepypod/sleepypod.github.io).
 
-The pin map has been checked against the stock Gardyn 3.0 firmware but not yet probed on a board. Pages must not present hardware behaviour that hasn't been probed on a unit as verified.
+The pin map has been checked against the stock Gardyn 3.0 firmware and partly probed on a Gardyn 3.0: the light, I²C sensors, over-temp line and cameras are verified; the pump, water level and button aren't yet. Pages must not present hardware behaviour that hasn't been probed on a unit as verified.
 
 ## Develop
 
@@ -26,7 +26,7 @@ pnpm check
 
 ## Content sources
 
-[seedypod/core](https://github.com/seedypod/core)'s `docs/` folder is the source of truth. Imported pages pin the core commit they were imported from (currently `8781ac82e6a3549d5c7684ab33ac66f3c79e5ba2` on `dev`); hand-written pages cite `a2f6b4c98085d6729f8c2f315237f87f759518e2` (the `chore/rename-seedypod` branch).
+[seedypod/core](https://github.com/seedypod/core)'s `docs/` folder is the source of truth. Imported pages pin the core commit they were imported from (currently `cfac0b4cbbd20d1599332ad438531540944f6b5a` on `dev`); hand-written pages cite `a2f6b4c98085d6729f8c2f315237f87f759518e2` (the `chore/rename-seedypod` branch).
 
 - **Imported pages** (`content/developers/adr/`, `hal`, `hardware`, `deployment`, `testing`, `implementation-plan`, `handoff`) are generated from core's OKF documents. Do not edit them here; change core, then re-import:
 
@@ -50,6 +50,8 @@ VITE_DEMO=1 npx vite build --config web/vite.config.ts --outDir /tmp/seedypod-de
 # here
 DEMO_DIST=/tmp/seedypod-demo CORE_COMMIT=<sha> pnpm media:capture
 ```
+
+The capture fixes the clock at midday so the grow light is on, and renders the 3D tower with GPU WebGL (set `CAPTURE_GL` as for the overview video on a machine without one). The home screen is WebP, because its lit gradient bands as a palette PNG; the other screens are PNG.
 
 The homepage overview video (`public/media/seedypod-overview.mp4` and its poster) is recorded from the same demo build, one Playwright video per scene with real pointer and keyboard input, then framed with chapter titles by ffmpeg. `capture/overview.json` records the scenes, what each verified, and the timeline. It needs `ffmpeg` and a GPU for WebGL (Metal on a Mac; set `CAPTURE_GL` otherwise, see the script):
 

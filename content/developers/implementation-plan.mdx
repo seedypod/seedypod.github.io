@@ -8,10 +8,10 @@ import { Callout } from 'nextra/components'
 # Gardyn Liberation — Implementation Plan (Phase 0 → Done)
 
 <Callout type="warning">
-  Draft. This page describes intended behaviour that has not been verified on a real Gardyn yet.
+  Draft. Parts of this page describe behaviour not yet verified on a real Gardyn.
 </Callout>
 
-**Status:** v3 — Phases 0, 3, 4, 5 and the software half of 7/8 built (2026-10-31); Phase 1 (hardware recon) and the Rust driver validation in Phase 2 need a real unit · **Date:** 2026-10-29 · **Author:** @ng (drafted with Claude)
+**Status:** v3 — Phases 0, 3, 4, 5 and the software half of 7/8 built (2026-10-31); Phase 1 (hardware recon) and the Rust driver validation in Phase 2 need a real unit (status update 2026-11-09: bring-up on a Gardyn 3.0 began 2026-11-06, see [Handoff §7–8](/developers/handoff/#7-real-unit-bring-up-2026-11-06); pump and water-level validation remain) · **Date:** 2026-10-29 · **Author:** @ng (drafted with Claude)
 **Name:** seedypod (ADR-0001; drafted as leafypod). Repo: `seedypod/core`.
 
 Sibling project to [sleepypod](https://sleepypod.github.io/): a sealed consumer appliance (Gardyn hydroponic tower) whose embedded Linux controller (a Raspberry Pi) is re-flashed to run a local, cloud-free control stack. This plan mirrors sleepypod's conventions exactly (branching, CI, Codecov, Stryker, semantic-release, Renovate, Vercel demo, Nextra docs on Pages, ADRs, OKF knowledge bundle) so tooling and muscle memory carry over.
@@ -349,4 +349,4 @@ KR3.3 One other person liberates their unit from the docs alone (Phase 8 "done")
 
 **Sources:** [sleepypod/core (conventions and ADR precedents)](https://github.com/sleepypod/core) · [iot-root/garden-of-eden (reference implementation, GPL-3; no code copied)](https://github.com/iot-root/garden-of-eden) · [Model Hardware Standard research preview](https://www.anthropic.com/news/model-hardware-standard-research-preview)
 
-**Imported from** [`docs/implementation-plan.md`](https://github.com/seedypod/core/blob/eac45f7/docs/implementation-plan.md) in seedypod/core. Edit it there, not here.
+**Imported from** [`docs/implementation-plan.md`](https://github.com/seedypod/core/blob/cfac0b4cbbd20d1599332ad438531540944f6b5a/docs/implementation-plan.md) in seedypod/core. Edit it there, not here.

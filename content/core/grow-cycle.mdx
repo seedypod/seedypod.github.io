@@ -44,6 +44,7 @@ The counts above the grid summarise how many pods are growing, ready, and need a
 Core can estimate how green each pod looks from the camera stills, using classical image analysis (green-pixel area over time, no machine learning). The per-pod trend is available from the API (`GET /api/vision/pods`) and as the `pod_health` MCP tool.
 
 <Callout type="warning">
-  The per-pod crop map assumes a fixed camera position and pod geometry. Like everything that
-  touches the hardware, it has not been checked against a real Gardyn's cameras yet.
+  The per-pod boxes were measured on a Gardyn Home 3.0's stills and assume the cameras sit where
+  they do on that unit; you can move them in **Analysis → Pod bounds**. Whether seedypod's pod
+  numbers match Gardyn's own numbering hasn't been checked.
 </Callout>

@@ -117,7 +117,7 @@ async function convert(from) {
   let content = transformBody(from, body)
   if (meta.status === 'draft') {
     const callout =
-      '<Callout type="warning">\n  Draft. This page describes intended behaviour that has not been verified on a real Gardyn yet.\n</Callout>'
+      '<Callout type="warning">\n  Draft. Parts of this page describe behaviour not yet verified on a real Gardyn.\n</Callout>'
     // Place the callout directly under the H1.
     content = content.replace(/^(# .+\n)/m, `$1\n${callout}\n`)
     if (!content.includes(callout)) content = callout + '\n\n' + content
