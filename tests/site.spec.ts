@@ -181,7 +181,7 @@ test('homepage overview video has its poster and an MP4 the manifest vouches for
   await page.goto('/')
   const video = page.getByRole('region', { name: 'Meet your tower.' }).locator('video')
   await expect(video).toHaveAttribute('poster', '/media/seedypod-overview.png')
-  await expect(video).toHaveAttribute('aria-label', 'Truly own your Gardyn.')
+  await expect(video).toHaveAttribute('aria-label', 'Your garden, your rules.')
   const poster = await request.get('/media/seedypod-overview.png')
   expect(poster.status()).toBe(200)
   // Playwright's Chromium has no H.264 decoder, so check the file rather than play it.

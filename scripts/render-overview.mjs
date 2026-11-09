@@ -85,7 +85,7 @@ const logoUri = 'data:image/png;base64,' + logo.toString('base64')
 const esc = (s) => s.replaceAll('&', '&amp;').replaceAll('<', '&lt;')
 function background(c, ending = false) {
   const font = 'font-family="Helvetica"'
-  return `<svg width="1920" height="1080" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="glow"><stop stop-color="${C.glow}"/><stop offset="1" stop-color="${C.bg}"/></radialGradient></defs><rect width="1920" height="1080" fill="${C.bg}"/><ellipse cx="100" cy="30" rx="760" ry="650" fill="url(#glow)"/><image href="${logoUri}" x="52" y="40" width="227" height="80"/><path d="M60 140H390" stroke="${C.green}" stroke-width="2"/><text x="60" y="212" fill="${C.green}" font-size="15" letter-spacing="2" ${font}>${esc(c.kicker)}</text>${c.title.map((t, i) => `<text x="60" y="${320 + i * 65}" fill="${C.text}" font-size="48" font-weight="600" ${font}>${esc(t)}</text>`).join('')}${c.body.map((t, i) => `<text x="60" y="${520 + i * 36}" fill="${C.soft}" font-size="22" ${font}>${esc(t)}</text>`).join('')}<text x="60" y="970" fill="${C.soft}" font-size="18" ${font}>${ending ? 'seedypod.github.io' : 'seedypod core · real interface'}</text><text x="60" y="1002" fill="${C.muted}" font-size="17" ${font}>Simulated tower · pre-hardware · silent tour</text><rect x="457" y="37" width="1446" height="1006" rx="3" fill="${C.frame}"/></svg>`
+  return `<svg width="1920" height="1080" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="glow"><stop stop-color="${C.glow}"/><stop offset="1" stop-color="${C.bg}"/></radialGradient></defs><rect width="1920" height="1080" fill="${C.bg}"/><ellipse cx="100" cy="30" rx="760" ry="650" fill="url(#glow)"/><image href="${logoUri}" x="52" y="40" width="227" height="80"/><path d="M60 140H390" stroke="${C.green}" stroke-width="2"/><text x="60" y="212" fill="${C.green}" font-size="15" letter-spacing="2" ${font}>${esc(c.kicker)}</text>${c.title.map((t, i) => `<text x="60" y="${320 + i * 65}" fill="${C.text}" font-size="48" font-weight="600" ${font}>${esc(t)}</text>`).join('')}${c.body.map((t, i) => `<text x="60" y="${520 + i * 36}" fill="${C.soft}" font-size="22" ${font}>${esc(t)}</text>`).join('')}<text x="60" y="970" fill="${C.soft}" font-size="18" ${font}>${ending ? 'seedypod.github.io' : 'seedypod core · real interface'}</text><text x="60" y="1002" fill="${C.muted}" font-size="17" ${font}>Simulated tower · demo data · silent tour</text><rect x="457" y="37" width="1446" height="1006" rx="3" fill="${C.frame}"/></svg>`
 }
 
 const ff = (args) =>
@@ -163,7 +163,7 @@ await still(
   'intro',
   {
     kicker: 'A TOUR OF SEEDYPOD',
-    title: ['Truly own', 'your Gardyn.'],
+    title: ['Your garden,', 'your rules.'],
     body: [
       'Lights, water, sensors and grow',
       'reminders, on your own network.',

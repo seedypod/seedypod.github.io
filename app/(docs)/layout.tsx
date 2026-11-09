@@ -19,7 +19,7 @@ export default async function DocsLayout({ children }: { children: React.ReactNo
       footer={
         <Footer>
           <span>
-            seedypod · Truly own your Gardyn.{' '}
+            seedypod · Your garden, your rules.{' '}
             <a href="/">
               Back to home <LinkArrow />
             </a>

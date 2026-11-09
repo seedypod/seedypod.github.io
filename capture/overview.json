@@ -1,54 +1,54 @@
 {
-  "sourceCommit": "d5c5f45827a0b3ad2cfdc41aaed933d32b63be7b",
+  "sourceCommit": "c84a95977ebcc2f0343d02c214d55d896b54966f",
   "capturedTime": "2026-11-01T19:30:00Z",
   "method": "scripts/capture-overview.mjs; core web demo build (VITE_DEMO=1) with the in-browser simulated tower; loopback only, off-origin requests blocked; Playwright 1440x1000 video, dark, GPU WebGL",
   "clips": [
     {
       "scene": "tower",
       "path": "/",
-      "start": 3.099,
-      "duration": 9.116999999999999,
+      "start": 2.604,
+      "duration": 7.601999999999999,
       "verified": "tower turned; flagged pod pinned"
     },
     {
       "scene": "zones",
       "path": "/",
-      "start": 2.627,
-      "duration": 5.543,
+      "start": 2.319,
+      "duration": 5.3790000000000004,
       "verified": "light zones on, Gardyn Home legend"
     },
     {
       "scene": "grow",
       "path": "/grow",
-      "start": 2.607,
-      "duration": 9.326,
+      "start": 2.261,
+      "duration": 8.986,
       "verified": "pod 7 picked; placement advice shown; stages scrubbed to harvest"
     },
     {
       "scene": "light",
       "path": "/light",
-      "start": 2.292,
-      "duration": 5.727,
+      "start": 2.294,
+      "duration": 5.686999999999999,
       "verified": "light level raised by keyboard; curve setpoints shown"
     },
     {
       "scene": "water",
       "path": "/water",
-      "start": 2.361,
-      "duration": 6.369,
+      "start": 2.226,
+      "duration": 6.234000000000001,
       "verified": "1 min run length picked; tank history switched to 30 days"
     },
     {
       "scene": "autopilot",
       "path": "/autopilot",
-      "start": 2.388,
-      "duration": 5.725
+      "start": 2.312,
+      "duration": 5.724
     },
     {
       "scene": "status",
       "path": "/status",
-      "start": 2.33,
-      "duration": 5.834
+      "start": 2.201,
+      "duration": 5.815999999999999
     }
   ],
   "chapters": [
@@ -90,43 +90,43 @@
     {
       "chapter": "tower",
       "start": 3,
-      "duration": 9.12
+      "duration": 7.6
     },
     {
       "chapter": "zones",
-      "start": 12.12,
-      "duration": 5.56
+      "start": 10.6,
+      "duration": 5.36
     },
     {
       "chapter": "grow",
-      "start": 17.68,
-      "duration": 9.32
+      "start": 15.96,
+      "duration": 9
     },
     {
       "chapter": "light",
-      "start": 27,
-      "duration": 5.72
+      "start": 24.96,
+      "duration": 5.68
     },
     {
       "chapter": "water",
-      "start": 32.72,
-      "duration": 6.36
+      "start": 30.64,
+      "duration": 6.24
     },
     {
       "chapter": "autopilot",
-      "start": 39.08,
+      "start": 36.88,
       "duration": 5.72
     },
     {
       "chapter": "status",
-      "start": 44.8,
-      "duration": 5.84
+      "start": 42.6,
+      "duration": 5.8
     },
     {
       "chapter": "outro",
-      "start": 50.64,
+      "start": 48.4,
       "duration": 4
     }
   ],
-  "durationSeconds": 54.64
+  "durationSeconds": 52.4
 }
