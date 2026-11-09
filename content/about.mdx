@@ -16,9 +16,9 @@ What exists today:
 - The Rust hardware daemon `hald`, with its safety guard, simulator, MQTT and Home Assistant discovery, and drivers for every documented part, cross-built for the Pi Zero W and the Zero 2 W, Pi 4 and Pi 5.
 - Core: the tRPC, REST, MCP and WebSocket server, SQLite store, light curves and bounded pump cycles, grow cycle and reminders, 30-pod tracking, camera captures with per-pod growth trends, the Home Assistant bridge, an optional API key, the web UI and the browser demo.
 
-The software is built and tested against a simulator. The [hardware map](/developers/hardware/) has been checked against the stock Gardyn 3.0 firmware but not yet probed on a board; I²C addresses, driver timings, power-monitor calibration, button polarity, the PWM overlay, camera exposure and the install scripts' Raspberry Pi OS steps are still to be confirmed on a unit.
+The software is built and tested against a simulator, and since November 6, 2026 it has run on a real Gardyn 3.0 with its original Pi Zero W. On that unit the install scripts and seedypod OS, the grow light, the I²C sensors, both cameras with image analysis, HomeKit pairing and the web UI are verified; the [hardware map](/developers/hardware/) has the per-pin status.
 
-What comes next is **Phase 1**: open a unit, image the stock card, probe the pin map on real hardware, and record the result. The [implementation plan](/developers/implementation-plan/) and the [handoff](/developers/handoff/) have the details.
+What comes next: the unit's tank is still empty, so a pump run, the pump-power calibration and the water level against water are unverified, and so is the button. The cameras' USB hub comes up on only some boots, which is still being traced. The [handoff](/developers/handoff/) has the details.
 
 ## Credits and license
 

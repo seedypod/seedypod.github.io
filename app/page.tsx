@@ -53,9 +53,9 @@ export default function Home() {
           </div>
           <div className="hero-media">
             <BrowserFrame
-              src="/media/core-dashboard.png"
-              alt="seedypod web UI home screen with grow light, water and environment readings"
-              caption="The real seedypod web UI, running against the simulated tower."
+              src="/media/core-home.webp"
+              alt="seedypod web UI home screen: the tower in 3D under its lit grow light, on day 19 of a grow with 19 pods ready to harvest"
+              caption="The seedypod web UI with the demo's simulated tower. The same software runs on a real Gardyn 3.0."
             />
           </div>
         </section>
@@ -77,8 +77,8 @@ export default function Home() {
             title="Truly own your Gardyn."
             wide
           >
-            A silent tour of seedypod core against the simulated tower. Nothing has run on a real
-            Gardyn yet.
+            A silent tour of the seedypod web UI, recorded from the demo build against a simulated
+            tower.
           </Demo>
         </section>
         <section className="web-showcase" aria-labelledby="web-heading">

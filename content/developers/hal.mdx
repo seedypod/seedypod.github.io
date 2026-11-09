@@ -8,7 +8,7 @@ import { Callout } from 'nextra/components'
 # hald — the hardware daemon
 
 <Callout type="warning">
-  Draft. This page describes intended behaviour that has not been verified on a real Gardyn yet.
+  Draft. Parts of this page describe behaviour not yet verified on a real Gardyn.
 </Callout>
 
 `hald` is the one process that owns the Gardyn's pins and buses (ADR-0004).
@@ -484,13 +484,19 @@ echo "$C" | sudo tee "$D/unbind"; sleep 1; echo "$C" | sudo tee "$D/bind"
 
 ## Verification status
 
-Everything here is tested on the simulator and against a local Mosquitto;
-the real drivers compile for both targets but their register sequences,
-timings and the PWM/overlay details are **unverified on a unit** until the
-Phase 1 checklist in the [hardware map](/developers/hardware/) is done.
+Everything here is tested on the simulator and against a local Mosquitto.
+On a real Gardyn 3.0 (Pi Zero W, from 2026-11-06), `hald --features hardware`
+ran with MQTT and its I²C sensors answered; the light's hardware PWM on GPIO18
+matched the commanded duty, fades ran smoothly, and the level held across
+`hald` restarts and reboots; both UVC cameras took stills. Still **unverified
+on a unit**, because its tank is empty: the pump driver, the INA219 pump-power
+calibration and dry-run detection, and the ultrasonic level against water. The
+button is unverified too, and the cameras' USB hub comes up on only some boots
+([handoff](/developers/handoff/#the-usb-hub-the-one-open-fault)). The
+[hardware map](/developers/hardware/) has the per-row status.
 
 ---
 
 **Sources:** [ADR 0007: HAL contract v1 (topic table is authoritative)](/developers/adr/0007-hal-contract/) · [ADR 0009: Pump safety guard and latched faults](/developers/adr/0009-pump-safety-guard/) · [Gardyn hardware map](/developers/hardware/) · [Home Assistant MQTT integration (discovery payload keys)](https://www.home-assistant.io/integrations/mqtt/)
 
-**Imported from** [`docs/hardware/hal.md`](https://github.com/seedypod/core/blob/eac45f7/docs/hardware/hal.md) in seedypod/core. Edit it there, not here.
+**Imported from** [`docs/hardware/hal.md`](https://github.com/seedypod/core/blob/cfac0b4cbbd20d1599332ad438531540944f6b5a/docs/hardware/hal.md) in seedypod/core. Edit it there, not here.

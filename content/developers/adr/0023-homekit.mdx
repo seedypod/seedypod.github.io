@@ -66,13 +66,14 @@ has a `binding.gyp`, a prebuilt `.node` file or an install script.
 The accessories write through `createCallerFactory(appRouter)(ctx)`, the same
 procedures the app calls. They never touch the HAL client or MQTT directly.
 
-| HomeKit                             | Characteristics                               | Core                                                                                                                                                                                                                                                                                                                                                             |
-| ----------------------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Grow light**: Lightbulb           | On, Brightness 0–100                          | `light.set`. A change from Home is a manual change, like one on the Light page. It holds over Autopilot and the schedule for 30 minutes, then the arbiter hands the light back. The tile follows actuator events, so it moves when the hold ends. Turning the light on with a brightness arrives as two writes, which are merged into one `light.set`.           |
-| **Pump**: Switch                    | On                                            | On calls `pump.runOnce` with 300 s, the Water page's default, and hald clamps it to `pumpMaxRunS`. Off calls `pump.stop`. When the HAL refuses (dry tank, over-temperature, a latched fault), or returns a state that isn't running, the switch reads off and the write fails with HAP's "not allowed in current state". The switch flips off when the run ends. |
-| **Sensors**: TemperatureSensor      | CurrentTemperature, StatusFault               | `air_temp` (°C). StatusFault is set when the reading isn't `good` quality.                                                                                                                                                                                                                                                                                       |
-| **Sensors**: HumiditySensor         | CurrentRelativeHumidity, StatusFault          | `humidity`.                                                                                                                                                                                                                                                                                                                                                      |
-| **Sensors**: Battery ("Water tank") | BatteryLevel, StatusLowBattery, ChargingState | BatteryLevel is `water_level_pct`. StatusLowBattery is hald's `water_low` alert. ChargingState is not chargeable.                                                                                                                                                                                                                                                |
+| HomeKit                                   | Characteristics                               | Core                                                                                                                                                                                                                                                                                                                                                             |
+| ----------------------------------------- | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Grow light**: Lightbulb                 | On, Brightness 0–100                          | `light.set`. A change from Home is a manual change, like one on the Light page. It holds over Autopilot and the schedule for 30 minutes, then the arbiter hands the light back. The tile follows actuator events, so it moves when the hold ends. Turning the light on with a brightness arrives as two writes, which are merged into one `light.set`.           |
+| **Pump**: Switch                          | On                                            | On calls `pump.runOnce` with 300 s, the Water page's default, and hald clamps it to `pumpMaxRunS`. Off calls `pump.stop`. When the HAL refuses (dry tank, over-temperature, a latched fault), or returns a state that isn't running, the switch reads off and the write fails with HAP's "not allowed in current state". The switch flips off when the run ends. |
+| **Sensors**: TemperatureSensor            | CurrentTemperature, StatusFault               | `air_temp` (°C). StatusFault is set when the reading isn't `good` quality.                                                                                                                                                                                                                                                                                       |
+| **Sensors**: HumiditySensor               | CurrentRelativeHumidity, StatusFault          | `humidity`.                                                                                                                                                                                                                                                                                                                                                      |
+| **Sensors**: Battery ("Water tank")       | BatteryLevel, StatusLowBattery, ChargingState | BatteryLevel is `water_level_pct`. StatusLowBattery is hald's `water_low` alert. ChargingState is not chargeable.                                                                                                                                                                                                                                                |
+| **Sensors**: OccupancySensor ("Tank low") | OccupancyDetected                             | hald's `water_low` alert (amendment 2026-11-08).                                                                                                                                                                                                                                                                                                                 |
 
 While hald is offline, reads answer "No Response" rather than a stale value.
 
@@ -201,9 +202,39 @@ identity.
   the simulator with a HAP controller: the wrong code is refused, the derived
   one pairs, writes reach the light and pump, pairings survive a restart, and
   a removal rotates the identity.
+- **Status update (2026-11-09):** pairing from the Home app has since worked on
+  the bring-up unit (Pi Zero W, seedypod OS). ciao's CPU use there and whether
+  `HOMEKIT_BIND` is needed haven't been measured.
+
+## Amendment (2026-11-08): a "Tank low" sensor next to the battery
+
+Home shows a Battery service's level only in the accessory's details. A low
+battery appears in the status summary as "Low battery". Owners couldn't find
+the tank (#136). The Sensors accessory now also carries an **Occupancy
+sensor**, "Tank low": OccupancyDetected follows hald's `water_low` alert, the
+same flag as StatusLowBattery, and updates from the alert event. Home shows it
+as its own row that reads "Detected" or "Not Detected", and the owner can turn
+on its notifications. The Battery service stays, so the percent full is still
+in the details.
+
+Occupancy was chosen because it is the binary sensor whose words fit a yes/no
+and that raises no alarm:
+
+- A **Leak sensor** stays rejected for the reason above: a critical alert for
+  something that isn't a leak.
+- A **Contact sensor** would read "Open" for a low tank.
+- A **Humidity sensor** carrying the tank percent would show the level on a
+  tile. But Home averages every humidity sensor in a room into its climate
+  summary, so a full tank would read as 100 % humidity.
+
+Home Assistant already had both entities from hald's discovery (ADR 0007):
+`sensor.<unit>_water_level` (`%`, `state_class: measurement`) on
+`seedypod/<unit>/sensor/water_level_pct`, and `binary_sensor.<unit>_water_low`
+(`device_class: problem`) on the `water_low` alert topic. Core doesn't publish
+them again (ADR 0013).
 
 ---
 
 **Sources:** [sleepypod ADR 0020: Deterministic HomeKit identity derivation](https://github.com/sleepypod/core/blob/dev/docs/adr/0020-homekit-identity-derivation.md) · [sleepypod PR #578: stranded-bridge rotation and the ciao advertiser](https://github.com/sleepypod/core/pull/578) · [sleepypod PR #718: unpublish, not destroy, on shutdown](https://github.com/sleepypod/core/pull/718) · [HAP-NodeJS](https://github.com/homebridge/HAP-NodeJS) · [ADR 0012: Deployment and trust model](/developers/adr/0012-deployment-and-trust/) · [ADR 0020: Autopilot (light arbiter)](/developers/adr/0020-autopilot-reactive-automations/) · [ADR 0021: SD card wear and fast recovery](/developers/adr/0021-sd-card-wear-and-recovery/)
 
-**Imported from** [`docs/adr/0023-homekit.md`](https://github.com/seedypod/core/blob/eac45f7/docs/adr/0023-homekit.md) in seedypod/core. Edit it there, not here.
+**Imported from** [`docs/adr/0023-homekit.md`](https://github.com/seedypod/core/blob/cfac0b4cbbd20d1599332ad438531540944f6b5a/docs/adr/0023-homekit.md) in seedypod/core. Edit it there, not here.

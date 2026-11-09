@@ -8,14 +8,15 @@ import { Callout } from 'nextra/components'
 # Maintenance and self-repair
 
 <Callout type="warning">
-  Draft. This page describes intended behaviour that has not been verified on a real Gardyn yet.
+  Draft. Parts of this page describe behaviour not yet verified on a real Gardyn.
 </Callout>
 
 This page covers keeping a unit healthy and fixing it yourself. Two kinds of
 advice are mixed here:
 
 - **seedypod behaviour** (alerts, commands, files) comes from the code and is
-  tested on the simulator.
+  tested on the simulator. The light, sensor, camera and update steps have also
+  run on a real Gardyn 3.0; the pump and water-level steps haven't yet.
 - **Physical care** of the tower is general hydroponics practice. It isn't
   specific to, or verified on, every Gardyn model; where the hardware itself
   is unverified, the [hardware map](/developers/hardware/) says so.
@@ -226,7 +227,25 @@ to one interval.
 
 ## Updates
 
-Rerun the installers. They keep your config and data:
+**Settings → Updates** installs the newest release of your channel (stable, or
+dev for `dev-latest`) without building anything on the unit. Pick the channel,
+**Check for updates**, then **Update**. The card shows each step and the log
+while it runs, and what happened when it's over. It checks each download's
+sha256, keeps the previous version, and puts it back by itself if core isn't
+healthy afterwards ([ADR 0026](/developers/adr/0026-web-update/)). The unit stops for as
+long as core takes to start again, a few minutes on a Pi Zero. Nothing checks
+for updates unless you press the button. Over SSH, the same helper:
+
+```sh
+sudo seedypod-update --check            # what's installed and what the channel has
+sudo seedypod-update --channel stable   # or dev; remembered
+sudo seedypod-update --now              # update, with its log on the terminal
+sudo seedypod-update --rollback         # put the previous version back
+```
+
+It replaces core and `hald`, not the rest of what the installers set up
+(systemd units, Node, the port 80 forward). When a release needs those, or
+the helper refuses one, rerun the installers. They keep your config and data:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/seedypod/core/main/scripts/install-hal | sudo bash
@@ -280,4 +299,4 @@ confirm the unit sees what it should.
 
 **Sources:** [hald reference](/developers/hal/) · [Gardyn hardware map](/developers/hardware/) · [Installation](/core/installation/) · [Adding a probe](/core/sensors/)
 
-**Imported from** [`docs/MAINTENANCE.md`](https://github.com/seedypod/core/blob/eac45f7/docs/MAINTENANCE.md) in seedypod/core. Edit it there, not here.
+**Imported from** [`docs/MAINTENANCE.md`](https://github.com/seedypod/core/blob/cfac0b4cbbd20d1599332ad438531540944f6b5a/docs/MAINTENANCE.md) in seedypod/core. Edit it there, not here.
