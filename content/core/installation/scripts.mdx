@@ -54,7 +54,7 @@ If you ran both Zero W development commands above, core is already installed: sk
 curl -fsSL https://raw.githubusercontent.com/seedypod/core/main/scripts/install | bash
 ```
 
-Development installs also forward port 80 to core on port 3000, so `http://seedypod.local/` opens the app. If `hald` runs on another machine, set `HAL_MQTT_URL` in `/etc/systemd/system/seedypod-core.service`. Then open `http://seedypod.local:3000/`.
+On a Raspberry Pi the installer forwards port 80 to core on port 3000, so `http://seedypod.local/` opens the app; `--no-port80` turns that off. On another machine it leaves port 80 alone unless you pass `--port80`, so open `http://<host>:3000/` there. If `hald` runs on another machine, set `HAL_MQTT_URL` in `/etc/systemd/system/seedypod-core.service`. The installer ends by printing the address it set up.
 
 A new install opens on **Welcome**. Choose **Set up a new garden**, or **Restore from a backup** if this card replaces one that died ([Replace a dead SD card](/core/installation/#replace-a-dead-sd-card)).
 

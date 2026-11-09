@@ -51,7 +51,7 @@ VITE_DEMO=1 npx vite build --config web/vite.config.ts --outDir /tmp/seedypod-de
 DEMO_DIST=/tmp/seedypod-demo CORE_COMMIT=<sha> pnpm media:capture
 ```
 
-The capture fixes the clock at midday so the grow light is on, and renders the 3D tower with GPU WebGL (set `CAPTURE_GL` as for the overview video on a machine without one). The home screen is WebP, because its lit gradient bands as a palette PNG; the other screens are PNG.
+The capture fixes the clock at midday so the grow light is on, and renders the 3D tower with GPU WebGL (set `CAPTURE_GL` as for the overview video on a machine without one). Home and Plan are WebP, because the lit gradient behind the 3D tower bands as a palette PNG; the other screens are PNG. The `mcp-order-plan-*` images are the exception to the demo build: the Plan screen of a local core (simulated HAL) after the real MCP run on the [MCP page](content/core/mcp.mdx); the manifest records how.
 
 The homepage overview video (`public/media/seedypod-overview.mp4` and its poster) is recorded from the same demo build, one Playwright video per scene with real pointer and keyboard input, then framed with chapter titles by ffmpeg. `capture/overview.json` records the scenes, what each verified, and the timeline. It needs `ffmpeg` and a GPU for WebGL (Metal on a Mac; set `CAPTURE_GL` otherwise, see the script):
 

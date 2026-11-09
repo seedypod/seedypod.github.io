@@ -181,7 +181,7 @@ export default function Home() {
               </p>
               <span className="card-link">Get the iPhone app</span>
             </Link>
-            <Link className="product-card" href="/core/mcp/">
+            <Link className="product-card" href="/core/mcp/#plan-from-an-order">
               <span className="card-number">05 — YOUR AGENT</span>
               <h3>
                 Autopilot and AI agents <LinkArrow />
@@ -191,9 +191,18 @@ export default function Home() {
                 cover. Over MCP an agent can plan your pods, turning a pasted seed order into a
                 layout.
               </p>
-              <span className="card-link">Connect an agent</span>
+              <pre className="card-snippet" aria-label="An example prompt">
+                {`use the seedypod mcp to plan
+Order Y221288628 summary:
+1 x Basil
+1 x Italian Parsley
+1 x Chives
+1 x Catnip
+…`}
+              </pre>
+              <span className="card-link">See it plan a real order</span>
             </Link>
-            <Link className="product-card" href="/developers/adr/0023-homekit/">
+            <Link className="product-card" href="/core/homekit/">
               <span className="card-number">06 — APPLE HOME</span>
               <h3>
                 HomeKit <LinkArrow />
@@ -202,7 +211,7 @@ export default function Home() {
                 Add the tower to the Home app: the light, a bounded watering, air temperature and
                 humidity, a tank-low sensor, and both cameras as snapshots. No bridge to install.
               </p>
-              <span className="card-link">Read how it works</span>
+              <span className="card-link">Pair it with Home</span>
             </Link>
           </div>
           <div className="build-invitation">
