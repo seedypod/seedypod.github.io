@@ -1,6 +1,6 @@
 ---
 title: 'MCP for agents'
-description: 'Let an AI agent read your tower and run bounded actions through the Model Context Protocol.'
+description: 'Let an AI agent read your tower, plan your pods from a seed order, and run bounded actions through the Model Context Protocol.'
 ---
 
 import { Callout } from 'nextra/components'
@@ -10,38 +10,208 @@ import { Callout } from 'nextra/components'
 Core exposes a [Model Context Protocol](https://modelcontextprotocol.io) server at `/api/mcp`, so an MCP host such as Claude Desktop or Cursor can read sensors, check the grow cycle, and act on your tower. It uses the stateless Streamable HTTP transport.
 
 ```text
-http://seedypod.local:3000/api/mcp
+http://seedypod.local/api/mcp
 ```
+
+That's the address on a Raspberry Pi, where the installer forwards port 80 to core. `http://seedypod.local:3000/api/mcp` works too, and it's the one to use when that forward is off ([Install](/core/installation/#open-the-app)).
 
 Every tool calls the same procedures the web UI uses, never the hardware directly, so **the pump safety guard applies to agents too**. A refusal (dry tank, latched fault) comes back as a tool error with the daemon's reason. Limits are discoverable rather than implied, so an agent can plan within them.
 
 ## Tools
 
-| Tool                  | Kind  | What it does                                                                  |
-| --------------------- | ----- | ----------------------------------------------------------------------------- |
-| `status`              | read  | Sensors, light and pump state, active alerts, grow cycle and hardware limits. |
-| `history`             | read  | Downsampled history for a sensor.                                             |
-| `list_schedules`      | read  | Light curves and pump cycles with their day masks.                            |
-| `pods`                | read  | The 30 pods: plant, planted date, status and notes.                           |
-| `captures`            | read  | Recent camera stills.                                                         |
-| `list_devices`        | read  | Sensor devices with their status, and the probe kinds that can be added.      |
-| `list_analyses`       | read  | Camera analysers, their results, and optionally one pod compared across them. |
-| `pod_health`          | read  | Per-pod green-area trend from the primary analyser.                           |
-| `list_automations`    | read  | Autopilot rules, their state, who owns the light, and the latest run log.     |
-| `backtest_automation` | read  | Replay a saved or draft Autopilot rule over recorded history.                 |
-| `set_light`           | write | Turn the light on or off and set brightness.                                  |
-| `run_pump`            | write | Run the pump for a bounded time.                                              |
-| `stop_pump`           | write | Stop the pump immediately.                                                    |
-| `acknowledge_alert`   | write | Acknowledge an alert, which also clears a latched fault.                      |
-| `upsert_schedule`     | write | Create or replace a light curve or pump cycle.                                |
-| `delete_schedule`     | write | Delete a schedule.                                                            |
-| `update_pod`          | write | Set a pod's plant, status and notes.                                          |
-| `grow_cycle`          | write | Start, change the stage of, or end the grow cycle.                            |
-| `capture_still`       | write | Take a camera still now.                                                      |
+All 38 tools as of core `0808f91` (`src/mcp/server.ts`). The planner's write tools change only saved plans and your custom plants until `apply_plan` writes a plan onto the pods.
+
+### The tower
+
+| Tool                  | Kind  | What it does                                                                                       |
+| --------------------- | ----- | -------------------------------------------------------------------------------------------------- |
+| `status`              | read  | Sensors with units, light and pump state (and any latched fault), alerts, grow day and HAL limits. |
+| `history`             | read  | Downsampled history for one sensor, 24 hours by default.                                           |
+| `list_devices`        | read  | Sensor devices with their status, and the probe kinds that can be added.                           |
+| `list_schedules`      | read  | Light curves and pump cycles with their day masks.                                                 |
+| `set_light`           | write | Turn the light on or off and set brightness. A schedule takes over at its next setpoint.           |
+| `run_pump`            | write | Run the pump for a bounded time; the HAL clamps it and refuses on a low tank or a fault.           |
+| `stop_pump`           | write | Stop the pump now.                                                                                 |
+| `acknowledge_alert`   | write | Acknowledge an alert, which also clears a latched fault; marks a reminder done.                    |
+| `upsert_schedule`     | write | Create or replace a light curve or pump cycle.                                                     |
+| `delete_schedule`     | write | Delete a schedule.                                                                                 |
+| `list_automations`    | read  | Autopilot rules, whether each is armed or in dry run, who owns the light, and the run log.         |
+| `backtest_automation` | read  | Replay a saved or draft Autopilot rule over recorded history, touching nothing.                    |
+
+### Pods, cameras and harvests
+
+| Tool                   | Kind  | What it does                                                                         |
+| ---------------------- | ----- | ------------------------------------------------------------------------------------ |
+| `pods`                 | read  | The 30 pods: plant, planted date, status and notes.                                  |
+| `update_pod`           | write | Set a pod's plant, planted date, status and notes.                                   |
+| `mark_harvested`       | write | Record a cut: the pod goes back to growing and the camera counts only regrowth.      |
+| `grow_cycle`           | write | Start, change the stage of, or end the grow cycle.                                   |
+| `captures`             | read  | Recent camera stills, newest first.                                                  |
+| `capture_still`        | write | Take a still from a camera now.                                                      |
+| `list_analyses`        | read  | Camera analysers, their results, and optionally one pod compared across them.        |
+| `pod_health`           | read  | Per-pod leaf-cover trend from the primary analyser.                                  |
+| `harvest_outlook`      | read  | Per planted pod: ready, soon or growing, from its age and leaf cover against target. |
+| `plant_profiles`       | read  | The harvest window and target leaf cover the unit holds for each crop.               |
+| `set_plant_profiles`   | write | Create or replace plant profiles, to sharpen `harvest_outlook`.                      |
+| `remove_plant_profile` | write | Delete a plant profile.                                                              |
+
+### Planning
+
+| Tool            | Kind  | What it does                                                                                               |
+| --------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
+| `match_order`   | read  | Match pasted order lines to catalog plants, with a confidence per line, close alternatives and misses.     |
+| `plant_catalog` | read  | Search Gardyn's plants and your custom ones: light zone, first-harvest window, care level, size.           |
+| `add_plant`     | write | Add a plant the catalog lacks, so the planner can place it.                                                |
+| `update_plant`  | write | Edit a custom plant. Gardyn's own plants are read-only.                                                    |
+| `remove_plant`  | write | Remove a custom plant. Saved plans keep their layout.                                                      |
+| `planner_zones` | read  | Every slot's row, column and light zone on a Home or Studio.                                               |
+| `plan_layout`   | read  | Lay plants out by light zone around the pods already planted, with a zone summary, misses and suggestions. |
+| `best_spot`     | read  | The best free slots for one more plant.                                                                    |
+| `save_plan`     | write | Save a layout and a staggered sowing schedule. It opens in the web planner.                                |
+| `list_plans`    | read  | Saved plans, newest first.                                                                                 |
+| `get_plan`      | read  | One saved plan in full: layout, zone summary, overrides and sowing schedule.                               |
+| `update_plan`   | write | Change a saved plan and recompute it.                                                                      |
+| `remove_plan`   | write | Delete a saved plan. Pods it was applied to keep what was written on them.                                 |
+| `apply_plan`    | write | Write a saved plan onto the pods and schedule reminders for later waves. Overwrites them: confirm first.   |
 
 Three resources are also available: `seedypod://sensors` (latest readings), `seedypod://devices` (sensor devices and addable kinds) and `seedypod://limits` (the hardware limits).
 
 Adding probes, calibrating them, and creating or arming Autopilot rules change what the unit does unattended, so they are left to a person in the app.
+
+## Plan from an order
+
+Paste a seed order into your agent and let it lay the tower out. This is a real run: the tool calls an agent made for the prompt below, against core `0808f91` on a Mac (simulated hardware, a fresh data directory, so all 30 pods were empty). The results are trimmed, not edited.
+
+```text
+use the seedypod mcp to plan
+Order Y221288628 summary:
+1 x Basil
+1 x Italian Parsley
+1 x Chives
+1 x Catnip
+1 x Cilantro
+1 x Green Bok Choy
+1 x Kale
+1 x Kale Lacinato
+2 x Perpetual Spinach
+1 x Red Swiss Chard
+1 x Rosemary
+1 x Sweet Thai Basil
+1 x Thyme
+1 x Red Salad Bowl
+1 x Mint
+1 x Bunching Onions
+1 x Oregano
+1 x Pink Swiss Chard
+1 x Buttercrunch Lettuce
+```
+
+**1. Match the order.** `match_order` takes the order lines as pasted. All 19 matched; 17 at confidence 1, two below the 0.8 the tool says to check with you:
+
+```json
+// match_order { "lines": ["1 x Basil", "1 x Italian Parsley", …, "1 x Buttercrunch Lettuce"] }
+{
+  "matched": [
+    { "line": "1 x Basil", "plantId": "basil", "confidence": 1, "alternatives": [] },
+    …
+    {
+      "line": "1 x Pink Swiss Chard",
+      "plantId": "red-swiss-chard",
+      "confidence": 0.72,
+      "alternatives": [{ "plantId": "yellow-swiss-chard", "plantName": "Yellow Swiss Chard", "confidence": 0.69 }]
+    },
+    { "line": "1 x Buttercrunch Lettuce", "plantId": "buttercrunch", "confidence": 0.76, "alternatives": [] }
+  ],
+  "unmatched": [],
+  "skipped": []
+}
+```
+
+Buttercrunch is Gardyn's name for that lettuce, so it stands. Pink Swiss Chard is another matter: Gardyn's catalog has only red and yellow chard.
+
+**2. Add what the catalog lacks.** `plant_catalog { "q": "chard" }` confirms it (`red-swiss-chard` and `yellow-swiss-chard`, both medium light). Rather than plant a second red chard, the agent adds pink as a custom plant with red chard's light zone and harvest window:
+
+```json
+// add_plant { "name": "Pink Swiss Chard", "category": "green", "zone": "medium", "harvest_months": [1, 2],
+//             "care_level": "beginner", "succession": "long-greens-herbs" }
+{ "id": "pink-swiss-chard", "name": "Pink Swiss Chard", "zone": "medium", "harvestMonths": [1, 2], "custom": true, … }
+```
+
+**3. Lay it out.** `plan_layout` with the 20 plants on a Home. Medium and low fill up, and two low-light herbs don't fit:
+
+```json
+// plan_layout { "model": "home", "plants": [{ "plantId": "basil", "count": 1 }, …, { "plantId": "pink-swiss-chard", "count": 1 }] }
+{
+  "zones": [
+    { "zone": "high", "total": 12, "planned": 0, "free": 12 },
+    { "zone": "medium", "total": 12, "planned": 12, "free": 0 },
+    { "zone": "low", "total": 6, "planned": 6, "free": 0 }
+  ],
+  "unplaced": [
+    {
+      "plantId": "bunching-onions",
+      "code": "no_space",
+      "reason": "no free slot in the low zone (low 6/6 taken)",
+      "zones": ["low"]
+    },
+    {
+      "plantId": "oregano",
+      "code": "no_space",
+      "reason": "no free slot in the low zone (low 6/6 taken)",
+      "zones": ["low"]
+    }
+  ],
+  "suggestions": []
+}
+```
+
+There are no suggestions because the planner never moves a plant up a zone on its own. The high zone is empty, though, so the agent asks whether oregano and bunching onions may go there, and on a yes passes `allowedZones`:
+
+```json
+// plan_layout { …, "overrides": { "allowedZones": { "oregano": ["low", "high"], "bunching-onions": ["low", "high"] } } }
+{
+  "zones": [
+    { "zone": "high", "total": 12, "planned": 2, "free": 10 },
+    { "zone": "medium", "total": 12, "planned": 12, "free": 0 },
+    { "zone": "low", "total": 6, "planned": 6, "free": 0 }
+  ],
+  "unplaced": [],
+  "assignments": [
+    …
+    { "slot": 7, "slotZone": "high", "plantId": "bunching-onions", "reason": "high zone, allowed by the caller (ideal low)" },
+    { "slot": 8, "slotZone": "high", "plantId": "oregano", "reason": "high zone, allowed by the caller (ideal low)" },
+    …
+  ]
+}
+```
+
+**4. Save it.** `save_plan` with the same plants and overrides, id `order-y221288628`, starting 2026-11-09. The staggered schedule sows everything that day except the second perpetual spinach, which waits for a second wave:
+
+```json
+// get_plan { "id": "order-y221288628" }: sowing, trimmed
+[
+  { "plantName": "Basil", "wave": 1, "sowOn": "2026-11-09", "firstHarvestFrom": "2027-01-08", "firstHarvestTo": "2027-02-07" },
+  …
+  { "plantName": "Perpetual Spinach", "wave": 1, "sowOn": "2026-11-09", "firstHarvestFrom": "2027-01-08", "firstHarvestTo": "2027-02-07" },
+  { "plantName": "Perpetual Spinach", "wave": 2, "sowOn": "2027-01-18", "firstHarvestFrom": "2027-03-19", "firstHarvestTo": "2027-04-18" }
+]
+```
+
+Nothing is written to the pods yet. The plan is under **Plan → Saved plans**; **Open** shows it on the tower, where planned pods appear as seedlings, and the 2D view names every pod:
+
+<BrowserFrame
+  address="127.0.0.1:3048/plan"
+  src="/media/mcp-order-plan-3d.webp"
+  alt="Plan screen with the saved order open: 20 planned pods on the 3D tower, colored by light zone"
+/>
+
+<BrowserFrame
+  address="127.0.0.1:3048/plan"
+  src="/media/mcp-order-plan-2d.png"
+  alt="Plan screen in 2D: all 30 slots with their zones, 20 of them planned, oregano and bunching onions in high-light slots 7 and 8"
+/>
+
+**5. Apply it, when you're ready.** `apply_plan { "id": "order-y221288628" }` writes the layout onto the pods and schedules a reminder for the second wave. It overwrites those pods, so an agent should confirm with you first.
 
 ## Security
 
