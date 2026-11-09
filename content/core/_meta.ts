@@ -11,6 +11,7 @@ export default {
   analysis: 'Capture analysis',
   '-- connect': { type: 'separator', title: 'Connect' },
   'home-assistant': 'Home Assistant',
+  homekit: 'Apple Home (HomeKit)',
   mcp: 'MCP for agents',
   '-- help': { type: 'separator', title: 'Help' },
   maintenance: 'Maintenance and repair',

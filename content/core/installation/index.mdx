@@ -42,6 +42,10 @@ Choose **one** of these alternatives after backing up:
 
 Both paths end at `http://seedypod.local/`, where you can set up a garden or restore a seedypod backup. Then continue with the shared setup below.
 
+<span id="open-the-app" />
+
+`http://seedypod.local:3000/` opens the same app. Core listens on port 3000, and on a Raspberry Pi the installer forwards port 80 to it, so the address needs no port. Use `:3000` where that forward is off: core on a machine that isn't a Pi (unless you installed with `--port80`), a unit installed with `--no-port80`, or one where something else already listens on port 80. The iPhone app and the Wi-Fi setup hotspot use port 3000 either way.
+
 <span id="1-flash" />
 
 Using plain Raspberry Pi OS? Its flashing and installer steps are now in the [script-install guide](/core/installation/scripts/).
@@ -78,7 +82,7 @@ Follow the [seedypod OS guide](/core/installation/image/), with the same hostnam
 
 ### Restore
 
-Open `http://seedypod.local:3000`, choose **Restore from a backup**, and either upload the file or enter the mirror's bucket settings from the old card and pick the newest backup. The unit restarts on it, with its schedules, grow cycle, pods, Autopilot rules, probes, calibration and history. It keeps the same unit id, so Home Assistant keeps the same device.
+Open `http://seedypod.local`, choose **Restore from a backup**, and either upload the file or enter the mirror's bucket settings from the old card and pick the newest backup. The unit restarts on it, with its schedules, grow cycle, pods, Autopilot rules, probes, calibration and history. It keeps the same unit id, so Home Assistant keeps the same device.
 
 </Steps>
 
@@ -96,7 +100,7 @@ No keyboard needed. Hold the unit's button for **10 seconds**. At 1 second it ac
 
 1. Join `seedypod-setup-xxxx` from a phone.
 2. Open `http://10.42.0.1:3000/wifi`, pick your network, enter its password, and press **Join**.
-3. The unit leaves the hotspot and joins your network. Rejoin your network on the phone and open `http://seedypod.local:3000/`.
+3. The unit leaves the hotspot and joins your network. Rejoin your network on the phone and open `http://seedypod.local/`.
 
 If the password was wrong, the hotspot comes back and the Wi-Fi screen says why. On your network, **Settings → Wi-Fi** does the same without the button. The hotspot is open because pressing the button already proves someone is at the unit, and it closes itself after 15 minutes.
 

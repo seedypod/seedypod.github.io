@@ -4,7 +4,7 @@ export function BrowserFrame({
   src,
   alt,
   caption,
-  address = 'seedypod.local:3000',
+  address = 'seedypod.local',
 }: MediaProps & { address?: string }) {
   return (
     <figure className="browser-frame">

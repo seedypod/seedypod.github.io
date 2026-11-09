@@ -4,11 +4,66 @@
     {
       "repository": "seedypod/core",
       "commit": "c84a95977ebcc2f0343d02c214d55d896b54966f",
+      "source": "web demo build (VITE_DEMO=1), route /sensors",
+      "output": "core-sensors.png",
+      "method": "scripts/capture-core.mjs (Playwright, 1440x1000 @2x, dark, GPU WebGL, clock 2026-11-01T19:30:00Z)",
+      "sha256": "8541a00c1923570a7236dd968b5386696cb98faa77c443dcc11fcb705ff8522f",
+      "bytes": 234109,
+      "width": 2880,
+      "height": 2000
+    },
+    {
+      "repository": "seedypod/core",
+      "commit": "c84a95977ebcc2f0343d02c214d55d896b54966f",
+      "source": "web demo build (VITE_DEMO=1), route /status",
+      "output": "core-status.png",
+      "method": "scripts/capture-core.mjs (Playwright, 1440x1000 @2x, dark, GPU WebGL, clock 2026-11-01T19:30:00Z)",
+      "sha256": "808c4843afca1bf529f5f4bf64d7fb75da20051308e9c609d78cd6da4ac093a0",
+      "bytes": 231725,
+      "width": 2880,
+      "height": 2000
+    },
+    {
+      "repository": "seedypod/core",
+      "commit": "c84a95977ebcc2f0343d02c214d55d896b54966f",
+      "source": "web demo build (VITE_DEMO=1), route /analysis",
+      "output": "core-analysis.png",
+      "method": "scripts/capture-core.mjs (Playwright, 1440x1000 @2x, dark, GPU WebGL, clock 2026-11-01T19:30:00Z)",
+      "sha256": "f2954d62a723a74d8758759a19213a81f34e61a91828f9e6c41302643fbe14ca",
+      "bytes": 262253,
+      "width": 2880,
+      "height": 2000
+    },
+    {
+      "repository": "seedypod/core",
+      "commit": "c84a95977ebcc2f0343d02c214d55d896b54966f",
+      "source": "web demo build (VITE_DEMO=1), route /autopilot",
+      "output": "core-autopilot.png",
+      "method": "scripts/capture-core.mjs (Playwright, 1440x1000 @2x, dark, GPU WebGL, clock 2026-11-01T19:30:00Z)",
+      "sha256": "0d22d43c0b217d338cdb57be2d33978bd604f2c155a1cbe6fdb1dcf49cebb387",
+      "bytes": 250641,
+      "width": 2880,
+      "height": 2000
+    },
+    {
+      "repository": "seedypod/core",
+      "commit": "c84a95977ebcc2f0343d02c214d55d896b54966f",
+      "source": "web demo build (VITE_DEMO=1), route /plan, the 3D tower",
+      "output": "core-plan.webp",
+      "method": "scripts/capture-core.mjs (Playwright, 1440x1000 @2x, dark, GPU WebGL, clock 2026-11-01T19:30:00Z)",
+      "sha256": "3d5c8d38e703827173ea538bb59efeaa2934b7cad7d6799ed62b1cef4e6c92d8",
+      "bytes": 139196,
+      "width": 2880,
+      "height": 2000
+    },
+    {
+      "repository": "seedypod/core",
+      "commit": "c84a95977ebcc2f0343d02c214d55d896b54966f",
       "source": "web demo build (VITE_DEMO=1), route /, tower zoomed one step",
       "output": "core-home.webp",
       "method": "scripts/capture-core.mjs (Playwright, 1440x1000 @2x, dark, GPU WebGL, clock 2026-11-01T19:30:00Z)",
-      "sha256": "3aa947aedca956d3ef74c9e2c7bb86b662a7727a3617bf8dde7851609297e9a0",
-      "bytes": 120186,
+      "sha256": "d2aa58917bd8e184fa5c95c8c3d31962cf4bf50ddb9037074ad51dafe9b617e7",
+      "bytes": 120190,
       "width": 2880,
       "height": 2000
     },
@@ -29,8 +84,8 @@
       "source": "web demo build (VITE_DEMO=1), route /water",
       "output": "core-water.png",
       "method": "scripts/capture-core.mjs (Playwright, 1440x1000 @2x, dark, GPU WebGL, clock 2026-11-01T19:30:00Z)",
-      "sha256": "743ba2875f1c7ce565308f857b598f426b57730fe923d7bc84e240c0d37fe4e5",
-      "bytes": 201226,
+      "sha256": "fa6b4e46cab691da706908faa876105ea425a1e9ccc2faf4be3857c26ddd3afb",
+      "bytes": 202935,
       "width": 2880,
       "height": 2000
     },
@@ -51,8 +106,8 @@
       "source": "web demo build (VITE_DEMO=1), route /grow",
       "output": "core-grow.png",
       "method": "scripts/capture-core.mjs (Playwright, 1440x1000 @2x, dark, GPU WebGL, clock 2026-11-01T19:30:00Z)",
-      "sha256": "b9de1c1b9d5dfdd4da11547298fed06d589a1f526db34bd05ad672ded5750d6d",
-      "bytes": 289110,
+      "sha256": "08314f7a83c0d5628b56fb6b1ef73e6c333b3b0e991f234e99683e20d4e5a51d",
+      "bytes": 289728,
       "width": 2880,
       "height": 2000
     },
@@ -210,6 +265,28 @@
       "bytes": 971951,
       "width": 1884,
       "height": 1430
+    },
+    {
+      "repository": "seedypod/core",
+      "commit": "0808f919c1aa7a808ff77ab99828900e899a7659",
+      "source": "local core (simulated HAL, fresh data dir, light set to 85 %), Plan screen, 3D, with the saved plan \"Order Y221288628\" open; the plan was made over MCP (content/core/mcp.mdx, Plan from an order)",
+      "output": "mcp-order-plan-3d.webp",
+      "method": "Playwright 1440x1000 @2x, dark, GPU WebGL, scrolled to top; sharp WebP q85",
+      "sha256": "99468d9a6b244815ae8e029fc46d77e33447ca55e01ea056320333c3909658b8",
+      "bytes": 122966,
+      "width": 2880,
+      "height": 2000
+    },
+    {
+      "repository": "seedypod/core",
+      "commit": "0808f919c1aa7a808ff77ab99828900e899a7659",
+      "source": "local core (simulated HAL, fresh data dir, light set to 85 %), Plan screen, 2D, with the saved plan \"Order Y221288628\" open; the plan was made over MCP (content/core/mcp.mdx, Plan from an order)",
+      "output": "mcp-order-plan-2d.png",
+      "method": "Playwright 1440x1000 @2x, dark, GPU WebGL, scrolled to top; sharp PNG level 9",
+      "sha256": "699a83797867297859db75520cb017df7764c768e33fba1b957dd66583793d74",
+      "bytes": 326797,
+      "width": 2880,
+      "height": 2000
     }
   ]
 }

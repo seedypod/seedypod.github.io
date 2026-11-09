@@ -1,0 +1,63 @@
+---
+title: 'Apple Home (HomeKit)'
+description: 'Add the tower to the Home app: the grow light, a bounded watering, temperature, humidity, the tank and both cameras, over your own network.'
+---
+
+import { Callout } from 'nextra/components'
+
+# Apple Home (HomeKit)
+
+Core has a HomeKit bridge built in, so the tower shows up in the Home app with no Homebridge or other hub software. It's local: Home talks to the unit over your network, not through Apple's servers or ours. It's off until you turn it on, and uses no memory until then.
+
+Pairing from the Home app has been checked on a real Gardyn 3.0 with its original Pi Zero W. The design and its trade-offs are in [ADR 0023](/developers/adr/0023-homekit/) and, for the cameras, [ADR 0027](/developers/adr/0027-camera-exposure/).
+
+## Pair it
+
+1. Open the web UI (`http://seedypod.local`) and go to **Settings → Apple Home**.
+2. Turn on **HomeKit**. After a few seconds an 8-digit **setup code** and its QR code appear. Every unit has its own code; there's no shared default.
+3. On your iPhone or iPad, on the same network as the unit, open the Home app, tap **+ → Add Accessory**, and scan the QR code or enter the code.
+4. Home adds a bridge with the accessories below. Choose a room for each.
+
+Settings then shows **Paired** with the number of Home controllers. To add the tower to a second home, share it from the Home app; the setup code only works while the bridge is unpaired.
+
+## What appears in Home
+
+| Accessory               | Shows as                | What it does                                                                                                                                                                        |
+| ----------------------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Grow light              | Light, with brightness  | Like a change on the Light screen, it holds over [Autopilot](/core/autopilot/) and the schedule for 30 minutes, then hands the light back. The tile follows the light's real state. |
+| Pump                    | Switch                  | On runs one 5-minute watering, which the hardware daemon caps at its maximum run. Off stops it. If the daemon refuses (dry tank, hot board, latched fault), the switch stays off.   |
+| Sensors: temperature    | Temperature sensor      | Air temperature.                                                                                                                                                                    |
+| Sensors: humidity       | Humidity sensor         | Air humidity.                                                                                                                                                                       |
+| Sensors: water tank     | Battery level           | How full the tank is, in the accessory's details; Home reports **Low battery** when the tank is low.                                                                                |
+| Sensors: tank low       | Occupancy sensor        | **Detected** when the tank is low, so it gets its own row and you can turn on notifications for it.                                                                                 |
+| Upper and lower cameras | Cameras, snapshots only | The newest stored still from each camera. Live view is off: the Pi Zero W can't stream without starving everything else.                                                            |
+
+While the hardware daemon is offline, the sensor tiles read **No Response** rather than an old value.
+
+A camera tile is only as fresh as the last capture: one every 60 minutes by default (**Settings → Cameras**), or press **Capture now** on the Cameras screen. Showing the cameras in Home costs a little CPU while the Home app is open, and nothing otherwise.
+
+## Reset pairing
+
+**Settings → Apple Home → Reset pairing** removes the tower from every home and issues a new setup code and QR. Remove the bridge in the Home app too, or its tiles stay **No Response**. Then add it again with the new code.
+
+Removing the bridge in the Home app from the last home does the same reset on the unit.
+
+## Backups, reinstalls and new cards
+
+- The pairing is in the [backup](/core/maintenance/#backups). Restoring onto the same unit brings it back paired, so Home's automations keep working.
+- Restoring onto a different unit moves the pairing with it, which is right when the old unit is dead. Don't run both at once; **Reset pairing** gives the new one its own.
+- Without a backup, a reinstall or new SD card on the same Pi keeps the same identity and setup code, because they're derived from the Pi's serial number. Scan the QR again, and Home's automations stay.
+
+## Troubleshooting
+
+**Settings says Paired: no, but the tower works in Home.** Core before [core #140](https://github.com/seedypod/core/pull/140) (merged November 9, 2026) looked for the pairing in the wrong folder. Update core: the update moves the pairing to the data folder and keeps the unit paired.
+
+**Home can't find the accessory.** Home finds the bridge over Bonjour, so pair from an iPhone or iPad on the same network as the unit, not a guest or separate IoT network. The bridge listens on port 51827.
+
+**Tiles read No Response.** Check the **Status** screen: the hardware daemon may be offline. After a **Reset pairing**, remove and re-add the bridge in Home.
+
+**Live view says it's off.** That's by design; the camera tiles are snapshots ([ADR 0027](/developers/adr/0027-camera-exposure/)).
+
+<Callout>
+  HomeKit isn't available in the [live demo](https://seedypod.vercel.app): it runs on the unit.
+</Callout>
