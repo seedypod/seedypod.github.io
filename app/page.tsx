@@ -29,14 +29,15 @@ export default function Home() {
               <span /> LOCAL CONTROL. NO SUBSCRIPTION.
             </p>
             <h1>
-              Truly own
+              Your garden,
               <br />
-              <em>your Gardyn.</em>
+              <em>your rules.</em>
             </h1>
             <p className="hero-description">
-              A Gardyn is a good piece of hardware with a Raspberry Pi inside and a cloud account in
-              front of it. seedypod replaces the cloud with software that runs on that Pi: lights,
-              watering, sensors, cameras and grow reminders, all on your own network.
+              A Gardyn is a good tower with a Raspberry Pi inside and a cloud account in front of
+              it. seedypod replaces the cloud with software on that Pi: light, water, sensors and
+              cameras on your own network, Autopilot and camera growth analysis, an MCP server so AI
+              agents can plan your pods, and HomeKit and Home Assistant built in.
             </p>
             <div className="actions">
               <Link className="button primary" href="/getting-started/">
@@ -74,7 +75,7 @@ export default function Home() {
           <Demo
             src="/media/seedypod-overview.mp4"
             poster="/media/seedypod-overview.png"
-            title="Truly own your Gardyn."
+            title="Your garden, your rules."
             wide
           >
             A silent tour of the seedypod web UI, recorded from the demo build against a simulated
@@ -163,8 +164,9 @@ export default function Home() {
                 Home Assistant <LinkArrow />
               </h3>
               <p>
-                hald publishes MQTT discovery, so Home Assistant sees the light, pump and sensors
-                with nothing else installed. Core adds grow reminders and a water-now button.
+                hald publishes MQTT discovery, so Home Assistant sees the light, pump, sensors and
+                tank level with nothing else installed. Core adds grow reminders, a water-now button
+                and both cameras as snapshots.
               </p>
               <span className="card-link">Connect Home Assistant</span>
             </Link>
@@ -178,6 +180,29 @@ export default function Home() {
                 a bounded watering, and clear alerts. Finds your unit with Bonjour; no account.
               </p>
               <span className="card-link">Get the iPhone app</span>
+            </Link>
+            <Link className="product-card" href="/core/mcp/">
+              <span className="card-number">05 — YOUR AGENT</span>
+              <h3>
+                Autopilot and AI agents <LinkArrow />
+              </h3>
+              <p>
+                Autopilot rules act on live readings, and the cameras score each pod&apos;s leaf
+                cover. Over MCP an agent can plan your pods, turning a pasted seed order into a
+                layout.
+              </p>
+              <span className="card-link">Connect an agent</span>
+            </Link>
+            <Link className="product-card" href="/developers/adr/0023-homekit/">
+              <span className="card-number">06 — APPLE HOME</span>
+              <h3>
+                HomeKit <LinkArrow />
+              </h3>
+              <p>
+                Add the tower to the Home app: the light, a bounded watering, air temperature and
+                humidity, a tank-low sensor, and both cameras as snapshots. No bridge to install.
+              </p>
+              <span className="card-link">Read how it works</span>
             </Link>
           </div>
           <div className="build-invitation">

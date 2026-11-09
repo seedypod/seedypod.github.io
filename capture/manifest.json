@@ -102,24 +102,24 @@
     },
     {
       "repository": "seedypod/core",
-      "commit": "d5c5f45827a0b3ad2cfdc41aaed933d32b63be7b",
+      "commit": "c84a95977ebcc2f0343d02c214d55d896b54966f",
       "source": "web demo build (VITE_DEMO=1), overview tour",
       "output": "seedypod-overview.mp4",
       "method": "scripts/capture-overview.mjs + scripts/render-overview.mjs; scripts/capture-overview.mjs; core web demo build (VITE_DEMO=1) with the in-browser simulated tower; loopback only, off-origin requests blocked; Playwright 1440x1000 video, dark, GPU WebGL; original chapter typography and the repository seedypod logo around unchanged UI recordings",
-      "sha256": "7e093c1386195571373fbe23803ffe8a32647e1e9f7d77724a7a9390f7483d43",
-      "bytes": 1807008,
+      "sha256": "bcb7b588fe25487c3bd8d1da058fb62eec43c52c8198656bbc5f4fa519fa7c59",
+      "bytes": 1685821,
       "width": 1920,
       "height": 1080,
-      "durationSeconds": 54.64
+      "durationSeconds": 52.4
     },
     {
       "repository": "seedypod/core",
-      "commit": "d5c5f45827a0b3ad2cfdc41aaed933d32b63be7b",
+      "commit": "c84a95977ebcc2f0343d02c214d55d896b54966f",
       "source": "web demo build (VITE_DEMO=1), overview tour",
       "output": "seedypod-overview.png",
       "method": "scripts/capture-overview.mjs + scripts/render-overview.mjs; scripts/capture-overview.mjs; core web demo build (VITE_DEMO=1) with the in-browser simulated tower; loopback only, off-origin requests blocked; Playwright 1440x1000 video, dark, GPU WebGL; original chapter typography and the repository seedypod logo around unchanged UI recordings",
-      "sha256": "4b0144453e9ed75a6508b7eb5f2fc419a41a96c381950ae97fc16610733890f8",
-      "bytes": 347665,
+      "sha256": "1083ca8ae3362cfc266ea5a9083e545bb5de8035924675c0b7156f39a9aa3a26",
+      "bytes": 347248,
       "width": 1920,
       "height": 1080
     },
