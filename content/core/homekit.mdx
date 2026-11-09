@@ -28,8 +28,7 @@ Settings then shows **Paired** with the number of Home controllers. To add the t
 | Pump                    | Switch                  | On runs one 5-minute watering, which the hardware daemon caps at its maximum run. Off stops it. If the daemon refuses (dry tank, hot board, latched fault), the switch stays off.   |
 | Sensors: temperature    | Temperature sensor      | Air temperature.                                                                                                                                                                    |
 | Sensors: humidity       | Humidity sensor         | Air humidity.                                                                                                                                                                       |
-| Sensors: water tank     | Battery level           | How full the tank is, in the accessory's details; Home reports **Low battery** when the tank is low.                                                                                |
-| Sensors: tank low       | Occupancy sensor        | **Detected** when the tank is low, so it gets its own row and you can turn on notifications for it.                                                                                 |
+| Sensors: tank           | Battery level ("Tank")  | How full the tank is, in the accessory's details. It never reports **Low battery**: HomeKit has no tank sensor, so a low tank is left to the web UI's alerts and Home Assistant.    |
 | Upper and lower cameras | Cameras, snapshots only | The newest stored still from each camera. Live view is off: the Pi Zero W can't stream without starving everything else.                                                            |
 
 While the hardware daemon is offline, the sensor tiles read **No Response** rather than an old value.
@@ -57,6 +56,10 @@ Removing the bridge in the Home app from the last home does the same reset on th
 **Tiles read No Response.** Check the **Status** screen: the hardware daemon may be offline. After a **Reset pairing**, remove and re-add the bridge in Home.
 
 **Live view says it's off.** That's by design; the camera tiles are snapshots ([ADR 0027](/developers/adr/0027-camera-exposure/)).
+
+**The cameras aren't in the room you picked.** Home puts accessories that appear after pairing in the bridge's own room, often **Default Room**. Move them, or first set the bridge's room in **Home → Settings → Hubs & Bridges**.
+
+**Camera tiles read No Response, and the other tiles work.** Core before [core #181](https://github.com/seedypod/core/pull/181) (merged November 9, 2026) declared the cameras with only part of what Home expects of a camera: one stream, 15 fps, and no microphone. Home gave up on them without asking for a picture. Update core. On the unit, `journalctl -u seedypod-core | grep -i homekit` should then show `image request for Upper camera … bytes` while a camera tile is on screen. If no `image request` line appears at all, Home isn't asking. To see what Home does over HAP, turn on the debug log for up to an hour with `curl -X POST -H content-type:application/json -d '{"minutes":10}' http://<unit>:3000/api/homekit/debug`. Its lines start with `homekit debug:` ([core #182](https://github.com/seedypod/core/issues/182)).
 
 <Callout>
   HomeKit isn't available in the [live demo](https://seedypod.vercel.app): it runs on the unit.
