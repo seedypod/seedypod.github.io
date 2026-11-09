@@ -5,13 +5,14 @@
 //   DEMO_DIST=/tmp/seedypod-demo CORE_COMMIT=<sha> node scripts/capture-core.mjs
 //
 // The demo build runs the real UI against the in-browser simulator with seeded
-// history, so no hardware and no network are involved. Writes public/media/*.png
-// and rewrites capture/manifest.json.
+// history, so no hardware and no network are involved: requests off the loopback
+// origin are blocked, and the clock is fixed at midday so the grow light is on.
+// Writes public/media/core-* and rewrites their entries in capture/manifest.json.
 import { createServer } from 'node:http'
 import { readFile, writeFile, stat, mkdir } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 import { resolve, extname, sep } from 'node:path'
-import { chromium } from '@playwright/test'
+import { chromium, expect } from '@playwright/test'
 import sharp from 'sharp'
 
 const root = resolve(process.env.DEMO_DIST ?? '')
@@ -27,6 +28,7 @@ const mime = {
   '.woff2': 'font/woff2',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
+  '.webp': 'image/webp',
 }
 const server = createServer(async (req, res) => {
   let path = resolve(root, '.' + decodeURIComponent(new URL(req.url, 'http://x').pathname))
@@ -40,12 +42,37 @@ const server = createServer(async (req, res) => {
   res.end(await readFile(path))
 })
 await new Promise((r) => server.listen(4180, '127.0.0.1', r))
+const origin = 'http://127.0.0.1:4180'
+const capturedTime = '2026-11-01T19:30:00Z'
 
+/** One notch of zoom on the 3D tower, so it fills the frame. */
+async function zoomTower(page) {
+  const b = await page.getByTestId('tower-3d').boundingBox()
+  await page.mouse.move(b.x + b.width / 2, b.y + b.height * 0.4)
+  await page.keyboard.down('Meta')
+  await page.mouse.wheel(0, -100)
+  await page.keyboard.up('Meta')
+  await page.mouse.move(5, 995)
+}
+
+// Home is WebP: the 3D tower's lit gradient bands as a palette PNG and is
+// several times larger as a full-colour one.
 const shots = [
-  { route: '/', output: 'core-dashboard.png' },
+  {
+    route: '/',
+    output: 'core-home.webp',
+    source: 'route /, tower zoomed one step',
+    prepare: zoomTower,
+  },
   { route: '/light', output: 'core-light.png' },
   { route: '/water', output: 'core-water.png' },
-  { route: '/schedule', output: 'core-schedule.png' },
+  {
+    route: '/light',
+    output: 'core-schedule.png',
+    source: 'route /light, scrolled to its curves',
+    prepare: (page) =>
+      page.getByRole('button', { name: 'Add curve' }).evaluate((el) => el.scrollIntoView()),
+  },
   { route: '/grow', output: 'core-grow.png' },
   { route: '/cameras', output: 'core-cameras.png' },
   { route: '/alerts', output: 'core-alerts.png' },
@@ -53,31 +80,47 @@ const shots = [
   { route: '/kiosk', output: 'core-kiosk.png' },
 ]
 
-const browser = await chromium.launch()
-const page = await browser.newPage({
+// GPU WebGL for the 3D tower (Metal on a Mac). Set CAPTURE_GL for another
+// backend, e.g. '--enable-unsafe-swiftshader --use-angle=swiftshader'.
+const browser = await chromium.launch({
+  args: (process.env.CAPTURE_GL ?? '--use-angle=metal --enable-gpu').split(' '),
+})
+const context = await browser.newContext({
   viewport: { width: 1440, height: 1000 },
   deviceScaleFactor: 2,
   colorScheme: 'dark',
   reducedMotion: 'reduce',
+  timezoneId: 'America/Los_Angeles',
 })
+await context.route('**/*', (r) =>
+  r.request().url().startsWith(origin) ? r.continue() : r.abort(),
+)
+const page = await context.newPage()
+await page.clock.install({ time: new Date(capturedTime) })
 await mkdir('public/media', { recursive: true })
 const assets = []
-for (const { route, output } of shots) {
-  await page.goto('http://127.0.0.1:4180' + route)
+for (const { route, output, source, prepare } of shots) {
+  await page.goto(origin + route)
   await page.waitForLoadState('networkidle')
-  await page.waitForTimeout(1500)
+  await page.evaluate(() => document.fonts.ready)
+  const tower = page.getByTestId('tower-3d')
+  if (await tower.count())
+    await expect(tower.first()).toHaveAttribute('data-ready', 'true', { timeout: 60_000 })
+  await prepare?.(page)
+  await page.waitForTimeout(2500)
   const file = `public/media/${output}`
-  await page.screenshot({ path: file })
-  const b = await readFile(file)
-  const optimized = await sharp(b).png({ compressionLevel: 9, palette: false }).toBuffer()
+  const b = await page.screenshot()
+  const optimized = output.endsWith('.webp')
+    ? await sharp(b).webp({ quality: 85, effort: 6 }).toBuffer()
+    : await sharp(b).png({ compressionLevel: 9, palette: false }).toBuffer()
   await writeFile(file, optimized)
   const m = await sharp(optimized).metadata()
   assets.push({
     repository: 'seedypod/core',
     commit,
-    source: `web demo build (VITE_DEMO=1), route ${route}`,
+    source: `web demo build (VITE_DEMO=1), ${source ?? `route ${route}`}`,
     output,
-    method: 'scripts/capture-core.mjs (Playwright, 1440x1000 @2x, dark)',
+    method: `scripts/capture-core.mjs (Playwright, 1440x1000 @2x, dark, GPU WebGL, clock ${capturedTime})`,
     sha256: createHash('sha256').update(optimized).digest('hex'),
     bytes: optimized.length,
     width: m.width,
@@ -87,4 +130,13 @@ for (const { route, output } of shots) {
 }
 await browser.close()
 server.close()
-await writeFile('capture/manifest.json', JSON.stringify({ version: 1, assets }, null, 2) + '\n')
+const manifest = JSON.parse(await readFile('capture/manifest.json', 'utf8'))
+const kept = manifest.assets.filter(
+  (a) => !a.output.startsWith('core-') || assets.some((n) => n.output === a.output),
+)
+const merged = kept.map((a) => assets.find((n) => n.output === a.output) ?? a)
+for (const a of assets) if (!merged.includes(a)) merged.unshift(a)
+await writeFile(
+  'capture/manifest.json',
+  JSON.stringify({ version: 1, assets: merged }, null, 2) + '\n',
+)

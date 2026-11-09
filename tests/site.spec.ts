@@ -160,7 +160,7 @@ test('custom 404 export exists', async ({ request }) => {
 test('web UI screenshot enlarges and closes', async ({ page }) => {
   await page.goto('/core/')
   const name =
-    'seedypod home screen with grow light, water tank level, pump state and environment readings'
+    'seedypod home screen: the tower in 3D under its lit grow light, with light, tank and air readings in the sidebar'
   const image = page.getByRole('img', { name })
   await image.scrollIntoViewIfNeeded()
   await expect(image).toHaveJSProperty('complete', true)

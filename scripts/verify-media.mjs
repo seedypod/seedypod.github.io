@@ -12,10 +12,10 @@ for (const a of assets) {
   if (createHash('sha256').update(b).digest('hex') !== a.sha256)
     throw new Error(`Checksum mismatch: ${a.output}`)
   if (b.length !== a.bytes) throw new Error(`Byte size mismatch: ${a.output}`)
-  if (/\.(png|jpe?g)$/.test(a.output)) {
+  if (/\.(png|jpe?g|webp)$/.test(a.output)) {
     const m = await sharp(b).metadata()
     if (
-      m.format !== (a.output.endsWith('.png') ? 'png' : 'jpeg') ||
+      m.format !== (a.output.match(/\.(png|webp)$/)?.[1] ?? 'jpeg') ||
       m.width !== a.width ||
       m.height !== a.height
     )
