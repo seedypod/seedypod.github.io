@@ -19,41 +19,76 @@ Every tool calls the same procedures the web UI uses, never the hardware directl
 
 ## Tools
 
-All 38 tools as of core `0808f91` (`src/mcp/server.ts`). The planner's write tools change only saved plans and your custom plants until `apply_plan` writes a plan onto the pods.
+All 58 tools as of core `19cfa6e` (`src/mcp/server.ts`). The planner's write tools change only saved plans and your custom plants until `apply_plan` writes a plan onto the pods.
 
 ### The tower
 
-| Tool                  | Kind  | What it does                                                                                       |
-| --------------------- | ----- | -------------------------------------------------------------------------------------------------- |
-| `status`              | read  | Sensors with units, light and pump state (and any latched fault), alerts, grow day and HAL limits. |
-| `history`             | read  | Downsampled history for one sensor, 24 hours by default.                                           |
-| `list_devices`        | read  | Sensor devices with their status, and the probe kinds that can be added.                           |
-| `list_schedules`      | read  | Light curves and pump cycles with their day masks.                                                 |
-| `set_light`           | write | Turn the light on or off and set brightness. A schedule takes over at its next setpoint.           |
-| `run_pump`            | write | Run the pump for a bounded time; the HAL clamps it and refuses on a low tank or a fault.           |
-| `stop_pump`           | write | Stop the pump now.                                                                                 |
-| `acknowledge_alert`   | write | Acknowledge an alert, which also clears a latched fault; marks a reminder done.                    |
-| `upsert_schedule`     | write | Create or replace a light curve or pump cycle.                                                     |
-| `delete_schedule`     | write | Delete a schedule.                                                                                 |
-| `list_automations`    | read  | Autopilot rules, whether each is armed or in dry run, who owns the light, and the run log.         |
-| `backtest_automation` | read  | Replay a saved or draft Autopilot rule over recorded history, touching nothing.                    |
+| Tool                  | Kind  | What it does                                                                                                                               |
+| --------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `status`              | read  | Sensors with units, light and pump state (and any latched fault), alerts, grow day and HAL limits.                                         |
+| `history`             | read  | Downsampled history for one sensor, 24 hours by default.                                                                                   |
+| `list_devices`        | read  | Sensor devices with their status, and the probe kinds that can be added.                                                                   |
+| `acknowledge_alert`   | write | Acknowledge an alert, which also clears a latched fault; marks a reminder done.                                                            |
+| `setup_check`         | read  | What a planted unit is missing: no light or pump schedule on, or a tank sensor absent or suspect.                                          |
+| `list_chores`         | read  | Chores the tower needs (thin, trim roots, top off, refresh, feed, clean), each from a trusted reading or a calendar guess, with citations. |
+| `list_tank_actions`   | read  | The tank log, newest first: what was done to the tank and when.                                                                            |
+| `log_tank_action`     | write | Record something a person did to the tank, in their words and amounts. Touches no hardware.                                                |
+| `list_automations`    | read  | Autopilot rules, whether each is armed or in dry run, who owns the light, and the run log.                                                 |
+| `starter_rules`       | read  | Cited, notify-only starter Autopilot rules, and whether the unit has the sensors for each.                                                 |
+| `backtest_automation` | read  | Replay a saved or draft Autopilot rule over recorded history, touching nothing.                                                            |
+
+### Light and water
+
+| Tool                    | Kind  | What it does                                                                                                         |
+| ----------------------- | ----- | -------------------------------------------------------------------------------------------------------------------- |
+| `list_schedules`        | read  | Light curves and pump cycles with their day masks, and each curve's hours of full light and Gardyn's rating.         |
+| `light_presets`         | read  | Starting points for a light curve, and Gardyn's 14–16 hour guidance to judge one by.                                 |
+| `pump_presets`          | read  | Watering starting points by growth stage, and the one recommended for this tower.                                    |
+| `set_light`             | write | Turn the light on or off and set brightness. It holds for 30 minutes, then the schedule or Autopilot takes over.     |
+| `light_auto`            | write | Turn Auto light on or off. On, the curve that follows the sun runs alone; off, the curves it switched off come back. |
+| `run_pump`              | write | Run the pump for a bounded time; the HAL clamps it and refuses on a low tank or a fault.                             |
+| `stop_pump`             | write | Stop the pump now.                                                                                                   |
+| `upsert_schedule`       | write | Create or replace a light curve or pump cycle, including a curve that follows the sun (`sun.auto`, `sun.extend`).    |
+| `delete_schedule`       | write | Delete a schedule.                                                                                                   |
+| `list_schedule_library` | read  | Your schedules (pump cycles with an optional light preset), then the built-in watering presets, and which one is on. |
+| `activate_schedule`     | write | Use one of your schedules or a preset now. Using one of yours takes watering off the grow protocol.                  |
+
+### Grow cycle and protocol
+
+| Tool                | Kind  | What it does                                                                                                                             |
+| ------------------- | ----- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `grow_cycle`        | write | Start (or backdate), move the sowing day of, change the stage of, or end the grow cycle.                                                 |
+| `grow_protocol`     | read  | The tower's protocol: its stages with their watering, light, feed and checks, the current stage and day, any hold, and what comes after. |
+| `hold_protocol`     | write | Hold the protocol at its current stage, or release it.                                                                                   |
+| `advance_protocol`  | write | Move the protocol to its next stage now.                                                                                                 |
+| `set_protocol_then` | write | Choose what comes after the stages: keep maintenance, switch to one of your schedules, or a reminder at first harvest.                   |
 
 ### Pods, cameras and harvests
 
-| Tool                   | Kind  | What it does                                                                         |
-| ---------------------- | ----- | ------------------------------------------------------------------------------------ |
-| `pods`                 | read  | The 30 pods: plant, planted date, status and notes.                                  |
-| `update_pod`           | write | Set a pod's plant, planted date, status and notes.                                   |
-| `mark_harvested`       | write | Record a cut: the pod goes back to growing and the camera counts only regrowth.      |
-| `grow_cycle`           | write | Start, change the stage of, or end the grow cycle.                                   |
-| `captures`             | read  | Recent camera stills, newest first.                                                  |
-| `capture_still`        | write | Take a still from a camera now.                                                      |
-| `list_analyses`        | read  | Camera analysers, their results, and optionally one pod compared across them.        |
-| `pod_health`           | read  | Per-pod leaf-cover trend from the primary analyser.                                  |
-| `harvest_outlook`      | read  | Per planted pod: ready, soon or growing, from its age and leaf cover against target. |
-| `plant_profiles`       | read  | The harvest window and target leaf cover the unit holds for each crop.               |
-| `set_plant_profiles`   | write | Create or replace plant profiles, to sharpen `harvest_outlook`.                      |
-| `remove_plant_profile` | write | Delete a plant profile.                                                              |
+| Tool                   | Kind  | What it does                                                                                            |
+| ---------------------- | ----- | ------------------------------------------------------------------------------------------------------- |
+| `pods`                 | read  | The 30 pods: plant, planted date, status and notes.                                                     |
+| `update_pod`           | write | Set a pod's plant, planted date, status and notes.                                                      |
+| `swap_pods`            | write | Swap what two pods hold after a person has moved their yCubes. Camera history stays with each position. |
+| `mark_harvested`       | write | Record a cut: the pod goes back to growing and the camera counts only regrowth.                         |
+| `captures`             | read  | Recent camera stills, newest first.                                                                     |
+| `capture_still`        | write | Take a still from a camera now.                                                                         |
+| `list_analyses`        | read  | Camera analysers, their results, and optionally one pod compared across them.                           |
+| `pod_health`           | read  | Per-pod leaf-cover trend from the primary analyser.                                                     |
+| `harvest_outlook`      | read  | Per planted pod: ready, soon or growing, from its age and leaf cover against target.                    |
+| `plant_profiles`       | read  | The harvest window and target leaf cover the unit holds for each crop.                                  |
+| `set_plant_profiles`   | write | Create or replace plant profiles, to sharpen `harvest_outlook`.                                         |
+| `remove_plant_profile` | write | Delete a plant profile.                                                                                 |
+
+### Pod-state models
+
+| Tool             | Kind  | What it does                                                                                                    |
+| ---------------- | ----- | --------------------------------------------------------------------------------------------------------------- |
+| `list_labels`    | read  | Your pod labels, the training data for pod-state models. Labelling is done in the app.                          |
+| `export_dataset` | read  | A download of photos, analyser results, labels, pods, grow cycles and sensor history for training off the unit. |
+| `list_models`    | read  | Pod-state model revisions: the shipped one and every upload, which run and which is primary.                    |
+| `upload_model`   | write | Add a trained weights file as a revision, from base64 or a URL on your network, checked against its SHA-256.    |
+| `set_model`      | write | Enable, disable, make primary, delete, reset or roll back model revisions.                                      |
 
 ### Planning
 
@@ -80,11 +115,11 @@ Adding probes, calibrating them, and creating or arming Autopilot rules change w
 
 ## Plan from an order
 
-Paste a seed order into your agent and let it lay the tower out. This is a real run: the tool calls an agent made for the prompt below, against core `0808f91` on a Mac (simulated hardware, a fresh data directory, so all 30 pods were empty). The results are trimmed, not edited.
+Paste a seed order into your agent and let it lay the tower out. This is a real run: the tool calls an agent made for the prompt below, against core `0808f91` on a Mac (simulated hardware, a fresh data directory, so all 30 pods were empty). The results are trimmed, and the order number is left out of the prompt and the plan id; nothing else is edited.
 
 ```text
 use the seedypod mcp to plan
-Order Y221288628 summary:
+Order summary:
 1 x Basil
 1 x Italian Parsley
 1 x Chives
@@ -185,10 +220,10 @@ There are no suggestions because the planner never moves a plant up a zone on it
 }
 ```
 
-**4. Save it.** `save_plan` with the same plants and overrides, id `order-y221288628`, starting 2026-11-09. The staggered schedule sows everything that day except the second perpetual spinach, which waits for a second wave:
+**4. Save it.** `save_plan` with the same plants and overrides, id `seed-order`, starting 2026-11-09. The staggered schedule sows everything that day except the second perpetual spinach, which waits for a second wave:
 
 ```json
-// get_plan { "id": "order-y221288628" }: sowing, trimmed
+// get_plan { "id": "seed-order" }: sowing, trimmed
 [
   { "plantName": "Basil", "wave": 1, "sowOn": "2026-11-09", "firstHarvestFrom": "2027-01-08", "firstHarvestTo": "2027-02-07" },
   …
@@ -211,7 +246,7 @@ Nothing is written to the pods yet. The plan is under **Plan → Saved plans**; 
   alt="Plan screen in 2D: all 30 slots with their zones, 20 of them planned, oregano and bunching onions in high-light slots 7 and 8"
 />
 
-**5. Apply it, when you're ready.** `apply_plan { "id": "order-y221288628" }` writes the layout onto the pods and schedules a reminder for the second wave. It overwrites those pods, so an agent should confirm with you first.
+**5. Apply it, when you're ready.** `apply_plan { "id": "seed-order" }` writes the layout onto the pods and schedules a reminder for the second wave. It overwrites those pods, so an agent should confirm with you first.
 
 ## Security
 

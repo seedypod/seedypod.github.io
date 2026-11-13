@@ -1,50 +1,123 @@
 ---
 title: 'Schedules'
-description: 'Light curves with sunrise and sunset ramps, and bounded watering cycles.'
+description: 'Auto light that follows the sun, light curves of your own, holds by hand, and watering from the grow protocol or your own schedules.'
 ---
 
 import { Callout } from 'nextra/components'
 
 # Schedules
 
-seedypod has two kinds of schedule: **light curves**, which set the grow light's brightness through the day, and **pump cycles**, which water at a set time for a set duration. Both run in the timezone set in **Settings**, and both can be limited to certain days of the week.
+seedypod schedules the grow light and the pump. The light runs **Auto**, which follows the sun, or **light curves** of your own. Watering follows the [grow protocol](/core/grow-cycle/#grow-protocol)'s stages, or one of **Your schedules**. Everything runs on the unit's clock, in the timezone set in **Settings → Unit**, and can be limited to certain days of the week.
+
+This page describes core `19cfa6e` on `dev`.
+
+## Auto light
+
+A new garden starts on Auto. Auto is a light curve that follows the sun: it comes on around sunrise and goes off around sunset, and on a short day it stretches the light about midday to the hours of full light the grow protocol calls for:
+
+| Grow protocol  | Hours of full light | Why                                                                   |
+| -------------- | ------------------- | --------------------------------------------------------------------- |
+| Greens & herbs | 14–15               | The low end of Gardyn's 14–16 hours, since more light hastens bolting |
+| Fruiting       | 15–16               | The high end, for fruiting crops                                      |
+
+When the protocol changes, for example because you plant a tomato, Auto's hours follow within a minute. A summer day longer than the most hours is trimmed to them.
 
 <BrowserFrame
-  src="/media/core-schedule.png"
-  alt="Light screen's curves: the daylight curve open with its four setpoints, and a weekend boost curve"
+  src="/media/core-light-auto.png"
+  alt="Light screen with Auto running: the strip reads Auto · Light on, follows sun + extension, near Los Angeles, and Today's timeline shows sunrise 06:13 and sunset 17:00 with the light extended about two hours past each"
 />
+
+**Where the sun is.** Auto uses the location set in **Settings → Unit → Location** (latitude and longitude). Left empty, it uses your timezone's principal city, and the Light strip says so (`near Los Angeles`). Once a location is set, a locate icon shows on Auto's line instead. **Use this device's location** fills the field from the browser, rounded to about a kilometre; browsers only offer this on `https` or `localhost`, so on `http://seedypod.local` you type the coordinates instead. A nearby city's coordinates are close enough. With neither (the timezone is UTC), the light day centres on 12:00.
+
+**Turning Auto on and off.** Pick **Auto** on the Light strip's slider. Auto takes the light straight away and ends any hold. It runs alone: the light curves that were on are switched off and remembered, and their cards say `waiting while Auto runs`. To turn Auto off, use the switch on Auto's curve card; the curves it switched off come back on.
+
+## The Light strip
+
+The strip at the top of **Light** says what the light is doing and why, with a stepped slider on the right: **Auto · Off · 25 · 50 · 75 · 100**. While Auto runs the light, its dot is filled. A level set elsewhere, such as 40 % from the Home app, sits between the stops. The slider picks only these stops; Home Assistant, the Home app, the API and agents can set any level.
+
+Any stop but Auto **holds** the light by hand. The title reads `Hold · 50%`, and the line under it says what the curve would be doing now, for example `Auto would be at 100% now` or `Auto would turn on tomorrow at 03:55`.
+
+<BrowserFrame
+  src="/media/core-light-hold.png"
+  alt="Light screen held at 50 %: the hold bar reads holding 50% until next change 18:37, 1 h or I resume, with Resume Auto on the right"
+/>
+
+The hold bar under the strip sets when the hold ends:
+
+- **next change** (the default): when the curve next changes the light, such as Auto starting to dim in the evening. A ramp already under way counts as one change, so the hold doesn't end a minute later.
+- **1 h**: an hour from now.
+- **I resume**: until you press Resume. Holds are kept in memory, so this one also ends if core restarts.
+
+Picking another level keeps the hold's end. **Resume Auto** (or **Resume schedule**) hands the light back at once.
+
+A change from Home Assistant, the Home app, an agent or the unit's button also holds the light, for 30 minutes, unless an API request gives its own end time. An armed [Autopilot](/core/autopilot/#who-controls-the-light) rule that sets the light ranks between a hold and the schedule. When a hold ends, the light goes to wherever the schedule is now.
+
+## Today
+
+The **Today** timeline on the Light and Water screens shows the day's light and watering, with a line at now and what's still ahead hatched. When the running curve follows the sun, a lit band marks daylight from sunrise to sunset, labelled at each end, and brackets above it show how far the light reaches past the sun (`+2h 7m`). "On" and "off" are taken halfway up each ramp. The header sums it up: `daylight 10h 47m · extended to 15h`, or `trimmed to` on a day longer than the light. A hold shows on the Light row as `hold 50%`.
 
 ## Light curves
 
-A curve is a list of up to 24 setpoints, each a time of day and a brightness from 0 to 100 %. Between setpoints the brightness ramps linearly, so a sunrise is just a 0 % point followed by an 85 % point an hour and a half later. After the last setpoint the curve ramps back to the first one, wrapping around midnight.
+Below the timeline is the list of curves, Auto first. Each card shows how many hours the curve is on, how many of them count as full light (dimmed hours count in part: two hours at 50 % are one), and Gardyn's rating of those hours, from low to too much. Gardyn recommends 14–16 hours a day at full brightness; 17 or more stress the plants, and nights need unbroken dark. A card also warns when the light is on long enough to make lettuce and herbs bolt, however dim.
 
-To add one, open **Light** and press **Add curve**. A new curve starts disabled with four setpoints (off at 07:00, 80 % from 08:00 to 20:00, off at 21:00). Edit the times and levels, choose the days, turn it on and press **Save**. The chart above the editor previews the whole day.
+**Add curve** starts one from a preset (**Gardyn day · 15 h**, **Short day · 14 h**, **Long day · 16 h**, **Gentle day · 14 h**) or from **Blank**. The first curve you add runs straight away; later ones start off, because curves that are on stack.
 
-When more than one curve is active, **the brightest one wins** at each minute. That lets you overlay a "boost" curve on a base curve, for example a brighter weekend.
+A curve of your own is a list of up to 24 setpoints, each a time of day and a brightness from 0 to 100 %. Between setpoints the brightness ramps linearly, and after the last one it ramps back to the first, wrapping around midnight. Choose the days with the **Mon … Sun** buttons, then press **Save**. When more than one curve is on, the brightest one wins at each minute, so a "boost" curve can sit over a base curve, for example a brighter weekend.
 
-A brightness change you make by hand holds for 30 minutes, then the curve takes over again at its current point; an armed [Autopilot](/core/autopilot/#who-controls-the-light) rule that sets the light ranks above the curve too.
+<BrowserFrame
+  src="/media/core-schedule.png"
+  alt="Light screen's curves: the daylight curve open with Mon to Sun day buttons and its four setpoints, and a weekend boost curve"
+/>
 
-## Pump cycles
+### How Auto follows the sun
 
-A pump cycle runs the pump once at a given time for 1, 3, 5, 10 or 15 minutes. Open **Schedule** and press **Pump cycle**, then set the name, time, duration and days.
+Open Auto's card to change how it follows the sun. The first line gives today's sunrise, sunset and daylight, and when the light comes up and goes off.
 
-Every scheduled run goes through the same safety guard as a manual one:
+<BrowserFrame
+  src="/media/core-light-sun.png"
+  alt="Auto's curve open: today near Los Angeles, sunrise 06:13 and sunset 17:00; Hours from the grow protocol on, giving Fruiting 15–16 h; sunrise and sunset take 60 min; Extend the day set to Both ends; Centred on midday"
+/>
 
-- The run is clamped to the hardware's maximum run time (900 seconds by default) and duty cap (30 %).
-- If the tank is low, the water sensor is unavailable, the board is too hot, or a pump fault is latched, `hald` refuses to start. The run is still recorded, so the scheduler does not retry every minute, and the reason appears as an alert.
+- **Hours from the grow protocol**: on, the hours come from the protocol, as in the table above. Off, **Full light, at least** and **at most** (8 to 18 hours) are yours, starting from the protocol's current hours so today's light doesn't jump.
+- **Sunrise and sunset take**: how long the light ramps up and down, 0 to 180 minutes.
+- **Extend the day**: where the extra hours go when the sun's day is too short. **Both ends** (the default) splits them about midday. **Evening** comes on at sunrise and adds them all after sunset; **Morning** goes off at sunset and adds them all before sunrise. It's worked out again every day, and the strip reads `follows sun + evening extension` (or `morning`). A day trimmed to the most hours keeps its anchor.
+- **Shift**: moves the light up to three hours either way. Its label says what it moves: `Centred 1 h later`, `On 1 h after sunrise`, or `Off 15 min before sunset`.
 
-Each cycle fires at most once per day and minute, even if core restarts at that moment. Recent runs are listed at the bottom of the **Water** screen.
+## Watering
+
+By default the [grow protocol](/core/grow-cycle/#grow-protocol) waters: each stage sets the pump cycles, and the unit moves them on as the days since sowing pass. The protocol card on **Water** (the same as on Grow) shows the stage and its watering.
+
+### Your schedules
+
+**Your schedules** on Water holds watering schedules you've saved, with the protocol's last-stage preset (read-only) beside them. Each row shows its runs (`4 × 5 min · every day`), a 24-hour strip of the runs over the lights-on hours, and when it was last used. **Use** switches to it, and a ⋯ menu edits, duplicates or deletes it.
+
+**New schedule** (or **Edit**, **Duplicate**, **Save as schedule**) opens the editor: a name, what to start from, the cycles (a time and a length each) and the days. Beside them it totals the minutes a day against the preset it replaces, warns about any cycle outside the light hours with a one-click **Move to** a free hour, and checks each run against the pump's limit of 15 minutes. **Save & use now** saves and switches to it; while the protocol is still before maintenance, **Save & use after protocol** saves it and has the protocol switch to it when maintenance begins.
+
+Using one of your schedules takes watering off the protocol. The card then reads **On your schedule**, and **Back to the protocol** hands watering back to the current stage. Cycles you change by hand (**Adjust the cycles**) show as **Your cycles · Edited**, and the protocol leaves them alone until you save them as a schedule or go back.
+
+A schedule saved over the API or MCP can also carry a light preset. Using it then replaces the enabled light curves with that preset, so light and water change together.
+
+### Safety
+
+Every run, scheduled or by hand, goes through the hardware daemon's safety guard:
+
+- The run is clamped to the maximum run time (900 seconds by default) and duty cap (30 %).
+- If the tank is low, the water sensor is unavailable, the board is too hot, or a pump fault is latched, `hald` refuses to start. The run is still recorded, so the scheduler doesn't retry every minute, and the reason appears as an alert.
+- A pump that draws too little current is pulling air and stops with a dry-run fault, even when the tank reads full. This guard is off until a cutoff is set in `hal.toml` ([pump fault](/core/maintenance/)).
+
+Each cycle fires at most once per day and minute, even if core restarts at that moment. Recent runs are listed at the bottom of the Water screen.
 
 <Callout>
-  A Gardyn tank holds about 5 gallons (a Studio about 4). Two five-minute cycles a day is the demo's
-  default; adjust it to your plants and watch the tank level chart on the Water screen.
+  A Gardyn tank holds about 5 gallons (a Studio about 4). Check the roots after a few days on a new
+  schedule: dry, brittle roots want more water; roots sitting in pooled water before the next cycle
+  want less.
 </Callout>
 
 ## From other tools
 
-Schedules are a regular part of the API, so you can manage them from anywhere:
+Schedules and the light are a regular part of the API, so you can manage them from anywhere:
 
-- REST: `GET /api/schedules`, `PUT /api/schedules/{id}`, `DELETE /api/schedules/{id}` ([reference](/developers/api/#tag-schedules)).
-- MCP: `list_schedules`, `upsert_schedule` and `delete_schedule` ([MCP for agents](/core/mcp/)).
+- REST ([reference](/developers/api/#tag-schedules)): `GET /api/schedules`, `PUT /api/schedules/{id}` and `DELETE /api/schedules/{id}`; `POST /api/schedules/auto` with `{ "on": true }` turns Auto on or off. `POST /api/light` takes an optional `until`, an ISO time or `null` to hold until resumed (left out, the hold lasts 30 minutes); `POST /api/light/hold` with `{ "until": … }` moves the end of the current hold, and `POST /api/light/resume` ends it.
+- MCP ([MCP for agents](/core/mcp/)): `list_schedules`, `upsert_schedule`, `delete_schedule`, `light_auto`, `light_presets`, `pump_presets`, `list_schedule_library` and `activate_schedule`.
 
-Days are a bitmask: Monday is 1, Tuesday 2, Wednesday 4 and so on up to Sunday 64, so 127 means every day and 96 means weekends.
+Days are a bitmask: Monday is 1, Tuesday 2, Wednesday 4 and so on up to Sunday 64, so 127 means every day and 96 means weekends. A curve that follows the sun has a `sun` object in its spec: `minHours`, `maxHours`, `rampMin`, `shiftMin`, optional `extend` (`both`, `evening` or `morning`) and `auto` (hours from the grow protocol).

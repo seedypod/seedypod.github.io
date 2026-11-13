@@ -66,12 +66,41 @@ minutes. Overshooting is the common mistake.
 3. **Let Autopilot watch** ([Autopilot](/core/autopilot/)). For example, notify
    when the one-hour average pH leaves 5.5–6.5, or when EC drops below 1.2.
    Backtest it against your recorded readings before you arm it.
+   **Autopilot → Starter rules** has both ready, with the note each threshold
+   comes from, plus one for a tank below half.
 
 The tank-level sensor shows real water use, so top off when the tank is low
 rather than on a weekly reminder.
+
+## Chores
+
+**Care → Chores** lists what the tower needs: thin, trim roots, top off,
+refresh, feed and clean. Each says whether it comes **from a reading** or the
+**calendar**:
+
+- With a trusted reading, the chore follows the tank. "Tank at 40 %, falling
+  8 % a day", or "EC 0.9 mS/cm, below the 1.2–2.0 for leafy greens". A due
+  chore also shows in **Needs you** and raises an alert.
+- Without one, it's a calendar guess and says why: "Calendar guess, no EC
+  probe", or "tank level reading suspect". A suspect or stale tank level is
+  never used to ask for a top-off.
+
+Every dose and target links the knowledge note it comes from. **Done** logs the
+chore in the tank log, and the chore counts from there. An agent reads the same
+list over MCP (`list_chores`).
+
+## Keep a tank log
+
+**Care → Tank log → Log action** records what you did and when: fed 1 tsp
+MaxiGro, topped off, refreshed, added 2 mL pH Down. Amount, product and note are
+optional. With a log, a jump in EC or a drop in pH can be traced to the feed or
+dose that caused it, and the unit can learn your tank's response
+([ADR 0029](/developers/adr/0029-care-engine-and-agent-boundary/)). An agent can log what
+you tell it over MCP (`log_tank_action`) and read the log back
+(`list_tank_actions`). The log is in the database, so backups carry it.
 
 ---
 
 **Sources:** [Knowledge: Gardyn feeding guidance](https://github.com/seedypod/core/blob/dev/knowledge/nutrients/gardyn-feeding-guidance.md) · [Knowledge: Community nutrients](https://github.com/seedypod/core/blob/dev/knowledge/nutrients/community-nutrients.md) · [Adding a probe](/core/sensors/) · [Autopilot](/core/autopilot/)
 
-**Imported from** [`docs/FEEDING.md`](https://github.com/seedypod/core/blob/313fc2da050ee842b2a07d602e86b3f7c3dc7b9d/docs/FEEDING.md) in seedypod/core. Edit it there, not here.
+**Imported from** [`docs/FEEDING.md`](https://github.com/seedypod/core/blob/19cfa6e29f05b94885105d8dd9b0e99d048bcb1c/docs/FEEDING.md) in seedypod/core. Edit it there, not here.

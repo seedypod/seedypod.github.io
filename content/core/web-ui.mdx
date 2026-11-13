@@ -9,7 +9,7 @@ import { Callout } from 'nextra/components'
 
 Open `http://seedypod.local` from any browser on your network (`:3000` works too; see [Install](/core/installation/#open-the-app)). Changes made anywhere, including from Home Assistant, the Home app, an agent or a schedule, appear immediately: the UI listens to core's live event stream instead of polling.
 
-The sidebar groups twelve screens: **Garden** (Home, Grow, Plan), **Control** (Light, Water, Autopilot), **Observe** (Cameras, Analysis) and **System** (Status, Sensors), with **Alerts** and **Settings** at the foot. Above them, **Search** (⌘K) finds any screen, setting or docs page, and a summary keeps the light, tank and air readings and a **Needs you** list in view. On a phone a tab bar holds Home, Grow, Light, Water and Settings.
+The sidebar groups thirteen screens: **Garden** (Home, Grow, Plan, Care), **Control** (Light, Water, Autopilot), **Observe** (Cameras, Analysis) and **System** (Status, Sensors), with **Alerts** and **Settings** at the foot. Above them, **Search** (⌘K) finds any screen, setting or docs page, and a summary keeps the light, tank and air readings and a **Needs you** list in view. On a phone a tab bar holds Home, Grow, Light, Water and Settings.
 
 <Callout>
   These screenshots are the real web UI from the [live demo](https://seedypod.vercel.app), which
@@ -43,11 +43,11 @@ Your tower in 3D: every pod colored by its status, the light bars at their level
 
 ### Grow
 
-The current grow cycle and its stage, and all 30 pods in three towers, each with its plant and leaf cover. Click a pod for its card: status, a photo crop with a slider through its history, the leaf-cover trend, and the plant, status and notes to edit. **Tower** switches to the 3D view. See [Grow cycle and pods](/core/grow-cycle/).
+The current grow cycle and its stage, the [grow protocol](/core/grow-cycle/#grow-protocol) card with the stage's watering, light, feed and checks, and all 30 pods in three towers, each with its plant and leaf cover. Click a pod for its card: status, a photo crop with a slider through its history, the leaf-cover trend, and the plant, status and notes to edit. **Tower** switches to the 3D view. See [Grow cycle and pods](/core/grow-cycle/).
 
 <BrowserFrame
   src="/media/core-grow.png"
-  alt="Grow screen on day 19 of the vegetative stage, with 24 of 30 pods planted and their leaf cover"
+  alt="Grow screen on day 19 of the vegetative stage, with the Fruiting protocol card in Maintenance and its watering, light, feed and checks"
 />
 
 ### Plan
@@ -59,26 +59,30 @@ Plan the next planting. Pick plants from Gardyn's catalog (or **Add plant** for 
   alt="Plan screen with the 3D tower colored by light zone, and the plant catalog with counts"
 />
 
+### Care
+
+What the tower needs, worked out on the unit with no AI model. It lists what a planted unit is missing (no light or pump schedule on, a tank sensor absent or suspect), then the chores (thin, trim roots, top off, refresh, feed, clean), each due, soon or fine, from a reading the unit trusts or a calendar guess that says so. Below are the tank log you record chores in, starter [Autopilot](/core/autopilot/) rules, and how to put an assistant on top over [MCP](/core/mcp/). Home shows what's due now.
+
 ## Control
 
 ### Light
 
-Turn the light on or off and set brightness. A change you make here holds for 30 minutes, then the light goes back to [Autopilot](/core/autopilot/#who-controls-the-light) or the schedule; **Resume** hands it back early. Today's chart shows the curve and where it is now, with the LED hours against their rated life. Below, you create and edit [light curves](/core/schedules/#light-curves).
+The strip at the top says what the light is doing and why, with a stepped slider: **Auto · Off · 25 · 50 · 75 · 100**. **Auto** follows the sun, with hours from the grow protocol; any other stop holds the light, by default until the curve's next change, and the hold bar can make it an hour or until you resume ([The Light strip](/core/schedules/#the-light-strip)). The chart shows today's curve and where it is now, with the LED hours against their rated life. The **Today** timeline marks daylight from sunrise to sunset and how far the light extends past it. Below, you create and edit [light curves](/core/schedules/#light-curves), Auto's first.
 
 <BrowserFrame
   src="/media/core-light.png"
-  alt="Light screen at 85 % following the daylight curve, with today's chart and the curve's four setpoints"
+  alt="Light screen at 85 % following the daylight curve: the strip with its Auto, Off, 25, 50, 75 and 100 stops, today's chart, and the Today timeline"
 />
 
 ### Water
 
-The tank level as a percentage and a bar, with the distance, pump power and supply voltage, and a run-once control: pick 1, 5, 10 or 15 minutes and press **Run pump**. The hardware limits are under it (max run time, max duty, and the distance at which a low tank refuses to start). Below are your [pump cycles](/core/schedules/#pump-cycles), the tank level over 24 hours, 7 or 30 days, and the recent scheduled runs.
+The pump strip says whether the pump is running and when it next runs, with a run-once control: pick 1, 5, 10 or 15 minutes and press **Run**. Below it, the tank level as a percentage and an estimated volume, over 24 hours, 7 or 30 days, down to the cutoff at which a low tank refuses to start. Then the **Today** timeline, the [grow protocol](/core/grow-cycle/#grow-protocol) card, [Your schedules](/core/schedules/#your-schedules) with the schedule editor, and the recent scheduled runs.
 
-If the pump is latched off after a fault, the card turns red and **Run pump** is disabled until you acknowledge the fault on the Alerts screen.
+If the pump is latched off after a fault, the header says what tripped it (`pump fault: dry-run`), and **Run** is disabled until you acknowledge the fault on the Alerts screen.
 
 <BrowserFrame
   src="/media/core-water.png"
-  alt="Water screen with tank level, run-once controls, the two pump cycles and the week's tank level chart"
+  alt="Water screen: the pump strip with its run-once control, the week's tank level at 87 %, the Today timeline, and the Fruiting protocol card"
 />
 
 ### Autopilot
@@ -118,7 +122,7 @@ The whole unit at a glance, live: a health ring with the checks that pass, core,
 
 <BrowserFrame
   src="/media/core-status.png"
-  alt="Status screen: 12 of 12 checks passing, a reminder, today's timeline and the light, water and climate cards"
+  alt="Status screen: 13 of 13 checks passing, two alerts, today's timeline and the light, water and climate cards"
 />
 
 ### Sensors
@@ -134,16 +138,16 @@ Every sensor the unit has, its part and address, whether it's ready, and its lat
 
 Active alerts, or the full history, and plants flagged from Grow. Each alert has **Acknowledge** (or **Done** for a reminder) and **Dismiss**.
 
-| Alert                                                      | Raised when                                                                        |
-| ---------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| Water low                                                  | The tank reading crosses the low-water threshold.                                  |
-| Pump fault                                                 | The pump stopped because the tank ran dry or the board got hot.                    |
-| Board over temperature                                     | The board temperature reached the cutoff (36 °C by default).                       |
-| Camera missing                                             | A camera failed to capture.                                                        |
-| Hardware daemon offline                                    | Core lost contact with `hald`.                                                     |
-| Thin seedlings, Check roots, Harvest window, Add nutrients | A grow reminder is due.                                                            |
-| Off-device copy failed                                     | Photos couldn't be copied to your mirror bucket.                                   |
-| _Rule name_: _message_                                     | An Autopilot rule's notify action; clears when the rule's condition stops holding. |
+| Alert                                                      | Raised when                                                                                  |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Water low                                                  | The tank reading crosses the low-water threshold.                                            |
+| Pump fault                                                 | The pump stopped because the tank ran dry, it drew too little current, or the board got hot. |
+| Board over temperature                                     | The board temperature reached the cutoff (36 °C by default).                                 |
+| Camera missing                                             | A camera failed to capture.                                                                  |
+| Hardware daemon offline                                    | Core lost contact with `hald`.                                                               |
+| Thin seedlings, Check roots, Harvest window, Add nutrients | A grow reminder is due.                                                                      |
+| Off-device copy failed                                     | Photos couldn't be copied to your mirror bucket.                                             |
+| _Rule name_: _message_                                     | An Autopilot rule's notify action; clears when the rule's condition stops holding.           |
 
 <Callout type="warning">
   Acknowledging a pump fault re-enables the pump. Fix the cause first: refill the tank, or let the
@@ -157,11 +161,11 @@ Active alerts, or the full history, and plants flagged from Grow. Each alert has
 
 ### Settings
 
-Sections down the side: unit name, timezone and temperature unit; tank calibration (distance when full and when empty, and the tank capacity); grow reminder days; the camera capture interval; the [Home Assistant bridge](/core/home-assistant/#core-bridge); an optional [API key](/core/privacy/#who-can-reach-it); **Apple Home** ([HomeKit](/core/homekit/)); [off-device storage and analysis](/core/analysis/#mirror-photos-off-the-unit-opt-in) (opt-in); **Storage** and **SD card**, the card's writes per day and a **Database** view of what's writing, table by table; **Backup**, which downloads a backup, shows the nightly bucket backups, restores one and undoes a restore ([Maintenance → Backups](/core/maintenance/#backups)); a link to **Wi-Fi**, where you change networks or open the setup hotspot ([Change Wi-Fi](/core/installation/#change-wi-fi)); **Updates**, which checks for and installs a new release ([Maintenance → Updates](/core/maintenance/#updates)); and **About**, with the core and daemon versions and the unit id.
+Sections down the side: unit name, timezone, the unit's location for [Auto light](/core/schedules/#auto-light) (empty uses the timezone's city; **Use this device's location** asks the browser, on `https` only) and units; tank calibration (distance when full and when empty, and the tank capacity); grow reminder days; the camera capture interval; the [Home Assistant bridge](/core/home-assistant/#core-bridge); an optional [API key](/core/privacy/#who-can-reach-it); **Apple Home** ([HomeKit](/core/homekit/)); [off-device storage and analysis](/core/analysis/#mirror-photos-off-the-unit-opt-in) (opt-in); **Storage** and **SD card**, the card's writes per day and a **Database** view of what's writing, table by table; **Backup**, which downloads a backup, shows the nightly bucket backups, restores one and undoes a restore ([Maintenance → Backups](/core/maintenance/#backups)); a link to **Wi-Fi**, where you change networks or open the setup hotspot ([Change Wi-Fi](/core/installation/#change-wi-fi)); **Updates**, which checks for and installs a new release ([Maintenance → Updates](/core/maintenance/#updates)); and **About**, with the core and daemon versions and the unit id.
 
 <BrowserFrame
   src="/media/core-settings.png"
-  alt="Settings screen with its section list, and the unit, tank calibration and grow reminder settings"
+  alt="Settings screen with its section list, and the unit (name, timezone, location, units), tank calibration and grow reminder settings"
 />
 
 ## Kiosk

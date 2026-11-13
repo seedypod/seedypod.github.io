@@ -22,14 +22,14 @@ Settings then shows **Paired** with the number of Home controllers. To add the t
 
 ## What appears in Home
 
-| Accessory               | Shows as                | What it does                                                                                                                                                                        |
-| ----------------------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Grow light              | Light, with brightness  | Like a change on the Light screen, it holds over [Autopilot](/core/autopilot/) and the schedule for 30 minutes, then hands the light back. The tile follows the light's real state. |
-| Pump                    | Switch                  | On runs one 5-minute watering, which the hardware daemon caps at its maximum run. Off stops it. If the daemon refuses (dry tank, hot board, latched fault), the switch stays off.   |
-| Sensors: temperature    | Temperature sensor      | Air temperature.                                                                                                                                                                    |
-| Sensors: humidity       | Humidity sensor         | Air humidity.                                                                                                                                                                       |
-| Sensors: tank           | Battery level ("Tank")  | How full the tank is, in the accessory's details. It never reports **Low battery**: HomeKit has no tank sensor, so a low tank is left to the web UI's alerts and Home Assistant.    |
-| Upper and lower cameras | Cameras, snapshots only | The newest stored still from each camera. Live view is off: the Pi Zero W can't stream without starving everything else.                                                            |
+| Accessory               | Shows as                | What it does                                                                                                                                                                      |
+| ----------------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Grow light              | Light, with brightness  | It holds over [Autopilot](/core/autopilot/) and the schedule for 30 minutes, then hands the light back. The tile follows the light's real state.                                  |
+| Pump                    | Switch                  | On runs one 5-minute watering, which the hardware daemon caps at its maximum run. Off stops it. If the daemon refuses (dry tank, hot board, latched fault), the switch stays off. |
+| Sensors: temperature    | Temperature sensor      | Air temperature.                                                                                                                                                                  |
+| Sensors: humidity       | Humidity sensor         | Air humidity.                                                                                                                                                                     |
+| Sensors: tank           | Battery level ("Tank")  | How full the tank is, in the accessory's details. It never reports **Low battery**: HomeKit has no tank sensor, so a low tank is left to the web UI's alerts and Home Assistant.  |
+| Upper and lower cameras | Cameras, snapshots only | The newest stored still from each camera. Live view is off: the Pi Zero W can't stream without starving everything else.                                                          |
 
 While the hardware daemon is offline, the sensor tiles read **No Response** rather than an old value.
 

@@ -27,4 +27,6 @@ export default {
   '0026-web-update': '0026 One-click update from the web UI',
   '0027-camera-exposure': '0027 Cameras in HomeKit and Home Assistant',
   '0028-camera-capture-format': '0028 Camera capture format for image analysis',
+  '0029-care-engine-and-agent-boundary': '0029 Care engine and agent boundary',
+  '0030-grow-protocols': '0030 Grow protocols',
 }

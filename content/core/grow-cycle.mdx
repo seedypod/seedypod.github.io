@@ -11,12 +11,35 @@ The **Grow** screen tracks one grow at a time and what is planted in each of the
 
 <BrowserFrame
   src="/media/core-grow.png"
-  alt="Grow screen on day 19 in the vegetative stage, with 24 of 30 pods planted"
+  alt="Grow screen on day 19 in the vegetative stage, with the Fruiting protocol card: Maintenance since day 8, its watering, light, feed and checks"
 />
 
 ## Start a cycle
 
 Press **Start cycle**. The card then shows the day of the cycle and the start date. Starting a new cycle ends any open one. Move the cycle through **Germination**, **Seedling**, **Vegetative** and **Harvest** with the stage selector, and press **End cycle** when you clear the tower. Past cycles stay in the history (`GET /api/grow/history`).
+
+## Grow protocol
+
+The protocol card on **Grow** (and on **Water**) runs the tower's watering through the stages of a grow, counted in days from the sowing date. A tower runs one of two protocols: **Fruiting** if a fruiting crop is planted, otherwise **Greens & herbs**. The choice is fixed once germination ends, so a tomato planted on day 30 doesn't move a greens tower onto the fruiting track.
+
+| Protocol       | Stages (days from sowing)                                                     |
+| -------------- | ----------------------------------------------------------------------------- |
+| Greens & herbs | Germination 0–7, Seedlings 8–13, Young 14–21, then Maintenance from day 22 on |
+| Fruiting       | Germination 0–7, then Maintenance from day 8 on                               |
+
+Maintenance is ongoing: nothing ends a grow on a date. Below the track, the current stage's panel shows its **Water** (runs, length and days), **Light**, **Feed** and **Checks**, each with the guidance it comes from. The protocol leaves the light curves alone; [Auto light](/core/schedules/#auto-light) takes its hours from the protocol instead. **Sown … Change** moves the sowing day.
+
+- **Follow**, in the card's header (on by default), lets the unit move the pump cycles to each stage's watering as the days pass. It only moves forward, and only replaces cycles that are still exactly as a stage wrote them: cycles you changed by hand are left alone, and the card offers to replace them with the stage's watering.
+- **Hold at this stage** keeps the current stage and its watering until you press **Release hold**; later stages then start the days held later.
+- **Advance now** moves to the next stage today. Maintenance, the last stage, can't be advanced.
+
+Hold, Advance and the choice below need an open grow cycle.
+
+**When maintenance begins** says what happens then:
+
+- **Keep the last stage** (the default): maintenance watering carries on.
+- **Switch to my schedule**: switch to one of [Your schedules](/core/schedules/#your-schedules) when maintenance begins, or now with **Switch now**.
+- **Ask me first**: keep the last stage, and add an item to **Needs you** on the planted crops' first-harvest day from the catalog.
 
 ## Reminders
 
