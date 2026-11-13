@@ -19,7 +19,7 @@ Every tool calls the same procedures the web UI uses, never the hardware directl
 
 ## Tools
 
-All 58 tools as of core `19cfa6e` (`src/mcp/server.ts`). The planner's write tools change only saved plans and your custom plants until `apply_plan` writes a plan onto the pods.
+All 60 tools as of core `8555939` (`src/mcp/server.ts`). The planner's write tools change only saved plans and your custom plants until `apply_plan` writes a plan onto the pods.
 
 ### The tower
 
@@ -39,19 +39,21 @@ All 58 tools as of core `19cfa6e` (`src/mcp/server.ts`). The planner's write too
 
 ### Light and water
 
-| Tool                    | Kind  | What it does                                                                                                         |
-| ----------------------- | ----- | -------------------------------------------------------------------------------------------------------------------- |
-| `list_schedules`        | read  | Light curves and pump cycles with their day masks, and each curve's hours of full light and Gardyn's rating.         |
-| `light_presets`         | read  | Starting points for a light curve, and Gardyn's 14–16 hour guidance to judge one by.                                 |
-| `pump_presets`          | read  | Watering starting points by growth stage, and the one recommended for this tower.                                    |
-| `set_light`             | write | Turn the light on or off and set brightness. It holds for 30 minutes, then the schedule or Autopilot takes over.     |
-| `light_auto`            | write | Turn Auto light on or off. On, the curve that follows the sun runs alone; off, the curves it switched off come back. |
-| `run_pump`              | write | Run the pump for a bounded time; the HAL clamps it and refuses on a low tank or a fault.                             |
-| `stop_pump`             | write | Stop the pump now.                                                                                                   |
-| `upsert_schedule`       | write | Create or replace a light curve or pump cycle, including a curve that follows the sun (`sun.auto`, `sun.extend`).    |
-| `delete_schedule`       | write | Delete a schedule.                                                                                                   |
-| `list_schedule_library` | read  | Your schedules (pump cycles with an optional light preset), then the built-in watering presets, and which one is on. |
-| `activate_schedule`     | write | Use one of your schedules or a preset now. Using one of yours takes watering off the grow protocol.                  |
+| Tool                    | Kind  | What it does                                                                                                                                               |
+| ----------------------- | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `list_schedules`        | read  | Light curves and pump cycles with their day masks, and each curve's hours of full light and Gardyn's rating.                                               |
+| `light_presets`         | read  | Starting points for a light curve, and Gardyn's 14–16 hour guidance to judge one by.                                                                       |
+| `pump_presets`          | read  | Watering starting points by growth stage, and the one recommended for this tower.                                                                          |
+| `set_light`             | write | Turn the light on or off and set brightness. It holds for 30 minutes, then the schedule or Autopilot takes over.                                           |
+| `light_auto`            | write | Turn Auto light on or off. On, the curve that follows the sun runs alone; off, the curves it switched off come back.                                       |
+| `run_pump`              | write | Run the pump for a bounded time; the HAL clamps it and refuses on a low tank or a fault.                                                                   |
+| `stop_pump`             | write | Stop the pump now.                                                                                                                                         |
+| `upsert_schedule`       | write | Create or replace a light curve or pump cycle, including a curve that follows the sun (`sun.auto`, `sun.extend`).                                          |
+| `delete_schedule`       | write | Delete a schedule.                                                                                                                                         |
+| `list_schedule_library` | read  | Your schedules (pump cycles with an optional light preset), then the built-in watering presets, and which one is on.                                       |
+| `activate_schedule`     | write | Use one of your schedules or a preset now. Using one of yours takes watering off the grow protocol.                                                        |
+| `save_schedule`         | write | Save one of your schedules: pump cycles plus an optional light preset, so light and water change together. `activate: true` also uses it now.              |
+| `set_location`          | write | Set the unit's latitude and longitude for sunrise and sunset, or clear them to use the timezone's city. Sun-following curves, Auto included, move at once. |
 
 ### Grow cycle and protocol
 

@@ -9,7 +9,7 @@ import { Callout } from 'nextra/components'
 
 seedypod schedules the grow light and the pump. The light runs **Auto**, which follows the sun, or **light curves** of your own. Watering follows the [grow protocol](/core/grow-cycle/#grow-protocol)'s stages, or one of **Your schedules**. Everything runs on the unit's clock, in the timezone set in **Settings → Unit**, and can be limited to certain days of the week.
 
-This page describes core `19cfa6e` on `dev`.
+This page describes core `8555939` on `dev`.
 
 ## Auto light
 
@@ -95,7 +95,7 @@ By default the [grow protocol](/core/grow-cycle/#grow-protocol) waters: each sta
 
 Using one of your schedules takes watering off the protocol. The card then reads **On your schedule**, and **Back to the protocol** hands watering back to the current stage. Cycles you change by hand (**Adjust the cycles**) show as **Your cycles · Edited**, and the protocol leaves them alone until you save them as a schedule or go back.
 
-A schedule saved over the API or MCP can also carry a light preset. Using it then replaces the enabled light curves with that preset, so light and water change together.
+A schedule saved over the API or MCP (`save_schedule`) can also carry a light preset. Using it then replaces the enabled light curves with that preset, so light and water change together.
 
 ### Safety
 
@@ -118,6 +118,6 @@ Each cycle fires at most once per day and minute, even if core restarts at that 
 Schedules and the light are a regular part of the API, so you can manage them from anywhere:
 
 - REST ([reference](/developers/api/#tag-schedules)): `GET /api/schedules`, `PUT /api/schedules/{id}` and `DELETE /api/schedules/{id}`; `POST /api/schedules/auto` with `{ "on": true }` turns Auto on or off. `POST /api/light` takes an optional `until`, an ISO time or `null` to hold until resumed (left out, the hold lasts 30 minutes); `POST /api/light/hold` with `{ "until": … }` moves the end of the current hold, and `POST /api/light/resume` ends it.
-- MCP ([MCP for agents](/core/mcp/)): `list_schedules`, `upsert_schedule`, `delete_schedule`, `light_auto`, `light_presets`, `pump_presets`, `list_schedule_library` and `activate_schedule`.
+- MCP ([MCP for agents](/core/mcp/)): `list_schedules`, `upsert_schedule`, `delete_schedule`, `light_auto`, `light_presets`, `pump_presets`, `list_schedule_library`, `activate_schedule`, `save_schedule` (save cycles and a light preset together, and optionally use them now) and `set_location` (the unit's coordinates for sunrise and sunset).
 
 Days are a bitmask: Monday is 1, Tuesday 2, Wednesday 4 and so on up to Sunday 64, so 127 means every day and 96 means weekends. A curve that follows the sun has a `sun` object in its spec: `minHours`, `maxHours`, `rampMin`, `shiftMin`, optional `extend` (`both`, `evening` or `morning`) and `auto` (hours from the grow protocol).
