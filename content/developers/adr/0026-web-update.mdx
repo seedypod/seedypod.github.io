@@ -138,7 +138,9 @@ Core still never connects to the internet. The helper does, only when
 someone on the LAN asks it to:
 
 - **Settings → Update → Check** runs `--check`: two GET requests to
-  `api.github.com` (the release, and its tag's commit).
+  `api.github.com` (the release, and its tag's commit). The helper keeps the
+  answer in `check.json`, so the SSH login screen can say what it found
+  without going online.
 - **Update** runs `--start`: those two again, then downloads from
   `github.com/seedypod/core/releases/download/`, which redirects to GitHub's
   asset storage. If dependencies changed, pnpm fetches packages from the npm
@@ -167,10 +169,13 @@ They can only choose the channel, never the source.
 
 - An update from the web replaces core's files and hald's binary. It does
   **not** redo the rest of `scripts/install`: the systemd units, polkit
-  rule, port 80 forward, login logo and Node itself stay as they are. A
-  release that needs those changes needs `scripts/install` over SSH. The
-  update helper and restore helper are refreshed, so later updates use the
-  newest helper.
+  rule, port 80 forward and Node itself stay as they are. A release that
+  needs those changes needs `scripts/install` over SSH. The update helper
+  and restore helper are refreshed, so later updates use the newest helper.
+- Status update 2026-11-09: the SSH login screen's scripts (`login-logo`,
+  `login-stats`, `logo.frames`) are now refreshed too, taken from the
+  checked release like the helpers, on units where `scripts/install` set
+  the login screen up (#178). `/etc/profile.d/seedypod-logo.sh` is not.
 - An update stops the unit for as long as core takes to start. On a Pi Zero
   that's up to a few minutes. Schedules don't run while it's stopped, and
   hald stops the pump when it restarts.
@@ -187,4 +192,4 @@ seedypod-update --rollback` puts the previous version back from it.
 
 **Sources:** [sleepypod sp-update](https://github.com/sleepypod/core/blob/dev/scripts/bin/sp-update) · [seedypod/core#128: One-click update from the web UI](https://github.com/seedypod/core/issues/128) · [ADR 0012: Deployment and trust model](/developers/adr/0012-deployment-and-trust/) · [ADR 0021: SD card wear and fast recovery](/developers/adr/0021-sd-card-wear-and-recovery/)
 
-**Imported from** [`docs/adr/0026-web-update.md`](https://github.com/seedypod/core/blob/12d2a2284e24ea735003e947bb5a5343873aa779/docs/adr/0026-web-update.md) in seedypod/core. Edit it there, not here.
+**Imported from** [`docs/adr/0026-web-update.md`](https://github.com/seedypod/core/blob/19cfa6e29f05b94885105d8dd9b0e99d048bcb1c/docs/adr/0026-web-update.md) in seedypod/core. Edit it there, not here.

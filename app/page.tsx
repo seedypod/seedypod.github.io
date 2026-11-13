@@ -102,7 +102,7 @@ export default function Home() {
           <div className="screen-grid">
             <BrowserFrame
               src="/media/core-light.png"
-              alt="Grow light screen with a brightness slider and a daily light curve"
+              alt="Grow light screen with a stepped Auto, Off, 25, 50, 75 and 100 slider and a daily light curve"
               caption="Light curves ramp brightness between setpoints."
             />
             <BrowserFrame
@@ -193,7 +193,7 @@ export default function Home() {
               </p>
               <pre className="card-snippet" aria-label="An example prompt">
                 {`use the seedypod mcp to plan
-Order Y221288628 summary:
+Order summary:
 1 x Basil
 1 x Italian Parsley
 1 x Chives

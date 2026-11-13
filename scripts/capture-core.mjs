@@ -55,6 +55,20 @@ async function zoomTower(page) {
   await page.mouse.move(5, 995)
 }
 
+/** Click a stop on the Light strip's slider: 0 is Auto, then Off, 25, 50, 75, 100. */
+async function pickStop(page, i) {
+  const b = await page.getByTestId('light-stops').boundingBox()
+  // The stops run between the thumb's centres at either end, 9 px in.
+  await page.mouse.click(b.x + 9 + ((b.width - 18) * i) / 5, b.y + b.height / 2)
+  await page.mouse.move(5, 995)
+}
+
+/** Pick Auto, so the sun-following curve runs the light and the timeline shows the daylight window. */
+async function pickAuto(page) {
+  await pickStop(page, 0)
+  await expect(page.getByTestId('auto-sub')).toContainText('follows sun')
+}
+
 // Home and Plan are WebP: the 3D tower's lit gradient bands as a palette PNG
 // and is several times larger as a full-colour one.
 const shots = [
@@ -72,6 +86,36 @@ const shots = [
     source: 'route /light, scrolled to its curves',
     prepare: (page) =>
       page.getByRole('button', { name: 'Add curve' }).evaluate((el) => el.scrollIntoView()),
+  },
+  {
+    route: '/light',
+    output: 'core-light-auto.png',
+    source: 'route /light, Auto picked on the slider',
+    prepare: pickAuto,
+  },
+  {
+    route: '/light',
+    output: 'core-light-hold.png',
+    source: 'route /light, Auto picked, then 50 on the slider (a hold)',
+    prepare: async (page) => {
+      await pickAuto(page)
+      await pickStop(page, 3)
+      await expect(page.getByTestId('hold-bar')).toContainText('holding 50% until')
+    },
+  },
+  {
+    route: '/light',
+    output: 'core-light-sun.png',
+    source: 'route /light, Auto picked and its curve open at the sun settings',
+    prepare: async (page) => {
+      await pickAuto(page)
+      const edit = page.getByRole('button', { name: 'Edit Auto' })
+      if (await edit.count()) await edit.click()
+      await page
+        .getByText('Extend the day')
+        .first()
+        .evaluate((el) => el.scrollIntoView({ block: 'center' }))
+    },
   },
   { route: '/grow', output: 'core-grow.png' },
   { route: '/plan', output: 'core-plan.webp', source: 'route /plan, the 3D tower' },

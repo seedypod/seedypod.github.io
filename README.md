@@ -26,7 +26,7 @@ pnpm check
 
 ## Content sources
 
-[seedypod/core](https://github.com/seedypod/core)'s `docs/` folder is the source of truth. Imported pages pin the core commit they were imported from (currently `12d2a2284e24ea735003e947bb5a5343873aa779` on `dev`); hand-written pages cite `a2f6b4c98085d6729f8c2f315237f87f759518e2` (the `chore/rename-seedypod` branch).
+[seedypod/core](https://github.com/seedypod/core)'s `docs/` folder is the source of truth. Imported pages pin the core commit they were imported from (currently `19cfa6e29f05b94885105d8dd9b0e99d048bcb1c` on `dev`); hand-written pages cite the core commit they describe in their text.
 
 - **Imported pages** (`content/developers/adr/`, `hal`, `hardware`, `deployment`, `testing`, `implementation-plan`, `handoff`) are generated from core's OKF documents. Do not edit them here; change core, then re-import:
 
