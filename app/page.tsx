@@ -1,5 +1,5 @@
 import { BrandLogo } from '../components/BrandLogo'
-import { GitHubIcon } from 'nextra/icons'
+import { DiscordIcon, GitHubIcon } from 'nextra/icons'
 import Link from 'next/link'
 import { LinkArrow } from '../components/LinkArrow'
 import { BrowserFrame, Demo } from '../components/media'
@@ -16,6 +16,10 @@ export default function Home() {
         <nav aria-label="Main navigation">
           <Link href="/getting-started/">Documentation</Link>
           <a href="https://seedypod.vercel.app">Live demo</a>
+          <a className="github-link" href="https://discord.gg/UMmv5R6MXa" aria-label="Discord">
+            <DiscordIcon aria-hidden="true" focusable="false" />
+            <span className="link-label">Discord</span>
+          </a>
           <a className="github-link" href="https://github.com/seedypod" aria-label="GitHub">
             <GitHubIcon aria-hidden="true" focusable="false" />
             <span className="link-label">GitHub</span>
@@ -267,6 +271,9 @@ Order summary:
         <nav className="footer-links" aria-label="Community">
           <a href="https://github.com/seedypod">
             Made in the open <LinkArrow direction="external" />
+          </a>
+          <a href="https://discord.gg/UMmv5R6MXa">
+            Chat on Discord <LinkArrow direction="external" />
           </a>
           <a href="https://sleepypod.github.io/">
             Sibling project: sleepypod <LinkArrow direction="external" />
