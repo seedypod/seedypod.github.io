@@ -228,9 +228,11 @@ Neither can bring back an earlier stage.
 - `stageDiff(from, to)` in `src/care/protocol.ts`, shared by the UI and
   notices: "Watering goes from once a week to once a day, 15 → 10 min".
 - MCP: `grow_protocol` (read), `hold_protocol`, `advance_protocol`,
-  `set_protocol_then`, `list_schedule_library`, `activate_schedule`. These
-  change watering the way `upsert_schedule` already does; none drives the pump
-  directly (ADR 0029).
+  `set_protocol_then`, `list_schedule_library`, `activate_schedule`, and
+  `save_schedule`, which saves one of Your schedules (cycles and an optional
+  light preset, so light and water change together) and can use it at once.
+  These change watering the way `upsert_schedule` already does; none drives
+  the pump directly (ADR 0029).
 
 ## Alternatives considered
 
@@ -297,4 +299,4 @@ Neither can bring back an earlier stage.
 
 **Sources:** [ADR 0029: Care engine and agent boundary](/developers/adr/0029-care-engine-and-agent-boundary/) · [ADR 0024: Pod planner and Gardyn plant catalog](/developers/adr/0024-pod-planner/) · [ADR 0015: Event bus and mutation broadcast](/developers/adr/0015-event-bus/) · [Knowledge: Watering schedules](https://github.com/seedypod/core/blob/dev/knowledge/watering/schedules.md) · [Knowledge: Gardyn feeding guidance](https://github.com/seedypod/core/blob/dev/knowledge/nutrients/gardyn-feeding-guidance.md) · [Knowledge: Germination](https://github.com/seedypod/core/blob/dev/knowledge/plants/germination.md)
 
-**Imported from** [`docs/adr/0030-grow-protocols.md`](https://github.com/seedypod/core/blob/19cfa6e29f05b94885105d8dd9b0e99d048bcb1c/docs/adr/0030-grow-protocols.md) in seedypod/core. Edit it there, not here.
+**Imported from** [`docs/adr/0030-grow-protocols.md`](https://github.com/seedypod/core/blob/8555939d7ff27202ce6b37de427fc150af4be6ba/docs/adr/0030-grow-protocols.md) in seedypod/core. Edit it there, not here.
