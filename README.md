@@ -28,13 +28,13 @@ pnpm check
 
 [seedypod/core](https://github.com/seedypod/core)'s `docs/` folder is the source of truth. Imported pages pin the core commit they were imported from (currently `19cfa6e29f05b94885105d8dd9b0e99d048bcb1c` on `dev`); hand-written pages cite the core commit they describe in their text.
 
-- **Imported pages** (`content/developers/adr/`, `hal`, `hardware`, `deployment`, `testing`, `implementation-plan`, `handoff`) are generated from core's OKF documents. Do not edit them here; change core, then re-import:
+- **Imported pages** (`content/developers/adr/`, `hal`, `hardware`, `deployment`, `testing`, `implementation-plan`, `handoff`) are generated from core's OKF documents, and `content/knowledge/` from the `watering`, `nutrients` and `plants` sections of core's `knowledge/` bundle (read from `CORE_DOCS/../knowledge`, or `CORE_KNOWLEDGE`). Do not edit them here; change core, then re-import:
 
   ```sh
   CORE_DOCS=/path/to/core/docs CORE_COMMIT=<sha> pnpm docs:import && pnpm format
   ```
 
-  OKF `title`/`description` become Nextra frontmatter, `status: draft` becomes a warning callout, `sources` becomes a footer, and `type`/`generated` are dropped. Links between docs are rewritten to site routes; other repository links point at the pinned commit on GitHub.
+  OKF `title`/`description` become Nextra frontmatter, `status: draft` becomes a warning callout, `sources` becomes a footer, and `type`/`generated` are dropped. Links between imported pages, including absolute `github.com/seedypod/core/blob/...` links, are rewritten to site routes; other repository links point at the pinned commit on GitHub. Heading anchors follow GitHub's slugs (github-slugger, which Nextra uses), and `mdx-components.tsx` gives each h1 its slug too, so the knowledge links core's web UI builds (`https://seedypod.github.io/knowledge/<section>/<note>/#<heading>`) resolve here as they do on GitHub.
 
 - **Hand-written pages** (`getting-started`, `core/*`, `ios`, `developers/index`, `architecture`, `hal-contract`, `api`, `about`) are written from core's docs and source and cite them.
 
