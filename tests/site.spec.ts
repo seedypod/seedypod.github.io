@@ -165,6 +165,27 @@ test('knowledge anchors cited by the core web UI exist', async ({ page }) => {
     expect(missing, route).toEqual([])
   }
 })
+test('operations notes are published and link their trace CSVs on GitHub', async ({ page }) => {
+  await page.goto('/knowledge/')
+  await expect(page.locator('main a[href="/knowledge/operations/"]')).toBeVisible()
+  await page.goto('/knowledge/operations/')
+  for (const note of [
+    'pump-safety-limits',
+    'pump-wet-trace-2026-11-16',
+    'pump-dry-trace-2026-11-16',
+  ])
+    await expect(page.locator(`main a[href="/knowledge/operations/${note}/"]`)).toBeVisible()
+  // Non-note files stay in core: the import links them at the pinned commit.
+  for (const trace of ['wet', 'dry']) {
+    await page.goto(`/knowledge/operations/pump-${trace}-trace-2026-11-16/`)
+    await expect(page.getByRole('link', { name: 'CSV', exact: true })).toHaveAttribute(
+      'href',
+      new RegExp(
+        `^https://github\\.com/seedypod/core/blob/[0-9a-f]{40}/knowledge/operations/pump-${trace}-trace-2026-11-16\\.csv$`,
+      ),
+    )
+  }
+})
 test('API reference renders every OpenAPI operation', async ({ page }) => {
   const spec = JSON.parse(readFileSync('public/openapi.json', 'utf8'))
   const count = Object.values(spec.paths).flatMap((p) => Object.keys(p as object)).length
