@@ -23,10 +23,12 @@ const blob = (path) => `https://github.com/seedypod/core/blob/${commit}/${path}`
 
 const adrs = (await readdir(join(docs, 'adr'))).filter((f) => /^\d{4}-.*\.md$/.test(f)).sort()
 
-// knowledge/<section>/ → /knowledge/<section>/. Only the sections behind the app's
-// care advice are published; hardware, operations, evaluation and references are
-// developer evidence and link to GitHub like any other repository file.
-const sections = new Set(['watering', 'nutrients', 'plants'])
+// knowledge/<section>/ → /knowledge/<section>/. Published: the sections behind the
+// app's care advice, and operations (the pump safety limits and the measured traces
+// behind them). Hardware, evaluation and references are developer evidence and link
+// to GitHub like any other repository file, as do non-note files such as a trace's
+// CSV.
+const sections = new Set(['operations', 'watering', 'nutrients', 'plants'])
 const knowledgeIndex = await readFile(join(knowledge, 'index.md'), 'utf8')
 // Section order and one-line summaries: the published entries of knowledge/index.md.
 const sectionLinks = [
@@ -225,18 +227,20 @@ await writeFile(
   [
     '---',
     'title: Knowledge',
-    `description: ${yaml("The evidence behind seedypod's care advice: watering cadences, feeding doses, pH and EC targets, and light zones, each with its sources.")}`,
+    `description: ${yaml("The evidence behind seedypod's care advice and pump safety: watering cadences, feeding doses, pH and EC targets, light zones, and measured pump current, each with its sources.")}`,
     '---',
     '',
     '# Knowledge',
     '',
     "These notes are where seedypod's numbers come from. When the web UI suggests a watering",
     'cadence, a dose or a pH or EC target, it links the section here it is taken from. Each note',
-    'lists its sources; most are agent-compiled drafts that no human has reviewed yet.',
+    'lists its sources; most are agent-compiled drafts that no human has reviewed yet. The',
+    'operations notes record the pump safety limits and the measured pump-current traces that',
+    'set them.',
     '',
     ...sectionLinks.map(([line]) => transformBody('knowledge/index.md', line)),
     '',
-    `Hardware facts, safety limits and evaluations are developer evidence and stay in core's [knowledge bundle](${blob('knowledge/index.md')}).`,
+    `Hardware facts and evaluations are developer evidence and stay in core's [knowledge bundle](${blob('knowledge/index.md')}).`,
     '',
     '---',
     '',

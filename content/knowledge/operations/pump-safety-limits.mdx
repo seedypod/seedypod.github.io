@@ -1,0 +1,28 @@
+---
+title: 'Pump safety limits'
+description: 'Defaults for max run, duty, dry-run threshold and over-temperature, and where each number came from.'
+---
+
+import { Callout } from 'nextra/components'
+
+# Pump safety limits
+
+<Callout type="warning">
+  Draft. An agent compiled this note from the sources below; no human review is claimed.
+</Callout>
+
+| Limit              | Default                      | Provenance                                                         | Confidence                                    |
+| ------------------ | ---------------------------- | ------------------------------------------------------------------ | --------------------------------------------- |
+| `pump_max_run_s`   | 900                          | Upstream: "follows the Gardyn and pump-vendor guidance"            | medium — vendor doc not located               |
+| `pump_max_duty`    | 30 %                         | Upstream README: full duty draws too much current for the system   | medium — reproduce with the INA219 in Phase 1 |
+| `water_low_cm`     | 16 (distance sensor→surface) | Upstream: full ≈ 5 cm, empty ≈ 20 cm; low chosen with ~4 cm margin | low — calibrate per unit                      |
+| `over_temp_c`      | 36 (hysteresis 34)           | Upstream `OVER_TEMP_HIGH` / `OVER_TEMP_HYSTERESIS`                 | medium                                        |
+| ultrasonic samples | 5 (median)                   | Upstream alert path; fixes #111                                    | high                                          |
+
+Each row becomes `stable` once measured on hardware and recorded with a `verified` attestation and a dated log entry.
+
+---
+
+**Sources:** [garden-of-eden config.py (MAX*PUMP_RUN_SECONDS, OVER_TEMP_HIGH, WATER*\* defaults)](https://github.com/iot-root/garden-of-eden/blob/main/config.py) · [garden-of-eden README (pump duty note)](https://github.com/iot-root/garden-of-eden/blob/main/README.md)
+
+**Imported from** [`knowledge/operations/pump-safety-limits.md`](https://github.com/seedypod/core/blob/336d602cbb6c409f8f316f96eed7fa2d068a9435/knowledge/operations/pump-safety-limits.md) in seedypod/core. Edit it there, not here.
