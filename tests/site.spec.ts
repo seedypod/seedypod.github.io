@@ -135,6 +135,36 @@ test('URLs linked from the core README and API resolve', async ({ request }) => 
   ])
     expect((await request.get(url)).status(), url).toBe(200)
 })
+test('knowledge anchors cited by the core web UI exist', async ({ page }) => {
+  // core's cite() (src/care/knowledge.ts) links these with GitHub's heading slug.
+  for (const [route, ids] of [
+    [
+      '/knowledge/nutrients/gardyn-feeding-guidance/',
+      ['gardyn-feeding-guidance', 'plant-food', 'tank-cadence', 'ph-and-ec'],
+    ],
+    [
+      '/knowledge/nutrients/community-nutrients/',
+      ['doses-owners-use-on-a-gardyn', 'targets-owners-report'],
+    ],
+    [
+      '/knowledge/watering/schedules/',
+      [
+        'seedlings',
+        'young-plants',
+        'mature-greens-and-herbs',
+        'large-or-fruiting-plants',
+        'judging-a-schedule',
+      ],
+    ],
+  ] as const) {
+    await page.goto(route)
+    const missing = await page.evaluate(
+      (ids) => ids.filter((id) => !document.getElementById(id)),
+      [...ids],
+    )
+    expect(missing, route).toEqual([])
+  }
+})
 test('API reference renders every OpenAPI operation', async ({ page }) => {
   const spec = JSON.parse(readFileSync('public/openapi.json', 'utf8'))
   const count = Object.values(spec.paths).flatMap((p) => Object.keys(p as object)).length
