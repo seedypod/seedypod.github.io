@@ -11,6 +11,10 @@ function routes(dir = 'content', prefix = ''): string[] {
   )
 }
 const pages = ['/', ...routes()]
+// Plant pages come from one template in import-docs.mjs. Each renders in its own
+// test below; the whole-site walks check links and anchors on a few.
+const plantSample = ['/plants/', '/plants/basil/', '/plants/cucumber/', '/plants/sorrel/']
+const walked = (route: string) => !route.startsWith('/plants/') || plantSample.includes(route)
 for (const route of pages)
   test(`renders ${route}`, async ({ page }) => {
     const errors: string[] = []
@@ -33,7 +37,7 @@ for (const route of pages)
 test('all internal links and fragments resolve', async ({ page, request }) => {
   test.setTimeout(120000)
   const links = new Set<string>()
-  for (const route of pages) {
+  for (const route of pages.filter(walked)) {
     await page.goto(route)
     for (const h of await page
       .locator('a[href]')
@@ -99,7 +103,7 @@ test('docs search index paths and anchors resolve', async ({ page, request }) =>
   expect(index.base).toBe('https://seedypod.github.io')
   expect(index.pages.length).toBeGreaterThan(0)
   expect(index.pages.map((p) => p.path)).toContain('/getting-started/')
-  for (const { path: route, headings } of index.pages) {
+  for (const { path: route, headings } of index.pages.filter((p) => walked(p.path))) {
     expect((await page.goto(route))?.status(), route).toBe(200)
     const missing = await page.evaluate(
       (ids) => ids.filter((id) => !document.getElementById(id)),
@@ -156,6 +160,7 @@ test('knowledge anchors cited by the core web UI exist', async ({ page }) => {
         'judging-a-schedule',
       ],
     ],
+    ['/knowledge/plants/thinning/', ['sprouts-to-keep']],
   ] as const) {
     await page.goto(route)
     const missing = await page.evaluate(
@@ -164,6 +169,17 @@ test('knowledge anchors cited by the core web UI exist', async ({ page }) => {
     )
     expect(missing, route).toEqual([])
   }
+})
+test('plant pages give each pod its sprout count and are searchable', async ({ page, request }) => {
+  await page.goto('/plants/basil/')
+  await expect(page.locator('main')).toContainText('Keep 3 sprouts per pod')
+  await page.goto('/plants/arugula/')
+  await expect(page.locator('main')).toContainText('Don’t thin')
+  await expect(page.locator('main a[href="/knowledge/plants/thinning/"]')).toBeVisible()
+  const index = await (await request.get('/search-index.json')).json()
+  const basil = index.pages.find((p: { path: string }) => p.path === '/plants/basil/')
+  expect(basil).toMatchObject({ title: 'Basil', section: 'Plants' })
+  expect(basil.keywords).toContain('Ocimum basilicum')
 })
 test('operations notes are published and link their trace CSVs on GitHub', async ({ page }) => {
   await page.goto('/knowledge/')

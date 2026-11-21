@@ -57,7 +57,10 @@ each pod is scored on.
 If your camera sits a little differently, press **Edit boxes** in that view.
 Drag a box onto its pod's cup, and drag its corner to fit the plant. You can
 also focus a box and move it with the arrow keys, or resize it with Shift and
-the arrow keys. **Save boxes** keeps them per camera. **Reset to measured**
+the arrow keys. If a camera can't see a pod at all (slot 28's cup sits below
+the lower frame, so its box may land on bare pipe), remove that box with its
+**×** or Delete. The pod is then left unscored on that camera until you
+**Put back** its box. **Save boxes** keeps them per camera. **Reset to measured**
 brings back the defaults. New photos are scored on the saved boxes, and so is
 the Grow page's crop of each pod. **Re-run** an analyser to rescore the photos
 already on the unit. Scripts read and set the boxes with `GET /api/vision/regions`
@@ -99,9 +102,22 @@ both cameras side by side (stacked on a phone), with three pickers:
 - **View**: the photo, or **Pod bounds** drawn over it with the chosen
   analyser's reading for each pod.
 
+Hover over a pod in either view (or focus it from the keyboard) for a card
+with everything known about it: the plant, its status and age, every
+analyser's reading on that photo (a learned analyser's runner-up too when it
+is close), the trend with its recent photos and the pod's note. Click or tap
+the pod to keep the card open and chart that pod under **One pod over time**.
+
 Below it, **Per pod, latest frames** lists every pod on the cameras shown in
-one table, with every analyser's number from its camera's newest still, and
-**One pod over time** draws one line per analyser.
+one table, with every analyser's number from its camera's newest still. The
+chart under it starts on **All pods**: a small chart of each planted pod's
+leaf cover from the primary analyser over about the last week, all on one
+scale, so the pods that are coming up stand out. Pick a pod there or in the
+**Pod** picker for **One pod over time**, which draws one line per analyser.
+The line under it reads the analysers against your labels for that pod on the
+photos you labelled, by the same 2 % rule as the agreement with labels, and
+marks the chart where the label changes; with no labelled photo in the chart,
+it reads them against the pod's record instead.
 
 **Keep analysis masks** (Settings → Cameras) also stores `exg-otsu`'s
 plant/not-plant mask for each photo as a 1-bit PBM image, about 115 kB each.
@@ -110,7 +126,15 @@ It is off by default to spare the SD card.
 ## Label pods
 
 A trained pod model needs examples: photos where someone has said what each
-pod shows. **Analysis → Label pods** is where you give them.
+pod shows. **Analysis → Teach** is where you give them. Teach is one queue of
+what waits on you, and its tab carries the count from any tab: the
+suggestions not yet labelled on each camera's newest still, the
+[pod codes](#pod-codes) not yet confirmed, and the boxes that look off their
+pod. A box looks off when you dismissed its pod's suggestion on two photos or
+more in the last week and the box is still where it was measured
+(`GET /api/vision/boxes-off`); moving or removing it takes it off the list.
+The subtitle says how many pods are labelled and how often each suggester
+was right on the labels you reviewed.
 
 1. Pick the camera: **Upper**, **Lower**, or **Both** to see the two stills
    from one round of captures together (stacked on a phone, side by side on a
@@ -119,14 +143,32 @@ pod shows. **Analysis → Label pods** is where you give them.
    at most one still per camera, taken within 5 minutes of the round's newest
    still. A camera that took none in a round shows an empty slot there, not an
    older still.
-2. Pick a label:
+2. Check the suggestions. A pod with a [suggested label](#suggested-labels)
+   shows it dashed with a question mark, for example `6 · sprouted?`; its
+   tooltip says where it came from (_last labelled sprouted on 13 Nov_,
+   _pod-state 86%_). With no label picked, tap a pod to accept its
+   suggestion. The **Suggestions** card beside the photo says how many wait
+   and of what; **Accept all** accepts every one shown (a pod whose box was
+   removed is never saved), and **Review one by one** starts at the first
+   dashed pod. Pods without a suggestion stay unlabelled.
+   If a pod can't be seen on the photo, or its box sits over the tower
+   rather than a cup, pick **Clear** and tap it: that
+   [dismisses the suggestion](#dismissed-suggestions) on that photo, so
+   **Accept all** skips it. Tap it again with **Clear** to bring the
+   suggestion back. For a box that isn't on its cup, **Pod bounds → Adjust
+   boxes** opens the box editor below the tagger.
+3. For the pods that changed, or that have no suggestion, pick a label (tap
+   the picked one again to put it down):
    - **Empty**: a capped pod, no yCube.
    - **Seeded**: a yCube is in, but nothing is visible yet.
-   - **Sprouted**: the first leaves are showing.
-   - **Growing**, **Ready** (to harvest) or **Unhealthy**.
-3. Tap each pod that shows it. A tap sets the label. To remove a label, tap
-   the pod again with the same label, or pick **Clear** and tap it. To change
-   a label, pick the other one and tap the pod again.
+   - **Sprouted**: only seed leaves, the first pair of small, rounded leaves.
+   - **Growing**: true leaves showing (the plant's own leaf shape).
+   - **Ready** (to harvest) or **Unhealthy**.
+4. Tap each pod that shows it. A tap sets the label, over any suggestion. To
+   remove a label, tap the pod again with the same label, or pick **Clear**
+   and tap it. To change a label, pick the other one and tap the pod again.
+   **Clear** on a pod with a saved label removes the label; only on a pod
+   with just a suggestion does it dismiss the suggestion.
 
 When a pod is labelled, its plant and sowing date go with the label, so a
 season of labels keeps the right species and age after pods are replanted.
@@ -134,36 +176,109 @@ Only a sown pod counts: one that is only planned (no sowing date, or still
 empty), or sown after the photo's day, records no plant.
 Changing a label later keeps the plant it was first given.
 
-The counts above the photo show how many pods carry each label, across every
-photo. **All labels** shows every labelled pod as its crop, newest photo
-first, with its pod, plant, age and when the photo was taken. Filter by label
-with the chips (each shows its count), **Change** a label with the same chips,
+Each label chip shows how many pods carry that label, across every photo.
+The line under the chips says how many labels were picked, accepted or
+corrected, and how often each suggester was right. **All labels** shows
+every labelled pod as its crop, newest photo first, with its pod, plant, age
+and when the photo was taken. Filter by label with the chips (each shows its count), **Change** a label with the same chips,
 **Remove** it, or tap the crop to open its photo in the tagger. Labels are
 kept per photo and pod, and they stay after the unit prunes the photo; a
 pruned photo's labels can still be changed or removed.
 
+### Suggested labels
+
+Most pods look the same as on the last photo labelled, so the tagger suggests
+each pod's label (#261):
+
+- The pod's newest label on an earlier photo carries forward (`carry`), since
+  states change slowly. It never carries across a replant: a label saved with
+  another sowing date, or with none from before the pod's sowing day, doesn't
+  count.
+- `pod-state` overrides that only when it names a later stage
+  (empty &lt; seeded &lt; sprouted &lt; growing &lt; ready; `unhealthy` is never later)
+  with confidence 0.8 or more (`pod-state@<version>`, the newest version
+  that scored the photo).
+- With no earlier label, a confident `pod-state` guess is the suggestion on
+  its own. With neither, there is no suggestion.
+- The model has no `seeded` class, so a pod whose record is `seeded` turns an
+  `empty` suggestion into `seeded` (`record`).
+
+A suggestion is not a label. A pod nobody touched hasn't been checked, so it
+is never stored: counting it as right would grade the model on its own
+guesses. Each saved label records how it was saved in `source`:
+
+- `picked`: the pod had no suggestion (every label from before suggestions
+  reads back as `picked`).
+- `accepted`: the label is the suggestion.
+- `corrected`: the grower chose another label; the suggestion is kept in
+  `suggested`, with `suggestedBy` and, for the model, `suggestedConfidence`.
+
+Score a model only on reviewed labels (`accepted` and `corrected`).
+`GET /api/vision/labels` (and `list_analyses` under `labels`) counts labels by
+`sources`, and gives each suggester under `suggesters` with how often it was
+accepted or corrected and the share right, so you can tell whether the model
+beats "same as last time".
+
 Scripts use `PUT /api/vision/captures/{captureId}/labels/{slot}` with
-`{"label": "seeded"}` (or `null` to clear it),
-`GET /api/vision/captures/{captureId}/labels`, `GET /api/vision/labels` for
-the counts and the labelled photos, and `GET /api/vision/labels/pods` for the
-labelled pods themselves (`label`, `camera`, `limit` and `cursor`; pass the
-response's `next` back as `cursor` for the next page). The `list_labels` MCP
-tool returns the same, and `list_analyses` the summary under `labels`.
-Labelling stays in the app: agents can read labels but not set or clear them.
+`{"label": "seeded"}` (or `null` to clear it); the unit works out `source`
+from the pod's suggestion. `GET /api/vision/captures/{captureId}/suggestions`
+lists the suggestions (`slot`, `label`, `by`, `confidence`, and `from`, the
+photo time of a carried label), and
+`POST /api/vision/captures/{captureId}/suggestions/accept` saves every
+unlabelled pod's suggestion on that photo as `accepted`, leaving pods without
+one unlabelled. `GET /api/vision/captures/{captureId}/labels`,
+`GET /api/vision/labels` for the counts and the labelled photos, and
+`GET /api/vision/labels/pods` for the labelled pods themselves (`label`,
+`camera`, `limit` and `cursor`; pass the response's `next` back as `cursor`
+for the next page). `GET /api/vision/pods/{slot}/labels` gives one pod's
+labels over a window of photo times (`from`, `to`, `limit`), oldest first, as
+`captureId`, `ts`, `label` and `source`. The `list_labels` MCP tool returns the same, and
+`list_analyses` the summary under `labels`. Labelling stays in the app:
+agents can read labels but not set or clear them.
+
+### Dismissed suggestions
+
+A suggestion can point at a pod the photo doesn't show: the pod is hidden,
+or its box isn't on a pod at all (on the lower camera a box can sit over the
+tower body). **Clear** on such a pod dismisses its suggestion on that photo
+only; the dashed tag goes, and the box's tooltip says it was dismissed. The
+unit keeps the dismissal, so a reload doesn't bring the suggestion back.
+`GET /api/vision/captures/{captureId}/suggestions` leaves dismissed pods out,
+and **Accept all** (`POST …/suggestions/accept`, optionally with the `slots`
+shown) skips them on the unit, not only in the app. A label picked on a dismissed pod is saved as `picked`,
+since there was no suggestion to accept or correct.
+
+A dismissal is not a label. It never shows in the label counts, the
+`picked`/`accepted`/`corrected` line, **All labels** or `labels.jsonl`; the
+dataset export carries dismissals in their own file,
+`suggestion_dismissals.json`. Nothing hides a pod on its own: a box that
+doesn't sit on a pod should be moved in **Analysis → Teach → Pod bounds →
+Adjust boxes** (the tooltip on each suggested pod says so). A pod dismissed
+on two photos or more in a week counts as a box that looks off until its box
+is moved or removed.
+
+Scripts use `PUT /api/vision/captures/{captureId}/suggestions/{slot}/dismissal`
+to dismiss, `DELETE` on the same path to bring the suggestion back, and
+`GET /api/vision/captures/{captureId}/suggestions/dismissals` to list a
+photo's dismissals (`slot`, `dismissedAt`).
 
 ### Pod codes
 
-Under the photo, **Pod codes** lists the pods whose yCube dot code was read
-([Dot codes](#dot-codes), #224), and only those. **Read codes** takes a
+Beside the photo, the **Pod codes** card lists the pods whose yCube dot code
+was read ([Dot codes](#dot-codes), #224), and only those, with how many wait
+to be confirmed. **Read codes** takes a
 full-size pod-ID still on each camera and reads it. That's slow on a Pi Zero,
 and a camera whose still is dark, damaged or fails keeps its last reads. Each
-row shows what the pod reads as and the plant that code is:
+row shows the pod, its dots and the plant that code is:
 
-- With no plant confirmed for the code, it offers the pod record's plant as
-  a guess (`Basil?`). **Confirm** saves the pair.
-- **Correct** (or **Say which**, when the pod has no plant) saves the code
-  as another plant.
-- A confirmed code shows its plant with a tick.
+- With no plant confirmed for the code, it offers the
+  [shared table](#shared-pod-codes)'s plant as a known code
+  (`Basil · known code`), or else the pod record's plant as a guess
+  (`Basil?`). **✓** saves the pair.
+- **fix** (or **say which**, when the pod has no plant) opens the row to save
+  the code as another plant.
+- A confirmed code shows its plant with a tick. If the shared table names
+  another plant for it, the row says so; yours is kept.
 
 The unit also reads them once a day, during the 12:00 hour local time, when
 the grow light is most likely on.
@@ -171,12 +286,60 @@ the grow light is most likely on.
 Only pairs the owner has confirmed are kept, and confirming or correcting one
 never changes a pod's record or a plan.
 
+#### Shared pod codes
+
+Gardyn's codes are the same on every unit, so core ships a table of codes
+other owners confirmed (#259), `src/vision/podCodes.json`. It is bundled with
+each release and reaches a unit only through an update: a unit never fetches
+it. Each entry has the code, the plant (a name from the plant catalog), how
+many units named that plant, and a status:
+
+- `confirmed`: two or more units agree, or a maintainer checked a crop.
+- `pending`: one unit so far. Never suggested.
+- `ambiguous`: units name different plants for the code. Never suggested.
+
+What a code is comes from, in order: your confirmed pair, then a `confirmed`
+shared entry, then the pod record. A known code is still only a suggestion:
+it needs **Confirm**, which saves your own pair, before anything counts it as
+yours. The dataset export carries your confirmed pairs in `pod_codes.json`.
+
+#### Share pod codes
+
+Once you have confirmed a code, **Share pod codes** in Pod codes opens a
+GitHub issue form in your browser, filled in with:
+
+- your confirmed pairs, one `code → plant` per line. A pair whose plant isn't
+  in the plant catalog is left out, and the panel names it;
+- the app version;
+- a unit fingerprint: the first 16 hex digits of a SHA-256 of the unit's id.
+  It lets the bot tell two units that agree from one unit submitting twice.
+  Nothing else about the unit goes in: no location, name or IP address.
+
+You sign in to GitHub and submit the form yourself. The unit only builds the
+link and never contacts GitHub. A form can't be filled in with files, so the
+panel also offers each confirmed pod's crop as a download (from the pod-ID
+still, else the newest still) to drag into **Crops**. Scripts use
+`GET /api/vision/pod-codes/share` and
+`GET /api/vision/pod-codes/crops/pod-<slot>.jpg`.
+
+The pod-codes bot (`.github/workflows/pod-codes.yml`, running
+`scripts/pod-codes-merge.ts`) picks up an issue labelled `pod-codes`. It
+checks each line's code and plant, and comments on any line it rejects. It
+merges the rest into the table, counting each fingerprint once per code (or
+the GitHub account, without a fingerprint), and opens a pull request into
+`dev` that links back to the issue. A unit that names another plant for a
+code it named before moves its vote. A maintainer who has checked a crop adds
+`pod-codes-verified` to the issue, and the bot confirms the issue's pairs
+with one unit. The bot never commits to `dev` or `main`. GitHub doesn't run
+CI on a pull request that `GITHUB_TOKEN` opens, so close and reopen it before
+merging.
+
 ### Pods out of order
 
 The owner moves yCubes by hand, so the tower can drift from the pod records
 and from the plan. A pod whose code is confirmed says what it holds. When that
 disagrees with its record or the plan applied last, **Needs you** shows one
-line, _Pods out of order_. It links to the list above Pod codes, which names
+line, _Pods out of order_. It links to the list below Pod codes in Teach, which names
 each pod and offers two fixes:
 
 - **Update the records to match the tower**: swaps of pod records, the same
@@ -187,9 +350,11 @@ each pod and offers two fixes:
 - **Move the pods to match the plan**: the swaps to make on the tower by
   hand, for example _swap pod 2 ↔ pod 7_. Read the codes again after.
 
-Only pods with a confirmed code take part. An unread pod, or one whose code
-has no confirmed plant, is never moved or corrected, and a pod that would need
-one is listed as one neither fix can settle. Scripts use
+Only pods with a known code take part: your confirmed pair, else a
+`confirmed` entry in the shared table (the list says _by a known code other
+units confirmed_). Either fix still waits for you. An unread pod, or one whose
+code is neither, is never moved or corrected, and a pod that would need one is
+listed as one neither fix can settle. Scripts use
 `GET /api/vision/pod-order` and `POST /api/vision/pod-order/fix` with the
 `key` it returned. Scripts use `GET /api/vision/pod-codes`,
 `POST /api/vision/pod-codes/read`, `PUT /api/vision/pod-codes/{code}` with
@@ -202,18 +367,29 @@ with or without the photos. Scripts can use
 `GET /api/datasets/export?from=…&to=…&images=0|1` directly. Everything sits
 under one folder, `seedypod-<unit>-<yyyymmdd from>-<yyyymmdd to>/`:
 
-- `manifest.json`: format (`seedypod-dataset` version 2, since `labels.jsonl`
-  gained `seeded` and the plant fields), window, unit, core version,
-  analysers, and row counts (`counts.labels` among them).
+- `manifest.json`: format (`seedypod-dataset` version 4, since
+  `suggestion_dismissals.json` came in; version 3 added `source` and the
+  suggestion fields to `labels.jsonl`, and `pod_codes.json`), window, unit,
+  core version, analysers, and row counts (`counts.labels` and
+  `counts.dismissals` among them).
 - `captures.jsonl`, `analyses.jsonl` and `telemetry.jsonl`: one record per line.
 - `labels.jsonl`: one labelled pod per line (see below).
 - `regions.json`: every pod's box per camera, as fractions of the frame.
 - `pods.json` and `grow_cycles.json`: what was planted where, and when.
+- `pod_codes.json`: every dot code → plant pair you confirmed (`code`,
+  `plant`, `confirmedAt`), whenever it was confirmed (`counts.podCodes`).
+- `suggestion_dismissals.json`: every pod whose suggestion you
+  [dismissed](#dismissed-suggestions) on a photo taken in the window
+  (`captureId`, `ts` the photo's time, `slot`, `dismissedAt`), ordered by
+  photo time, then photo, then pod. Not labels: a trainer can use them to
+  drop pods that can't be seen, or to find boxes that need moving.
 - `images/<capture id>.jpg`: the photos.
 - `README.md`: the layout above, in the archive itself.
 
 This is what you pull to a laptop to check an analyser against what you see,
-recalibrate a threshold, or train a model.
+recalibrate a threshold, or train a model. To avoid a feedback loop, weight
+`corrected` labels up, and drop or down-weight labels `accepted` from the
+model's own suggestion (`suggestedBy` `pod-state@…`) when training that model.
 
 ### Labels and pod crops
 
@@ -231,6 +407,10 @@ the window. Rows are ordered by photo time, then photo, then pod:
   "plant": "Basil",
   "plantedAt": "2026-10-06",
   "daysSinceSowing": 14,
+  "source": "corrected",
+  "suggested": "sprouted",
+  "suggestedBy": "pod-state@1",
+  "suggestedConfidence": 0.86,
   "image": "images/upper-2026-10-20T00-00-00-000Z.jpg",
   "width": 1280,
   "height": 960,
@@ -239,18 +419,22 @@ the window. Rows are ordered by photo time, then photo, then pod:
 }
 ```
 
-| Field                       | Meaning                                                                                                                     |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `captureId`, `ts`, `camera` | The photo, when it was taken, and which camera (`upper`: pods 1–15, `lower`: 16–30)                                         |
-| `slot`                      | The pod, 1–30                                                                                                               |
-| `label`                     | `empty` (capped, no yCube), `seeded` (yCube in, nothing visible yet), `sprouted`, `growing`, `ready` or `unhealthy`         |
-| `labelledAt`                | When it was labelled                                                                                                        |
-| `plant`, `plantedAt`        | The pod's plant and sowing date when it was labelled; `null` when it had none, or for labels from before core recorded them |
-| `daysSinceSowing`           | Whole days from `plantedAt` to `ts`; `null` without a sowing date                                                           |
-| `image`                     | The photo's path in the archive, or `null` when it isn't there (exported without photos, pruned, or a demo still)           |
-| `width`, `height`           | The photo's size in pixels, read from its JPEG header; `null` when the photo can't be read                                  |
-| `region`                    | The pod's crop in the photo's pixels, `x`, `y`, `w`, `h` with the origin top left; `null` when the photo can't be read      |
-| `box`                       | The same box as fractions of the frame (0–1); always present                                                                |
+| Field                       | Meaning                                                                                                                                                               |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `captureId`, `ts`, `camera` | The photo, when it was taken, and which camera (`upper`: pods 1–15, `lower`: 16–30)                                                                                   |
+| `slot`                      | The pod, 1–30                                                                                                                                                         |
+| `label`                     | `empty` (capped, no yCube), `seeded` (yCube in, nothing visible yet), `sprouted`, `growing`, `ready` or `unhealthy`                                                   |
+| `labelledAt`                | When it was labelled                                                                                                                                                  |
+| `plant`, `plantedAt`        | The pod's plant and sowing date when it was labelled; `null` when it had none, or for labels from before core recorded them                                           |
+| `daysSinceSowing`           | Whole days from `plantedAt` to `ts`; `null` without a sowing date                                                                                                     |
+| `source`                    | How it was saved: `picked` (no suggestion), `accepted` (the suggestion) or `corrected` (another label than the suggestion); see [Suggested labels](#suggested-labels) |
+| `suggested`                 | What the tagger suggested, or `null` when it suggested nothing                                                                                                        |
+| `suggestedBy`               | Where the suggestion came from: `carry` (the pod's last label), `record` (a seeded pod record) or `pod-state@<version>`; `null` with no suggestion                    |
+| `suggestedConfidence`       | The model's confidence when the model made the suggestion, else `null`                                                                                                |
+| `image`                     | The photo's path in the archive, or `null` when it isn't there (exported without photos, pruned, or a demo still)                                                     |
+| `width`, `height`           | The photo's size in pixels, read from its JPEG header; `null` when the photo can't be read                                                                            |
+| `region`                    | The pod's crop in the photo's pixels, `x`, `y`, `w`, `h` with the origin top left; `null` when the photo can't be read                                                |
+| `box`                       | The same box as fractions of the frame (0–1); always present                                                                                                          |
 
 `region` is exactly the window the analysers score: `x = floor(box.x × width)`,
 `y = floor(box.y × height)`, the right and bottom edges are
@@ -550,4 +734,4 @@ Rules the endpoint enforces:
 
 **Sources:** [ADR 0019: Pluggable capture analysis](/developers/adr/0019-pluggable-capture-analysis/) · [Privacy](/core/privacy/)
 
-**Imported from** [`docs/ANALYSIS.md`](https://github.com/seedypod/core/blob/8555939d7ff27202ce6b37de427fc150af4be6ba/docs/ANALYSIS.md) in seedypod/core. Edit it there, not here.
+**Imported from** [`docs/ANALYSIS.md`](https://github.com/seedypod/core/blob/db1f19681376b75fb6987923c808f28f069efded/docs/ANALYSIS.md) in seedypod/core. Edit it there, not here.

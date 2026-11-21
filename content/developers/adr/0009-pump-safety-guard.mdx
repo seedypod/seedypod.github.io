@@ -1,19 +1,20 @@
 ---
 title: 'ADR 0009: Pump safety guard and latched faults'
-description: 'Pump duty clamp, bounded runs, dry-run interlock, over-temp cutoff and latched faults.'
+description: 'Pump duty clamp, bounded runs, dry-run interlock, over-temp cutoff and latched faults; amended 2026-11-14 for full duty, the brown-out and current guards, and hal.toml-only guard settings.'
 ---
 
 import { Callout } from 'nextra/components'
 
 # ADR 0009: Pump safety guard and latched faults
 
-**Status:** Accepted
+**Status:** Accepted, amended 2026-11-14 (full duty by default, a brown-out guard, the current guard and its hal.toml-only mode, fast reads, fail-safes, and retried scheduled runs)
 **Date:** 2026-10-30
 
 ## Context
 
 The pump is the one actuator that can damage the hardware: running dry burns
-the pump, and Gardyn's board browns out above ~30 % duty. garden-of-eden's
+the pump, and Gardyn's board browns out above ~30 % duty (superseded by the
+2026-11-14 amendment: never measured on a Gardyn 3.0, and stock runs at 100 %). garden-of-eden's
 issue tracker documents every way its scattered checks were bypassed (#108,
 #109, #111, #114). [sleepypod](https://sleepypod.github.io/developers/hardware/) ADR-0022 established the model we want: detect,
 fail safe by de-energising, stay off until a human acknowledges, auto-recovery
@@ -23,12 +24,14 @@ only as an explicit opt-in.
 
 `hal_core::safety::PumpGuard` is the only path to the pump driver.
 
-1. **Duty clamp** to `limits.pump_max_duty` (default 30 %).
+1. **Duty clamp** to `limits.pump_max_duty` (default 30 %; superseded by the
+   2026-11-14 amendment: default 100 %, the pin held high).
 2. **Bounded runs** — every start has a deadline ≤ `pump_max_run_s` (default
    900 s). There is no unbounded "on".
 3. **Dry-run interlock** — refuse to start when the median of N ultrasonic
    samples ≥ `water_low_cm`; **fail safe**: if the interlock is configured and
-   the sensor is unavailable, refuse.
+   the sensor is unavailable, refuse. (A running pump's level trip, and a
+   second guard on the pump current: see the 2026-11-14 amendment.)
 4. **Over-temperature** — refuse to start and stop a running pump at
    `over_temp_c` (PCB sensor, default 65 °C; raised from 36 °C on 2026-11-01
    after the stock Gardyn 3.0 board read 47 °C with the lights at 100 %).
@@ -43,9 +46,109 @@ mirrors the same rules so the demo never shows behaviour the unit would refuse.
 
 - Core, MCP, HA and the button cannot start the pump outside these rules.
 - A dry tank produces a `pump_fault` alert plus `water_low`, and the UI/HA/MCP
-  must acknowledge after refilling; this is deliberate friction.
+  must acknowledge after refilling; this is deliberate friction. (Superseded by
+  the 2026-11-14 amendment: a dry-run clears itself once the water reads good.)
 - Dosing pumps (Phase 6.3) get their own guard with daily volume caps
   (ADR-0014).
+
+## Amendment, 2026-11-14
+
+Pump safety is decided in hald, from `hal.toml`, and outranks any setting from
+the app. Everything below was decided or shipped between #231 and today; it is
+part of #220 unless noted.
+
+1. **Full duty by default (supersedes the 30 % clamp of Context and Decision 1).**
+   `pump_max_duty` defaults to **100**. The 30 % figure came from
+   garden-of-eden and was never measured on a Gardyn 3.0. The stock firmware
+   drives GPIO24 plain on/off at 100 %, and 68 stock runs
+   (`tests/fixtures/gardyn-gh30-stock-2024/pump_runs.csv`) drew a median of
+   10.6 W for 5 to 15 minutes with no brown-out. The pump is a TD40A-1248A
+   brushless DC pump with its own driver (12 V, 950 mA, 430 cm head); 50 Hz
+   software PWM at 30 % starves that driver, and a community unit couldn't lift
+   water to the top of the tower under seedypod though it could under stock.
+   At duty 100 (and above, after the clamp) the driver holds the pin steady
+   high with no software PWM (`hal_drivers::pwm::pin_drive`, `SoftPwm`); below
+   100 it still pulses at 50 Hz. The cap stays configurable because pumps differ
+   between units: the owner's lifts fine at 30 %. Lower it only for a board
+   that browns out.
+2. **Brown-out guard.** A new rule in `PumpGuard`. Past the spin-up grace (it
+   holds the inrush), at least three reads in a row of the pump supply (the
+   INA219's bus voltage, `pump_v`, read in the same transaction as the current
+   every 100 ms) below `[limits] pump_brownout_v` (default **10.8 V**),
+   covering `pump_brownout_ms` (default **300 ms**), stop the pump and latch
+   `brown-out: supply fell to 10.2 V for 0.3 s`. 10.8 V is a 12 V supply 10 %
+   low, the bottom of its usual tolerance. The supply idles at about 12.6 V, and
+   a healthy one under the pump's 0.95 A reads about 12 V or more past the
+   shunt, so the cutoff sits at least 1.2 V clear of normal running. The stock
+   fixtures carry power, not voltage; their 10.6 W median, just under the
+   pump's 11.4 W rating, is what a supply holding near 12 V delivers. A missing
+   read neither counts nor clears the count, so it never trips the guard, and a
+   sag that takes the monitor's reads with it isn't forgiven either.
+   `pump_brownout_v = 0` turns it off; without an INA219 it is off. Where
+   `/sys/devices/platform/soc/soc:firmware/get_throttled` is readable (no root
+   needed), hald also reads the Pi's own under-voltage flag (bit 0) once a
+   second while the pump runs, and two reads in a row that report it, at least
+   `pump_brownout_ms` apart, trip the same fault (`brown-out: the Pi reported
+under-voltage for 1 s`); `pump_brownout_pi = false` turns that off. A
+   brown-out is checked before the current guard, because a sagging supply
+   also draws less, and it waits for an acknowledge: it is not a dry-run.
+   `hald --check` prints it (`pump_brownout_guard`), and `system.limits`
+   reports `pumpBrownoutV`, `pumpBrownoutMs` and `pumpBrownoutPi`, which Water
+   shows read-only beside the dry-run guard line.
+3. **The current guard (#231).** A pump pulling air draws far less than one
+   lifting water (stock: about 10.7 W wet, about 3.3 W once it has lost prime).
+   Past a spin-up grace, current reads below `pump_dry_current_a` stop the pump
+   and latch a dry-run that says what the pump drew. The cutoff ships unset,
+   so the guard is off until wet and dry traces are recorded on a unit.
+4. **Which guard runs is hal.toml's alone (#268).** `[limits] pump_dry_guard =
+"level" | "current" | "both"`, default `both`. `current` or `both` without
+   a cutoff or a pump monitor falls back to `level` with a warning, so the pump
+   never runs with no dry-run guard it was asked for. The mode and the cutoff
+   have no route in the app, the API or MCP.
+5. **Faster reads and trips (#267).** While the pump runs, and for 2 s after,
+   hald reads the pump current every 100 ms, skipping the INA219 facets' 500 ms
+   cache; the ranger is read once a second. The INA219 averages 128 shunt
+   samples and 16 bus samples (config `0x3E7F`), so one read spans about 3.4
+   periods of the 50 Hz PWM and a conversion cycle (76.6 ms) fits inside the
+   100 ms read. The current guard trips on at least three low reads covering
+   `pump_dry_after_ms` (300 ms) after `pump_dry_grace_ms` (1 s). The level
+   guard trips on trusted readings at the limit for 0.5 s (`LEVEL_CONFIRM`),
+   which at 1 Hz is the second reading, about 1 s; with no trusted reading at
+   all it still trips after 3 s (`DRY_CONFIRM`).
+6. **The spin-up grace is the one guard setting the app may change (#268).**
+   Core sends `pump/guard/set {dryGraceMs}`; hald clamps it into hal.toml's
+   `pump_dry_grace_min_ms`–`pump_dry_grace_max_ms` (300–5000 ms by default,
+   never past 10 s), keeps it in its own `state.json` and uses it at boot
+   without waiting on core. The reason for letting the app tune this one: the
+   worst outcome of a too-short grace on a slow-priming pump is not watering
+   when there is water, and the owner should be able to fix that from Water
+   without SSH.
+7. **Fail-safes.** A stop the pump driver refuses latches `stop-failed: …` and
+   is retried on every guard read until it takes (#267). In `current` mode,
+   where the monitor is the only dry-run guard, no reading of the current for
+   more than 2 s while running latches `monitor-lost: …` (#268). hald runs
+   under systemd's watchdog (`Type=notify`, `WatchdogSec=10`), and every stop
+   of hald, a crash or a watchdog kill included, runs `pump-off`
+   (`ExecStopPost`), which drives the pump pin low with the pin hal.toml sets
+   (#266).
+8. **Latches.** Decision 5 holds for every fault above except a dry-run, which
+   since 2026-11-10 clears itself once the water has read good for a whole
+   window (`water_low`'s minute); a current trip holds that window from the
+   trip, since a full tank says nothing about a pump pulling air. This
+   supersedes "must acknowledge after refilling" in Consequences. `stop-failed`,
+   `monitor-lost`, `over-temp` and `brown-out` still wait for a person.
+9. **A refused scheduled run is retried (core, #270).** A pump schedule that
+   hald refuses (for example on one failed ultrasonic read, which leaves the
+   tank unknown and refuses a start by design) is retried once a minute, up to
+   15 more times (`PUMP_RETRIES`), through the same `hal.setActuator` path, so
+   hald's guard still decides every attempt. A start hald answers with the pump
+   still off counts as refused, as an error does. Each run is recorded as
+   `fired` or `refused: <reason>`. Retrying stops once an attempt is accepted,
+   the schedule's next run is due, or the schedule is turned off; the retry
+   state is in memory, so a core restart drops it. If every try is refused,
+   core raises one `pump_schedule_missed` alert ("Scheduled watering at 08:00
+   didn't run: …") and clears it when a scheduled run next fires. A weekly
+   schedule no longer loses a week of water to one bad echo.
 
 **Authors**: @ng
 
@@ -53,4 +156,4 @@ mirrors the same rules so the demo never shows behaviour the unit would refuse.
 
 **Sources:** [sleepypod/core (conventions and ADR precedents)](https://github.com/sleepypod/core) · [iot-root/garden-of-eden (reference implementation, GPL-3; no code copied)](https://github.com/iot-root/garden-of-eden) · [sleepypod ADR 0022 pump stall safety](https://github.com/sleepypod/core/blob/dev/docs/adr/0022-pump-stall-safety.md)
 
-**Imported from** [`docs/adr/0009-pump-safety-guard.md`](https://github.com/seedypod/core/blob/8555939d7ff27202ce6b37de427fc150af4be6ba/docs/adr/0009-pump-safety-guard.md) in seedypod/core. Edit it there, not here.
+**Imported from** [`docs/adr/0009-pump-safety-guard.md`](https://github.com/seedypod/core/blob/db1f19681376b75fb6987923c808f28f069efded/docs/adr/0009-pump-safety-guard.md) in seedypod/core. Edit it there, not here.

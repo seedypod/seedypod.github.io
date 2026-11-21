@@ -19,7 +19,7 @@ On our unit (Gardyn 3.0, `gardyn-db753a85`), the pump at 100 % duty in water dra
 | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | When                     | 2026-11-16 12:38:05 PST (20:38:05Z), cycle day 7                                                                                                                                                                      |
 | How                      | `run_pump` 120 s at level 100, with hald on `HAL_PUMP_TRACE=/var/lib/seedypod/pump-trace.csv` (drop-in `/etc/systemd/system/hald.service.d/pump-trace.conf`)                                                          |
-| Samples                  | 357 with the pump on, every 0.25 s (`pump_trace::EVERY`), plus the 2 s tail; [CSV](https://github.com/seedypod/core/blob/336d602cbb6c409f8f316f96eed7fa2d068a9435/knowledge/operations/pump-wet-trace-2026-11-16.csv) |
+| Samples                  | 357 with the pump on, every 0.25 s (`pump_trace::EVERY`), plus the 2 s tail; [CSV](https://github.com/seedypod/core/blob/db1f19681376b75fb6987923c808f28f069efded/knowledge/operations/pump-wet-trace-2026-11-16.csv) |
 | Steady current (t > 3 s) | mean 0.933 A, min 0.930, max 0.940, sd 0.004                                                                                                                                                                          |
 | Supply                   | 12.59 V idle, 12.50 V under load; no brown-out (limit 10.8 V)                                                                                                                                                         |
 | Tank                     | 13.6 cm to surface (43 %), sensor flagged suspect at 20:29Z                                                                                                                                                           |
@@ -53,6 +53,6 @@ The Monday 08:00 Germination run (15 min) on 2026-11-16 was not traced. The firs
 
 ---
 
-**Sources:** [hald --pump-trace capture, unit gardyn-db753a85, 2026-11-16 20:38:05Z](https://github.com/seedypod/core/blob/336d602cbb6c409f8f316f96eed7fa2d068a9435/knowledge/operations/pump-wet-trace-2026-11-16.csv) · [#220 pump current dry-run guard](https://github.com/seedypod/core/issues/220) · [Pump safety limits](/knowledge/operations/pump-safety-limits/)
+**Sources:** [hald --pump-trace capture, unit gardyn-db753a85, 2026-11-16 20:38:05Z](https://github.com/seedypod/core/blob/db1f19681376b75fb6987923c808f28f069efded/knowledge/operations/pump-wet-trace-2026-11-16.csv) · [#220 pump current dry-run guard](https://github.com/seedypod/core/issues/220) · [Pump safety limits](/knowledge/operations/pump-safety-limits/)
 
-**Imported from** [`knowledge/operations/pump-wet-trace-2026-11-16.md`](https://github.com/seedypod/core/blob/336d602cbb6c409f8f316f96eed7fa2d068a9435/knowledge/operations/pump-wet-trace-2026-11-16.md) in seedypod/core. Edit it there, not here.
+**Imported from** [`knowledge/operations/pump-wet-trace-2026-11-16.md`](https://github.com/seedypod/core/blob/db1f19681376b75fb6987923c808f28f069efded/knowledge/operations/pump-wet-trace-2026-11-16.md) in seedypod/core. Edit it there, not here.

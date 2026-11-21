@@ -3,6 +3,7 @@ export default {
   'getting-started': 'Get started',
   core: 'User guide',
   ios: 'iPhone app',
+  plants: 'Plants',
   knowledge: 'Knowledge',
   developers: 'Developers',
   about: 'About seedypod',

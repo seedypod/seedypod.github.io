@@ -254,6 +254,174 @@ await writeMeta('knowledge', {
 })
 for (const [section, meta] of Object.entries(sectionMeta))
   await writeMeta(`knowledge/${section}`, meta)
+
+// Plants: a page per catalog plant from core's src/plants/catalog.json and
+// care.json, so the Core palette's docs search finds every yCube by name.
+const plantsDir = process.env.CORE_PLANTS ?? join(docs, '..', 'src', 'plants')
+const catalog = JSON.parse(await readFile(join(plantsDir, 'catalog.json'), 'utf8'))
+const care = JSON.parse(await readFile(join(plantsDir, 'care.json'), 'utf8'))
+const kinds = {
+  green: ['Leafy greens', 'Leafy green'],
+  lettuce: ['Lettuces', 'Lettuce'],
+  herb: ['Herbs', 'Herb'],
+  vegetable: ['Vegetables', 'Vegetable'],
+  legume: ['Legumes', 'Legume'],
+  fruiting: ['Fruiting plants', 'Fruiting plant'],
+  flower: ['Flowers', 'Flower'],
+}
+const span = ([a, b], unit) => `${a === b ? a : `${a}–${b}`} ${unit}`
+// Mirrors thinRule in core's src/plants/catalog.ts, for the one plant Gardyn gives no count.
+const thinRule = (p) =>
+  p.category === 'herb' || (p.category === 'flower' && p.size !== 'large') ? 3 : 1
+const thinCount = (n) => (n === 'all' ? 'Don’t thin' : `Keep ${n} sprout${n === 1 ? '' : 's'}`)
+const notesOrder = [
+  ['harvest', 'Harvest'],
+  ['prune', 'Pruning'],
+  ['support', 'Support'],
+  ['pollinate', 'Pollinating'],
+  ['health', 'Pests and disease'],
+  ['climate', 'Climate'],
+]
+const plantBlobs = ['catalog.json', 'care.json'].map(
+  (f) => `[\`${f}\`](${blob(`src/plants/${f}`)})`,
+)
+
+function plantPage(p) {
+  const f = catalog.facts[p.id] ?? {}
+  const notes = care.plants[p.id] ?? {}
+  const kind = kinds[p.category][1]
+  const thinTo = f.thinTo ?? thinRule(p)
+  const sprout = catalog.sproutDays[p.id] ?? catalog.categorySproutMedians[p.category]
+  const zone = `${p.zone[0].toUpperCase()}${p.zone.slice(1)}`
+  const facts = [
+    [
+      'Thinning',
+      thinTo === 'all'
+        ? 'Don’t thin. Let every sprout in the pod grow.'
+        : `${thinCount(thinTo)} per pod and cut the rest at the base.` +
+          (f.thinTo
+            ? ''
+            : ` Gardyn gives no count for ${p.name}, so this is the rule for its kind.`),
+    ],
+    [
+      'Sprouts in',
+      span(sprout, 'days') + (catalog.sproutDays[p.id] ? '' : ' (typical for its kind)'),
+    ],
+    [
+      'First harvest',
+      `${span(p.harvestMonths, 'months')} after planting` +
+        (p.harvestEstimated ? ' (typical for its kind)' : ''),
+    ],
+    ['Matures in', f.maturityDays && span(f.maturityDays, 'days')],
+    ['Height', f.heightFt && `${f.heightFt.replace(/^</, 'under ')} ft`],
+    ['Temperature', f.tempF && span(f.tempF, '°F')],
+    ['Light zone', `[${zone}](/knowledge/plants/gardyn-light-zones/)`],
+    [
+      'Full dose of plant food',
+      f.fullDose &&
+        (f.fullDose === 'roots'
+          ? 'Once the roots are 1/2 inch long'
+          : 'Once it has true leaves or roots 1/2 inch long'),
+    ],
+    ['Care level', p.careLevel && `${p.careLevel[0].toUpperCase()}${p.careLevel.slice(1)}`],
+    ['Yield', p.yield && `${p.yield[0].toUpperCase()}${p.yield.slice(1)}`],
+  ].filter(([, v]) => v)
+  const sentence = [
+    thinTo === 'all' ? 'Don’t thin' : `${thinCount(thinTo).replace(/^K/, 'k')} per pod`,
+    `sprouts in ${span(sprout, 'days')}`,
+    `first harvest after ${span(p.harvestMonths, 'months')}`,
+  ].join('; ')
+  const description = `${kind} for the ${p.zone} light zone. ${sentence[0].toUpperCase()}${sentence.slice(1)}.`
+  const keywords = [
+    f.latinName?.replace(/['‘’]/g, ''),
+    kind.toLowerCase(),
+    'ycube',
+    p.id.replace(/-/g, ' '),
+  ]
+  const sources = [
+    f.article && `[Gardyn’s ${p.name} page](https://help.mygardyn.com/en/articles/${f.article})`,
+    '[Sprouts to keep](/knowledge/plants/thinning/)',
+    '[Catalog provenance](/knowledge/plants/catalog-provenance/)',
+  ].filter(Boolean)
+  return [
+    '---',
+    `title: ${yaml(p.name)}`,
+    `description: ${yaml(description)}`,
+    `keywords: ${yaml(keywords.filter(Boolean).join(' '))}`,
+    '---',
+    '',
+    `# ${escapeMdx(p.name)}`,
+    '',
+    [f.latinName && `*${escapeMdx(f.latinName)}*`, kind].filter(Boolean).join(' · '),
+    '',
+    '## At a glance',
+    '',
+    ...facts.map(([k, v]) => `- **${k}:** ${escapeMdx(v)}`),
+    '',
+    ...notesOrder.flatMap(([k, label]) =>
+      notes[k] ? [`## ${label}`, '', escapeMdx(notes[k]), ''] : [],
+    ),
+    '---',
+    '',
+    `**Sources:** ${sources.join(' · ')}`,
+    '',
+    `**Generated from** ${plantBlobs.join(' and ')} in seedypod/core. The care notes are rewritten in seedypod's own words from Gardyn's plant pages. Edit them there, not here.`,
+    '',
+  ].join('\n')
+}
+
+await rm('content/plants', { recursive: true, force: true })
+await mkdir('content/plants', { recursive: true })
+const byKind = Object.keys(kinds).map((k) => [
+  k,
+  catalog.plants.filter((p) => p.category === k).sort((a, b) => a.name.localeCompare(b.name)),
+])
+for (const [, plants] of byKind)
+  for (const p of plants) await writeFile(`content/plants/${p.id}.mdx`, plantPage(p))
+const plantRow = (p) => {
+  const thinTo = catalog.facts[p.id]?.thinTo ?? thinRule(p)
+  return `| [${escapeMdx(p.name)}](/plants/${p.id}/) | ${thinTo === 'all' ? 'Don’t thin' : thinTo} | ${span(p.harvestMonths, 'mo')} |`
+}
+await writeFile(
+  'content/plants/index.mdx',
+  [
+    '---',
+    'title: Plants',
+    `description: ${yaml(`Every yCube seedypod knows, ${catalog.plants.length} in all: how many sprouts to keep in each pod, how long it takes to sprout and to harvest, and how to look after it.`)}`,
+    'keywords: "ycube catalog thin thinning sprouts seedlings harvest care"',
+    '---',
+    '',
+    '# Plants',
+    '',
+    `Every yCube in seedypod's catalog, ${catalog.plants.length} in all. Each page says how many sprouts to keep when you thin the pod, how long the plant takes to sprout and to reach its first harvest, and how to harvest, prune and look after it. The facts come from Gardyn's plant pages and yCube store; the [catalog provenance](/knowledge/plants/catalog-provenance/) note says which.`,
+    '',
+    'Thin each pod to its count once the seedlings are up, cutting the extras at the base rather than pulling them. [Sprouts to keep](/knowledge/plants/thinning/) explains the counts and where Gardyn contradicts itself.',
+    '',
+    ...byKind.flatMap(([k, plants]) => [
+      `## ${kinds[k][0]}`,
+      '',
+      '| Plant | Sprouts to keep | First harvest |',
+      '| --- | --- | --- |',
+      ...plants.map(plantRow),
+      '',
+    ]),
+    '---',
+    '',
+    `**Generated from** ${plantBlobs.join(' and ')} in seedypod/core. Edit them there, not here.`,
+    '',
+  ].join('\n'),
+)
+await writeMeta(
+  'plants',
+  Object.fromEntries([
+    ['index', 'Overview'],
+    ...byKind.flatMap(([k, plants]) => [
+      [`-- ${k}`, { type: 'separator', title: kinds[k][0] }],
+      ...plants.map((p) => [p.id, p.name]),
+    ]),
+  ]),
+)
 console.log(
   `Imported ${Object.keys(pages).length} pages, the ADR index and the knowledge index from ${commit}`,
 )
+console.log(`Generated ${catalog.plants.length} plant pages and the plant index`)
