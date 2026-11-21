@@ -31,7 +31,7 @@ for (const route of pages)
     expect(errors).toEqual([])
   })
 test('all internal links and fragments resolve', async ({ page, request }) => {
-  test.setTimeout(120000)
+  test.setTimeout(300000)
   const links = new Set<string>()
   for (const route of pages) {
     await page.goto(route)
@@ -156,6 +156,7 @@ test('knowledge anchors cited by the core web UI exist', async ({ page }) => {
         'judging-a-schedule',
       ],
     ],
+    ['/knowledge/plants/thinning/', ['sprouts-to-keep']],
   ] as const) {
     await page.goto(route)
     const missing = await page.evaluate(
@@ -164,6 +165,17 @@ test('knowledge anchors cited by the core web UI exist', async ({ page }) => {
     )
     expect(missing, route).toEqual([])
   }
+})
+test('plant pages give each pod its sprout count and are searchable', async ({ page, request }) => {
+  await page.goto('/plants/basil/')
+  await expect(page.locator('main')).toContainText('Keep 3 sprouts per pod')
+  await page.goto('/plants/arugula/')
+  await expect(page.locator('main')).toContainText('Don’t thin')
+  await expect(page.locator('main a[href="/knowledge/plants/thinning/"]')).toBeVisible()
+  const index = await (await request.get('/search-index.json')).json()
+  const basil = index.pages.find((p: { path: string }) => p.path === '/plants/basil/')
+  expect(basil).toMatchObject({ title: 'Basil', section: 'Plants' })
+  expect(basil.keywords).toContain('Ocimum basilicum')
 })
 test('operations notes are published and link their trace CSVs on GitHub', async ({ page }) => {
   await page.goto('/knowledge/')

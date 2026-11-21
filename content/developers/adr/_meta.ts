@@ -29,4 +29,6 @@ export default {
   '0028-camera-capture-format': '0028 Camera capture format for image analysis',
   '0029-care-engine-and-agent-boundary': '0029 Care engine and agent boundary',
   '0030-grow-protocols': '0030 Grow protocols',
+  '0031-shared-pod-codes': '0031 Shared pod codes',
+  '0032-outbound-notifications': '0032 Outbound notifications',
 }

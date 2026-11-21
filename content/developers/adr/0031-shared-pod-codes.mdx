@@ -1,0 +1,83 @@
+---
+title: 'ADR 0031: Shared pod codes'
+description: "A code → plant table that other owners' confirmations build, shipped inside each release and never fetched by a unit. A unit's own confirmations win, a shared entry needs two units to agree or a maintainer's check, and contributions travel from the owner's browser to a GitHub issue that a bot turns into a pull request."
+---
+
+import { Callout } from 'nextra/components'
+
+# ADR 0031: Shared pod codes
+
+**Status:** Accepted
+**Date:** 2026-11-14
+
+## Context
+
+Each Gardyn yCube carries a four-mark dot code, and the cameras can read it
+([#224](https://github.com/seedypod/core/issues/224)). Gardyn doesn't publish
+which code is which plant, so #224 learns the table from the owner's own
+confirmations, and never trusts a pair nobody confirmed. Every new unit starts
+with an empty table, though the codes are the same on every unit.
+
+Sharing confirmations helps every owner, but a wrong pair then misleads every
+unit instead of one. On the reference unit, pod 6 reads `oo||` and its pod
+record says Cilantro, while the tag on the pod says Green Bok Choy: one tap on
+the suggested plant would store a wrong pair.
+
+Two constraints rule out the obvious design. A unit never reaches the internet
+except through the update helper, and only when someone asks
+([ADR 0012](/developers/adr/0012-deployment-and-trust/), [ADR 0026](/developers/adr/0026-web-update/)), so
+a unit can't fetch a shared table or post to one. And most owners don't use
+git.
+
+## Decision
+
+1. **The table ships in the release.** `src/vision/podCodes.json`, imported by
+   `src/vision/sharedPodCodes.ts`, is bundled with core and reaches units only
+   through updates. A test checks that nothing else references the file, so no
+   code path fetches it.
+2. **Lookup order: the owner's pair, then a confirmed shared entry, then the pod
+   record.** A shared match shows as a stronger guess ("Basil · known code") and
+   still needs a tap; nothing changes records or plans without one (#224). When
+   the owner's pair and the table disagree, the owner's wins and Label pods says
+   so. Pods out of order may use confirmed shared entries; their fixes still
+   wait for the owner.
+3. **Agreement before publishing.** Each entry records which units named which
+   plant. A pair is `confirmed` when two or more units agree, or when a
+   maintainer adds the `pod-codes-verified` label after checking a crop. One
+   unit alone gives `pending`. Units naming different plants make the code
+   `ambiguous`, and an ambiguous code is never suggested.
+4. **Contributions go from the owner's browser, not the unit.** Share pod codes
+   in Label pods opens a pre-filled GitHub issue form
+   (`.github/ISSUE_TEMPLATE/pod-codes.yml`) in a new tab, and offers each
+   confirmed pod's crop as a download to drag in. The owner signs in to GitHub
+   and submits.
+5. **A bot turns issues into pull requests.** The `pod-codes` workflow runs
+   `scripts/pod-codes-merge.ts` on labelled issues: it checks each code's format
+   and that each plant is in the catalog (exact names only, so a fuzzy guess
+   can't spread), merges the pairs, and opens a pull request that a maintainer
+   merges. It never commits to `dev` or `main`.
+6. **Only facts, and nothing identifying.** An entry holds the code, the
+   catalog plant and per-unit votes. A unit votes as a fingerprint: the first 16
+   hex digits of SHA-256 over `seedypod-pod-codes:` and its unit id, so the bot
+   can count a unit once without learning which unit it is. No location, name
+   or IP goes in the issue. No Gardyn assets, and nothing that claims to be
+   Gardyn's decoding.
+
+## Consequences
+
+- A new unit benefits from other owners' confirmations after one update, with
+  no network access of its own.
+- The table grows slowly: one unit can only make `pending` entries, and an owner
+  without a GitHub account can't contribute. An account-free endpoint would
+  need hosting and spam handling; revisit if owners ask.
+- GitHub doesn't run CI on pull requests a workflow opens with `GITHUB_TOKEN`,
+  so a maintainer closes and reopens each bot PR before merging, and the repo
+  must allow Actions to create pull requests.
+- If Gardyn reuses a code for another plant, units disagree and the code goes
+  `ambiguous` instead of being versioned by date.
+
+---
+
+**Sources:** [ADR 0012: Deployment and trust](/developers/adr/0012-deployment-and-trust/) · [ADR 0019: Pluggable capture analysis](/developers/adr/0019-pluggable-capture-analysis/) · [ADR 0026: One-click update from the web UI](/developers/adr/0026-web-update/) · [#224 Read yCube dot codes from the cameras](https://github.com/seedypod/core/issues/224) · [#259 Share pod codes](https://github.com/seedypod/core/issues/259)
+
+**Imported from** [`docs/adr/0031-shared-pod-codes.md`](https://github.com/seedypod/core/blob/db1f19681376b75fb6987923c808f28f069efded/docs/adr/0031-shared-pod-codes.md) in seedypod/core. Edit it there, not here.

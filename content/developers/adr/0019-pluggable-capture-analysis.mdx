@@ -7,8 +7,37 @@ import { Callout } from 'nextra/components'
 
 # ADR 0019: Pluggable capture analysis
 
-**Status:** Accepted, amended 2026-11-09 (learned models run in plain TypeScript, not ONNX) and 2026-11-09 (a native runner, `podvision`, runs them first)
+**Status:** Accepted, amended 2026-11-09 (learned models run in plain TypeScript, not ONNX), 2026-11-09 (a native runner, `podvision`, runs them first) and 2026-11-14 (suggested labels, and where each label came from)
 **Date:** 2026-10-31
+
+> **Amendment, 2026-11-14 ([#261](https://github.com/seedypod/core/issues/261)).** Labelling
+> pods is the data a learned model needs, and it was one tap per pod per photo from nothing.
+> Label pods now suggests each pod's label, and every saved label records where it came from,
+> because a label the grower only accepted is weaker evidence than one they chose or corrected.
+>
+> - **Suggestions** (`src/vision/suggestLabel.ts`): the pod's last label from its current
+>   planting carries forward; `pod-state` replaces it only when it names a later stage at ≥ 0.8
+>   confidence; a confident model guess stands alone when there is no earlier label; a pod whose
+>   record is `seeded` turns an `empty` guess into `seeded`, since the model has no seeded class.
+>   A label from before a replant never carries. A suggestion is shown dashed with a `?` and is
+>   never stored by itself.
+> - **Provenance:** each label stores `source` (`picked`, `accepted` or `corrected`), the
+>   suggestion and what made it (`carry`, `record` or `pod-state@<version>`, with its
+>   confidence). Labels saved before this read as `picked`. "Accept the rest" saves a photo's
+>   remaining suggestions as `accepted`, but only after the grower has looked at that photo; a pod
+>   nobody touched is never stored, so it never counts as correct.
+> - **Dismissals:** the grower can dismiss a suggestion on a photo (a box that isn't on a pod, a
+>   pod that can't be seen). A dismissal is stored apart from labels, skipped by "Accept the
+>   rest", and never counted as a label.
+> - **Scoring:** a model is judged only on reviewed labels (`accepted` + `corrected`), and core
+>   reports how often each suggester was right, so we can tell whether the model beats "same as
+>   last time". The dataset export (format 3) carries all of it, so training can weight
+>   corrections or drop accepted labels the model itself suggested, which would otherwise feed
+>   its own mistakes back in.
+> - Label meanings, for consistency: Sprouted is only seed leaves; Growing is true leaves
+>   showing. Pod codes and the table other owners' confirmations build are
+>   [ADR 0031](/developers/adr/0031-shared-pod-codes/); the export's `pod_codes.json` holds the owner's
+>   confirmed pairs.
 
 > **Status note, 2026-11-09 ([#191](https://github.com/seedypod/core/issues/191)).** The native
 > backend the amendment below left room for exists. On the unit, `pod-state@1` took about 33 s
@@ -136,7 +165,7 @@ number per pod in `pod_growth`. It works as a first signal, but:
   (`sharp`, with scaled decoding) or a small raw frame from `hald` for
   scoring only are follow-ups the table makes measurable.
 - Training a local model becomes a data question, not an architecture
-  change: label pods in the UI ("sprouted", "unhealthy", "ready"), export,
+  change: label pods in the UI ("sprouted", "unhealthy", "ready"; suggested and recorded by source since the 2026-11-14 amendment), export,
   fit off-device, ship the weights file as an analyser (the ONNX file of the original text; see the amendment).
 - Two new trust boundaries: an outbound credential for the mirror and an
   inbound token for result ingest. Both are per-unit secrets in core's
@@ -161,4 +190,4 @@ user and integrator guide.
 
 **Sources:** [ADR 0004: Two tiers — hardware daemon and core](/developers/adr/0004-two-tier-hal-core/) · [ADR 0018: Runtime sensor inventory](/developers/adr/0018-runtime-sensor-inventory/) · [Privacy](/core/privacy/) · [sleepypod/core (sleep-stage calibration dataset)](https://github.com/sleepypod/core)
 
-**Imported from** [`docs/adr/0019-pluggable-capture-analysis.md`](https://github.com/seedypod/core/blob/8555939d7ff27202ce6b37de427fc150af4be6ba/docs/adr/0019-pluggable-capture-analysis.md) in seedypod/core. Edit it there, not here.
+**Imported from** [`docs/adr/0019-pluggable-capture-analysis.md`](https://github.com/seedypod/core/blob/db1f19681376b75fb6987923c808f28f069efded/docs/adr/0019-pluggable-capture-analysis.md) in seedypod/core. Edit it there, not here.
