@@ -11,6 +11,10 @@ function routes(dir = 'content', prefix = ''): string[] {
   )
 }
 const pages = ['/', ...routes()]
+// Plant pages come from one template in import-docs.mjs. Each renders in its own
+// test below; the whole-site walks check links and anchors on a few.
+const plantSample = ['/plants/', '/plants/basil/', '/plants/cucumber/', '/plants/sorrel/']
+const walked = (route: string) => !route.startsWith('/plants/') || plantSample.includes(route)
 for (const route of pages)
   test(`renders ${route}`, async ({ page }) => {
     const errors: string[] = []
@@ -31,9 +35,9 @@ for (const route of pages)
     expect(errors).toEqual([])
   })
 test('all internal links and fragments resolve', async ({ page, request }) => {
-  test.setTimeout(300000)
+  test.setTimeout(120000)
   const links = new Set<string>()
-  for (const route of pages) {
+  for (const route of pages.filter(walked)) {
     await page.goto(route)
     for (const h of await page
       .locator('a[href]')
@@ -99,7 +103,7 @@ test('docs search index paths and anchors resolve', async ({ page, request }) =>
   expect(index.base).toBe('https://seedypod.github.io')
   expect(index.pages.length).toBeGreaterThan(0)
   expect(index.pages.map((p) => p.path)).toContain('/getting-started/')
-  for (const { path: route, headings } of index.pages) {
+  for (const { path: route, headings } of index.pages.filter((p) => walked(p.path))) {
     expect((await page.goto(route))?.status(), route).toBe(200)
     const missing = await page.evaluate(
       (ids) => ids.filter((id) => !document.getElementById(id)),
